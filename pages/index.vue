@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import ButtonSignIn from '~/components/ButtonSignIn.vue';
 
   const route = useRoute()
   
   const signIpText = ref('sign in')
-  // const signUpText = ref('sign up')
 </script>
 
 <template>

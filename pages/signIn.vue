@@ -1,11 +1,16 @@
 <script setup lang="ts">
     const route = useRoute()
 
+    const signInLabel = ref('sign in')
+    const signUpLabel = ref('sign up')
+
     const email = ref('')
+    const emailLabel = ref('email')
     const emailAlertMessage = ref('')
     const emailInputBox = ref('input-box')
     
     const password = ref('')
+    const passwordLabel = ref('password')
     const passwordAlertMessage = ref('')
     const passwordInputBox = ref('input-box')
 
@@ -31,16 +36,13 @@
 
       if (emailAlertMessage.value === "" && passwordAlertMessage.value === "") {
         checkCredentials()
-        
-
-        navigateTo('/home')
       }
     }
 
     function checkCredentials() {
       
 
-      return false
+      navigateTo('/verification')
     }
     
 </script>
@@ -51,22 +53,22 @@
       <text class="greating-text">Sign in</text>
       
       <div>
-        <text class="label-input-box">email:</text>
+        <text class="label-input-box">{{ emailLabel }}:</text>
         <text class="alert-box">* </text>
         <input :class="emailInputBox" v-model="email"/>
         <text class="alert-box">{{ emailAlertMessage }}</text>
       </div>
       
       <div>
-        <text class="label-input-box">password:</text>
+        <text class="label-input-box">{{ passwordLabel }}:</text>
         <text class="alert-box">* </text>
         <input :class="passwordInputBox" v-model="password"/>
         <text class="alert-box">{{ passwordAlertMessage }}</text>
       </div>
 
       <div>
-        <button class="default-button" @click="onSubmit"> Sign in</button>
-        <button class="default-button" @click="navigateTo('/signUp')"> Sign up</button>
+        <button class="default-button" @click="onSubmit">{{ signInLabel }}</button>
+        <button class="default-button" @click="navigateTo('/signUp')">{{ signUpLabel }}</button>
       </div>
 
     </div>

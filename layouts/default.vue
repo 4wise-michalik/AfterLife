@@ -9,29 +9,26 @@
 
 
 <template>
-  <div class="body">
+  <body>
     <slot />
-  </div>
+  </body>
 
   <footer>
       <p>© 2024 AfterLife. Wszelkie prawa zastrzeżone.</p>
     </footer>
 </template>
   
+
 <style scoped>
   .header {
     height: 30px;
   }
 
-  .body {
+  body {
     background-color: #4d4d4d;
     width: 100%;
     height: 100vh;
     padding: 2rem;
-  }
-
-  .content {
-    padding: 1rem;
   }
 
   footer {

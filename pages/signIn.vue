@@ -3,10 +3,15 @@
 
     const loginValue = ref('')
     const passwordValue = ref('')
+
+    function checkCredentials() {
+      // weryfikuje dane logowania
+      console.log(loginValue.value, passwordValue.value)
+      navigateTo('/home')
+    }
     
 </script>
 
-<!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
   <container >
     <div>
@@ -15,14 +20,10 @@
       </text>
 
       <input class="input-box" v-model="loginValue"/>
+      <input class="input-box" v-model="passwordValue"/>      
+      <button class="button_signin" @click="checkCredentials"> Sign in</button>
 
-      <input class="input-box" v-model="passwordValue"/>
     </div>
-
-    <text>
-      {{ loginValue }}
-      {{ passwordValue }}
-    </text>
   </container>
 </template>
 
@@ -37,4 +38,10 @@
     color: black;
     margin: 10px;
   }
+
+.button_signin {
+  background-color: red;
+  border-radius: 20%;
+  padding: 5px;
+}
 </style>

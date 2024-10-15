@@ -45,5 +45,17 @@
     color: aqua;
   }
 
+
+  @media (min-width: 768px) {
+    .body {
+        padding-left:210px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .body {
+        padding-left:60px;
+    }
+  }
 </style>
   

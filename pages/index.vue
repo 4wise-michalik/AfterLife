@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ButtonSignIn from '~/components/ButtonSignIn.vue';
+
   const route = useRoute()
   
   const signIpText = ref('sign in')
@@ -13,9 +15,9 @@
         Witaj wędrowcze
       </text>
 
-      <button_signIn :name="signIpText" link="/signIn"></button_signIn>
+      <ButtonSignIn :name="signIpText" link="/signIn"/>
 
-      <button_signIn :name="signUpText" link="/signUp"></button_signIn>
+      <ButtonSignIn :name="signUpText" link="/signUp"/>
     </div>
   </container>
 </template>

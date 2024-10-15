@@ -7,7 +7,6 @@ import ButtonSignIn from '~/components/ButtonSignIn.vue';
   // const signUpText = ref('sign up')
 </script>
 
-<!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
   <container >
     <div>
@@ -15,9 +14,7 @@ import ButtonSignIn from '~/components/ButtonSignIn.vue';
         Witaj wędrowcze
       </text>
 
-      <ButtonSignIn :name="signIpText" link="/signIn"/>
-
-      <!-- <ButtonSignIn :name="signUpText" link="/signUp"/> -->
+      <button class="default-button" @click="navigateTo('/signIn')">{{ signIpText }}</button>
     </div>
   </container>
 </template>

@@ -11,12 +11,17 @@
   },
   "dependencies": {
     "@nuxt/icon": "^1.5.6",
+    "axios": "^1.7.7",
+    "express": "^4.21.1",
+    "h3": "^1.13.0",
+    "nodemailer": "^6.9.15",
     "nuxt": "^3.13.0",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
     "@iconify-json/material-symbols": "^1.2.4",
-    "@nuxtjs/tailwindcss": "^6.12.1"
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@types/nodemailer": "^6.4.16"
   }
 }

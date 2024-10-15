@@ -1,8 +1,12 @@
 <script setup lang="ts">
     const route = useRoute()
+    import axios from 'axios';
+
 
     const sendNewCode_isActive = ref(false)
-    const sendNewCodeWaitingTime = ref(11)
+    const sendNewCodeWaitingTime = ref(60)
+
+    const generatedCode = ref('')
       
     const verificationTextLabel = ref('We have just sent you an email with verification code. Please enter it below.')
     const newCodeTextLabel = ref("Didn't get it?")
@@ -21,21 +25,54 @@
       countDownSendNewCode()
     })
 
-    function sendVerificationCode() {
-      console.log("[pretending to send verification code]")
+    async function sendVerificationCode() {
+      generatedCode.value = (Math.floor(Math.random()*(899999)) + 100000).toString()
+      
+      try {
+        const response = await axios.post('/api/sendMail', {
+          body: JSON.stringify(generatedCode.value)
+        });
+
+        console.log('Email sent successfully:', response.data);
+      } catch (error) {
+        console.error('Error sending email:', error);
+      }
     }
 
-    function chceckVerificationCode() {
+    function onSubmit() {
       if (verificationCode.value.length <= 0) {
-        verificationCodeAlertMessage.value = "enter your name"
+        verificationCodeAlertMessage.value = "enter verification code"
         verificationCodeBox.value = "input-box-alerted"
       }
       else {
         verificationCodeAlertMessage.value = ""
         verificationCodeBox.value = "input-box"
-
-        navigateTo('/home')
       }
+
+      if (verificationCode.value.length != 6) {
+        verificationCodeAlertMessage.value = "code needs to have 6 characters"
+        verificationCodeBox.value = "input-box-alerted"
+      }
+      else {
+        verificationCodeAlertMessage.value = ""
+        verificationCodeBox.value = "input-box"
+      }
+
+      if (verificationCodeAlertMessage.value === "") {
+        chceckVerificationCode()
+      }
+    }
+
+    function chceckVerificationCode() {
+      if (generatedCode.value !== verificationCode.value) {
+        verificationCodeAlertMessage.value = "wrong verification code"
+        verificationCodeBox.value = "input-box-alerted"
+      }
+      else {
+        verificationCodeAlertMessage.value = ""
+        verificationCodeBox.value = "input-box"
+        navigateTo('/home')
+      }      
     }
 
     function countDownSendNewCode() {
@@ -82,7 +119,7 @@
             <text class="alert-box">{{ verificationCodeAlertMessage }}</text>
         </div>
 
-        <button class="default-button" @click="chceckVerificationCode">{{ verificationButtonLabel }}</button>
+        <button class="default-button" @click="onSubmit">{{ verificationButtonLabel }}</button>
     </div>
   </container>
 </template>

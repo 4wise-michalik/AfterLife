@@ -1,7 +1,18 @@
 <template>
+  <div>
+        <SideBar color="lime">
+          <Section title="My AfterLife" color="red" link="/home">
+            <Subsection title="OneOne" link="/home"/>
+          </Section>
+          <Section title="My Trusted Ones" link="/home/trusted">
+            <Subsection title="TwoOne" link="/home/help"/>
+          </Section>
+        </SideBar>
+    </div>
   <div class="container">
 
     <div class="body">
+
       <slot />
     </div>
 

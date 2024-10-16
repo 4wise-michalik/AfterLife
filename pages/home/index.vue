@@ -7,16 +7,8 @@ definePageMeta({
 <!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
     <div>
-        <SideBar color="lime">
-          <Section title="My AfterLife" color="red" link="/signIn">
-            <Subsection title="OneOne" link="/"/>
-          </Section>
-          <Section title="My Trusted Ones" link="/signIn">
-            <Subsection title="TwoOne"/>
-          </Section>
-        </SideBar>
+      MAIN PAGE
     </div>
-    
   
 </template>
 

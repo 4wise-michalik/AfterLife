@@ -7,7 +7,7 @@ definePageMeta({
 <!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
     <div>
-      HELP PAGE
+        TRUSTED PAGE
     </div>
     
   

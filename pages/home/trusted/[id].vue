@@ -2,12 +2,15 @@
 definePageMeta({
   layout: 'withsidebar' // Przypisuje layout tylko do tej strony
 })
+
+const { id } = useRoute().params;
+
 </script>
 
 <!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
-    <div>
-      HELP PAGE
+    <div class="text">
+        {{ id }}
     </div>
     
   
@@ -15,5 +18,7 @@ definePageMeta({
 
 
 <style scoped>
-
+.text{
+    color: aqua;
+}
 </style>

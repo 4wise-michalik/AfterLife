@@ -1,6 +1,7 @@
 <script setup lang="ts">
     const route = useRoute()
 
+
     const signInLabel = ref('sign in')
     const signUpLabel = ref('sign up')
 
@@ -40,7 +41,7 @@
     }
 
     function checkCredentials() {
-      
+
 
       navigateTo('/verification')
     }

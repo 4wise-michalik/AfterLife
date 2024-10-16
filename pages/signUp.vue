@@ -1,5 +1,6 @@
 <script setup lang="ts">
   const route = useRoute()
+  import axios from 'axios';
 
   const signUpLabel = ref('sign up')
 
@@ -25,6 +26,8 @@
   const passwordAlertMessage = ref('')
   const passwordInputBox = ref('input-box')
   const passwordRepeatInputBox = ref('input-box')
+
+  const alertMessage = ref('')
 
   function onSubmit() {
     if (name.value.length <= 0) {
@@ -83,8 +86,27 @@
     }   
   }
 
-  function checkCredentialsAvability() {
-    // ale weryfikuje fajnie
+  async function checkCredentialsAvability() {
+    try {
+        const response = await axios.post('/api/signUp', {
+          name: name.value,
+          surname: surname.value,
+          email: email.value,
+          password: password.value,
+          verifingMethod: 0
+        });
+        
+        if (response.data.success === true) {
+          alertMessage.value = ""
+          navigateTo({ path: '/verification',  query: { email: email.value }})
+        }
+        else {
+          alertMessage.value = "incorrect email or password"
+        }
+      
+      } catch (error) {
+        console.error('Error sending email:', error);
+      }
     
     navigateTo('/verification')
   }
@@ -121,16 +143,71 @@
       <div>
         <text class="label-input-box">{{ passwordLabel  }}:</text>
         <text class="alert-box">* </text>
-        <input :class="passwordInputBox" v-model="password"/>
+        <input type="password" :class="passwordInputBox" v-model="password"/>
         
         <text class="label-input-box">{{ passwordRepeatLabel  }}:</text>
         <text class="alert-box">* </text>
-        <input :class="passwordRepeatInputBox" v-model="passwordRepeat"/>
+        <input type="password" :class="passwordRepeatInputBox" v-model="passwordRepeat"/>
         <text class="alert-box">{{ passwordAlertMessage }}</text>
       </div>
+
+      <text class="alert-box">{{ alertMessage }}</text>
            
       <button class="default-button" @click="onSubmit">{{ signUpLabel }}</button>
 
     </div>
   </container>
 </template>
+
+<style>
+  .greating-text {
+    color: white;
+    font-size: 30px;
+  }
+
+  .content-signin {
+    display: grid;
+  }
+
+  .label-input-box {
+    color: white;
+    font-size: 15px;
+    margin-right: 5px;
+  }
+
+  .input-box, .input-box-alerted {
+    background-color: white;
+    color: black;
+    width: 15rem;
+    margin-top: 1.68rem;
+    margin-right: 2rem;
+    border-radius: 3px;
+  }
+  .input-box-alerted {
+    margin-top: 1.5rem;
+    border-width: 2px;
+    border-color: red;
+  }
+
+  .alert-box {
+    color: red;
+    margin-top: 1.5rem;
+    font-size: 15px;
+  }
+
+  .default-button {
+    background-color: #4d4d4d;
+    color: white;
+    border-radius: 10px;
+    border-color: aqua;
+    border-width: 2px;
+    width: 5rem;
+    margin-top: 1.5rem;
+    margin-right: 1rem;
+  }
+  .default-button:hover {
+    background-color: aqua;
+    color: black;
+    border-color: black;
+  }
+</style>

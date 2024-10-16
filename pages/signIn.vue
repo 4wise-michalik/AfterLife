@@ -1,6 +1,5 @@
 <script setup lang="ts">
     const route = useRoute()
-
     import axios from 'axios';
 
 
@@ -46,7 +45,7 @@
 
     async function checkCredentials() {
       try {
-        const response = await axios.post('/api/trylogIn', {
+        const response = await axios.post('/api/signIn', {
           email: email.value,
           password: password.value
         });

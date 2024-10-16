@@ -32,7 +32,6 @@
           const response = await axios.post('/api/sendMail', {
               body: JSON.stringify(generatedCode.value)
           });
-          console.log('Email sent successfully:', response.data);
       
       } catch (error) {
           console.error('Error sending email:', error);

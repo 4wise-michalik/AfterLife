@@ -13,20 +13,23 @@ const config = {
 };
 
 export default defineEventHandler(async (event) => {
+  const body = await readBody(event); // Read the request body
   let pool;
+
   try {
-    // Tworzenie połączenia z bazą danych
     pool = await sql.connect(config);
 
-    // Wykonanie zapytania
-    const result = await pool.request().query('SELECT * FROM users');
-    // Zwracanie wyników zapytania
-    return {
-      success: true,
-      data: result.recordset,
-    };
+    const result = await pool.request().query(`SELECT * FROM users WHERE email='${body.email}' AND password='${body.password}';`);
+    
+    if (result.rowsAffected[0] === 0){
+      return { success: false };
+    }
+    else {
+      return { success: true };
+    }
+    
+
   } catch (error) {
-    // Obsługa błędów
     console.error('Database error:', error);
     return {
       success: false,

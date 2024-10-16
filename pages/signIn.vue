@@ -1,5 +1,6 @@
 <script setup lang="ts">
     const route = useRoute()
+    import axios from 'axios';
 
 
     const signInLabel = ref('sign in')
@@ -14,6 +15,8 @@
     const passwordLabel = ref('password')
     const passwordAlertMessage = ref('')
     const passwordInputBox = ref('input-box')
+
+    const alertMessage = ref('')
 
     function onSubmit() {
       if ( email.value.length <= 0 ) {
@@ -40,10 +43,23 @@
       }
     }
 
-    function checkCredentials() {
-
-
-      navigateTo('/verification')
+    async function checkCredentials() {
+      try {
+        const response = await axios.post('/api/trylogIn', {
+          email: email.value,
+          password: password.value
+        });
+        
+        if (response.data.success === true) {
+          navigateTo('/verification')
+        }
+        else {
+          alertMessage.value = "incorrect email or password"
+        }
+      
+      } catch (error) {
+        console.error('Error sending email:', error);
+      }
     }
     
 </script>
@@ -66,6 +82,8 @@
         <input :class="passwordInputBox" v-model="password"/>
         <text class="alert-box">{{ passwordAlertMessage }}</text>
       </div>
+
+      <text class="alert-box">{{ alertMessage }}</text>
 
       <div>
         <button class="default-button" @click="onSubmit">{{ signInLabel }}</button>

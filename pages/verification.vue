@@ -30,7 +30,8 @@
 
       try {
           const response = await axios.post('/api/sendMail', {
-              body: JSON.stringify(generatedCode.value)
+            email: route.query.email,
+            code: generatedCode.value
           });
       
       } catch (error) {

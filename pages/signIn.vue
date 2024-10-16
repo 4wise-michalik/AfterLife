@@ -1,5 +1,6 @@
 <script setup lang="ts">
     const route = useRoute()
+
     import axios from 'axios';
 
 
@@ -51,7 +52,8 @@
         });
         
         if (response.data.success === true) {
-          navigateTo('/verification')
+          alertMessage.value = ""
+          navigateTo({ path: '/verification',  query: { email: email.value }})
         }
         else {
           alertMessage.value = "incorrect email or password"
@@ -79,7 +81,7 @@
       <div>
         <text class="label-input-box">{{ passwordLabel }}:</text>
         <text class="alert-box">* </text>
-        <input :class="passwordInputBox" v-model="password"/>
+        <input type="password" :class="passwordInputBox" v-model="password"/>
         <text class="alert-box">{{ passwordAlertMessage }}</text>
       </div>
 

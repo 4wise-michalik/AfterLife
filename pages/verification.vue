@@ -27,16 +27,20 @@
 
     async function sendVerificationCode() {
       generatedCode.value = (Math.floor(Math.random()*(899999)) + 100000).toString()
-      
-      try {
-        const response = await axios.post('/api/sendMail', {
-          body: JSON.stringify(generatedCode.value)
-        });
 
-        console.log('Email sent successfully:', response.data);
+      try {
+          const response = await axios.post('/api/sendMail', {
+              body: JSON.stringify(generatedCode.value)
+          });
+          console.log('Email sent successfully:', response.data);
+      
       } catch (error) {
-        console.error('Error sending email:', error);
+          console.error('Error sending email:', error);
       }
+      
+
+      sendNewCode_isActive.value = false
+      sendNewCodeWaitingTime.value = 60
     }
 
     function onSubmit() {

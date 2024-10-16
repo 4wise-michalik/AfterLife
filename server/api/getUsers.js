@@ -9,18 +9,16 @@ const config = {
     trustServerCertificate: false,
   },
 };
+
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event); 
   let pool;
   try {
     pool = await sql.connect(config);
-    const result = await pool.request().query(`SELECT * FROM users WHERE email='${body.email}' AND password='${body.password}';`);
-    if (result.rowsAffected[0] === 0){
-      return { success: false };
-    }
-    else {
-      return { success: true };
-    }
+    const result = await pool.request().query('SELECT * FROM users');
+    return {
+      success: true,
+      data: result.recordset,
+    };
   } catch (error) {
     console.error('Database error:', error);
     return {

@@ -1,3 +1,23 @@
+<script setup>
+const data = ref(null);
+onMounted(async () => {
+  try {
+    const response = await $fetch('/api/getUsers');
+    if (response.success) {
+      data.value = response.data;
+    } else {
+      throw new Error(response.error);
+    }
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    loading.value = false;
+  }
+});
+
+</script>
+
+
 <template>
   <div>
         <SideBar color="lime">
@@ -5,7 +25,10 @@
             <Subsection title="OneOne" link="/home"/>
           </Section>
           <Section title="My Trusted Ones" link="/home/trusted">
-            <Subsection title="TwoOne" link="/home/help"/>
+            <li v-for="item in data" :key="item.id">
+              <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusted/${item.id}`"/>
+
+            </li>
           </Section>
         </SideBar>
     </div>

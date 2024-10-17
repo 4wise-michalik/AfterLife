@@ -6,7 +6,7 @@ const trustingData = ref(null);
 const trustingError = ref(null);
 const trustingLoading = ref(true);
 onMounted(async () => {
-  
+  // UPDATE - USER SESSION (ID)
   const usersResult = await getTrusted(2);
   userData.value = usersResult.data.value;
   userError.value = usersResult.error.value;

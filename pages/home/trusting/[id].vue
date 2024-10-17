@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RefSymbol } from '@vue/reactivity';
+const { id } = useRoute().params;
 
 definePageMeta({
   layout: 'withsidebar',
@@ -7,10 +7,14 @@ definePageMeta({
     return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
     }
 })
-const handleClick = () => {
-  alert('I ty Brutusie!');
+const Confirm = () => {
+  report(id)
 };
-const { id } = useRoute().params;
+const Report = () => {
+  report(id)
+};
+
+
 const reportData = ref(null);
 const reportError = ref(null);
 const reportLoading = ref(true);
@@ -37,14 +41,13 @@ onMounted(async () => {
 <div v-else-if="reportData && reportData.value > 0" class="popup-container">
   <div class="popup-content">
     <p class="description">Ktoś zgłosił śmierć tego użytkownika, kliknij czerwony przycisk, aby potwierdzić:</p>
-    <button class="red-button" @click="handleClick">Potwierdź</button>
-    <button class="red-button" @click="handleClick">Odrzuć</button>
+    <button class="red-button" @click="Confirm">Potwierdź</button>
   </div>
 </div>
 <div v-else class="popup-container">
   <div class="popup-content">
     <p class="description">Na razie nikt nie zgłosił śmierci tego użytkownika. Jeśli chcesz to zrobić, kliknij przycisk:</p>
-    <button class="red-button" @click="handleClick">Zgłoś</button>
+    <button class="red-button" @click="Report">Zgłoś</button>
   </div>
 </div>
 

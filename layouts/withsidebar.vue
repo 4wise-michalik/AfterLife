@@ -1,28 +1,21 @@
 <script setup>
 const data = ref(null);
+const error = ref(null);
+const loading = ref(true);
+
 onMounted(async () => {
-  try {
-    const response = await $fetch('/api/getUsers');
-    if (response.success) {
-      data.value = response.data;
-    } else {
-      throw new Error(response.error);
-    }
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
-  }
+  
+  const result = await getUsers();
+  data.value = result.data.value;
+  error.value = result.error.value;
+  loading.value = result.loading.value;
 });
-
 </script>
-
 
 <template>
   <div>
         <SideBar color="lime">
-          <Section title="My AfterLife" color="red" link="/home">
-            <Subsection title="OneOne" link="/home"/>
+          <Section title="My AfterLife" :dropdown="false" color="red" link="/home">
           </Section>
           <Section title="My Trusted Ones" link="/home/trusted">
             <li v-for="item in data" :key="item.id">
@@ -33,9 +26,8 @@ onMounted(async () => {
         </SideBar>
     </div>
   <div class="container">
-
+    
     <div class="body">
-
       <slot />
     </div>
 

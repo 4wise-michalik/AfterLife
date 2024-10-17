@@ -11,7 +11,7 @@
     const enterCodeVisible = ref('hide-element')
     const enterNewPasswordVisible = ref('hide-element')
 
-    const sendNewCodeWaitingTime = ref(10)
+    const sendNewCodeWaitingTime = ref(60)
 
     const generatedCode = ref('')
       
@@ -76,8 +76,10 @@
                     sendCode_isActive.value = false
                     enterCodeVisible.value = 'show-element'
 
-                    generateVerificationCode()
-                    sendVerificationCode()
+                    generatedCode.value = await generateVerificationCode()
+                    sendVerificationCode(email.value, generatedCode.value)
+                    sendNewCode_isActive.value = false
+                    sendNewCodeWaitingTime.value = 60
                     countDownSendNewCode()
                 }
             
@@ -85,25 +87,6 @@
                 console.error('Error sending email:', error);
             }
         }
-    }
-
-    function generateVerificationCode() {
-        generatedCode.value = (Math.floor(Math.random()*(899999)) + 100000).toString()
-    }
-
-    async function sendVerificationCode() {
-        try {
-            const response = await axios.post('/api/sendMail', {
-                email: email.value,
-                code: generatedCode.value
-            });
-        
-        } catch (error) {
-            console.error('Error sending email:', error);
-        }
-
-        sendNewCode_isActive.value = false
-        sendNewCodeWaitingTime.value = 10
     }
 
     async function enteredVerificationCode() {
@@ -241,7 +224,7 @@
         </div>
         <div :class="enterCodeVisible">
             <text class="send-new-code">{{ newCodeTextLabel }}</text>
-            <button class="send-new-code-button" :disabled="!sendNewCode_isActive" @click="sendVerificationCode">{{ sendAgainTextLabel }}</button>
+            <button class="send-new-code-button" :disabled="!sendNewCode_isActive" @click="sendVerificationCode(email, generatedCode); sendNewCode_isActive = false; sendNewCodeWaitingTime = 60">{{ sendAgainTextLabel }}</button>
             <text class="send-new-code"> {{ sendAgainTimerLabel }}</text>
         </div>
 

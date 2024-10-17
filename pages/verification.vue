@@ -20,33 +20,15 @@
     const verificationCodeBox = ref('input-box')
 
     
-    onMounted(() => {
-      generateVerificationCode()
-      sendVerificationCode()
+    onMounted( async () => {
+      generatedCode.value = await generateVerificationCode()
+      sendVerificationCode(route.query.email, generatedCode.value)
+      sendNewCode_isActive.value = false
+      sendNewCodeWaitingTime.value = 60
       countDownSendNewCode()
     })
 
-    function generateVerificationCode() {
-        generatedCode.value = (Math.floor(Math.random()*(899999)) + 100000).toString()
-    }
-
-    async function sendVerificationCode() {
-      try {
-          const response = await axios.post('/api/sendMail', {
-            email: route.query.email,
-            code: generatedCode.value
-          });
-      
-      } catch (error) {
-          console.error('Error sending email:', error);
-      }
-      
-
-      sendNewCode_isActive.value = false
-      sendNewCodeWaitingTime.value = 60
-    }
-
-    function onSubmit() {
+    async function enteredVerificationCode() {
       if (verificationCode.value.length <= 0) {
         verificationCodeAlertMessage.value = "enter verification code"
         verificationCodeBox.value = "input-box-alerted"
@@ -65,8 +47,8 @@
         verificationCodeBox.value = "input-box"
       }
 
-      if (verificationCodeAlertMessage.value === "") {
-        chceckVerificationCode()
+      if (verificationCodeAlertMessage.value === ""  &&  await chceckVerificationCode()) {
+        navigateTo('/home')
       }
     }
 
@@ -84,9 +66,10 @@
         });
 
         if (responseVerify.data.success){
-          navigateTo('/home')
+          return true
         }
       }      
+      return false
     }
 
     function countDownSendNewCode() {
@@ -122,7 +105,7 @@
         </text>
         <div>
             <text class="send-new-code">{{ newCodeTextLabel }}</text>
-            <button :disabled="!sendNewCode_isActive" class="send-new-code-button" @click="sendVerificationCode">{{ sendAgainTextLabel }}</button>
+            <button :disabled="!sendNewCode_isActive" class="send-new-code-button" @click="sendVerificationCode(route.query.email, generatedCode); sendNewCode_isActive = false; sendNewCodeWaitingTime = 60">{{ sendAgainTextLabel }}</button>
             <text class="send-new-code"> {{ sendAgainTimerLabel }}</text>
         </div>
         
@@ -134,7 +117,7 @@
         </div>
         
         <div>
-          <button class="default-button" @click="onSubmit">{{ verificationButtonLabel }}</button>
+          <button class="default-button" @click="enteredVerificationCode">{{ verificationButtonLabel }}</button>
         </div>
     </div>
   </container>

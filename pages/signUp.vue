@@ -155,8 +155,10 @@
       </div>
 
       <text class="alert-box">{{ alertMessage }}</text>
-           
-      <button class="default-button" @click="onSubmit">{{ signUpLabel }}</button>
+      
+      <div>
+        <button class="default-button" @click="onSubmit">{{ signUpLabel }}</button>
+      </div>
 
     </div>
   </container>
@@ -196,21 +198,5 @@
     color: red;
     margin-top: 1.5rem;
     font-size: 15px;
-  }
-
-  .default-button {
-    background-color: #4d4d4d;
-    color: white;
-    border-radius: 10px;
-    border-color: aqua;
-    border-width: 2px;
-    width: 5rem;
-    margin-top: 1.5rem;
-    margin-right: 1rem;
-  }
-  .default-button:hover {
-    background-color: aqua;
-    color: black;
-    border-color: black;
   }
 </style>

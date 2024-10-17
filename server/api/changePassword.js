@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     let pool;
     try {
         pool = await sql.connect(config);
-        const result = await pool.request().query(`UPDATE users SET password=${body.password} WHERE email='${body.email}';`);
+        const result = await pool.request().query(`UPDATE users SET password='${body.password}' WHERE email='${body.email}';`);
         return { success: true };
     } catch (error) {
         console.error('Database error:', error);

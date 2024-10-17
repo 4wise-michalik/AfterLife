@@ -1,11 +1,9 @@
-//TOUPDATE - FETCHING TRUSTED
-
-export const getTrustedData = async (trustedId) => {
+export const getTrusting = async (userId) => {
     const data = ref(null);
     const error = ref(null);
     const loading = ref(true);
     try {
-        const response = await $fetch(`/api/getTrustedData/${trustedId}`);
+        const response = await $fetch(`/api/getTrustingUsers/${userId}`);
         if (response.success) {
             data.value = response.data;
         } else {

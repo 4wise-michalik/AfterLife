@@ -1,5 +1,4 @@
 import sql from 'mssql';
-
 const config = {
   user: process.env.AZURE_SQL_USER,
   password: process.env.AZURE_SQL_PASSWORD,
@@ -18,7 +17,7 @@ export default defineEventHandler(async (event) => {
     pool = await sql.connect(config);
     const result = await pool.request()
       .input('userId', sql.Int, userId)
-      .query(`SELECT * FROM users WHERE id=${userId}`);
+      .query(`SELECT * FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=${userId})`);
     return {
       success: true,
       data: result.recordset,

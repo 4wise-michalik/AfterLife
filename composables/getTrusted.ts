@@ -1,9 +1,9 @@
-export const getUsers = async () => {
+export const getTrusted = async (userId) => {
     const data = ref(null);
     const error = ref(null);
     const loading = ref(true);
     try {
-        const response = await $fetch('/api/login/getUsers');
+        const response = await $fetch(`/api/getTrustedUsers/${userId}`);
         if (response.success) {
             data.value = response.data;
         } else {

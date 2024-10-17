@@ -1,26 +1,37 @@
 <script setup>
-const data = ref(null);
-const error = ref(null);
-const loading = ref(true);
-
+const userData = ref(null);
+const userError = ref(null);
+const userLoading = ref(true);
+const trustingData = ref(null);
+const trustingError = ref(null);
+const trustingLoading = ref(true);
 onMounted(async () => {
   
-  const result = await getUsers();
-  data.value = result.data.value;
-  error.value = result.error.value;
-  loading.value = result.loading.value;
+  const usersResult = await getTrusted(2);
+  userData.value = usersResult.data.value;
+  userError.value = usersResult.error.value;
+  userLoading.value = usersResult.loading.value;
+
+  const trustingResult = await getTrusting(1);
+  trustingData.value = trustingResult.data.value;
+  trustingError.value = trustingResult.error.value;
+  trustingLoading.value = trustingResult.loading.value;
 });
 </script>
 
 <template>
   <div>
         <SideBar color="lime">
-          <Section title="My AfterLife" :dropdown="false" color="red" link="/home">
+          <Section title="My AfterLife" :dropdown="false" link="/home">
           </Section>
           <Section title="My Trusted Ones" link="/home/trusted">
-            <li v-for="item in data" :key="item.id">
+            <li v-for="item in userData" :key="item.id">
               <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusted/${item.id}`"/>
-
+            </li>
+          </Section>
+          <Section title="Who Trust Me" link="/home/trusting">
+            <li v-for="item in trustingData" :key="item.id">
+              <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusting/${item.id}`"/>
             </li>
           </Section>
         </SideBar>

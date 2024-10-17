@@ -7,9 +7,7 @@ definePageMeta({
 })
 </script>
 
-<!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
-  
 </template>
 
 

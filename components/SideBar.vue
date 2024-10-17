@@ -11,8 +11,8 @@ const props = defineProps({
     }
 });
 
-const sidebarOpen = ref(false); // Stan do zarządzania widocznością sidebaru
-const showAccountInfo = ref(false); // Stan do zarządzania widocznością informacji o koncie
+const sidebarOpen = ref(false);
+const showAccountInfo = ref(false);
 
 // Funkcja do przełączania sidebaru
 const toggleSidebar = () => {

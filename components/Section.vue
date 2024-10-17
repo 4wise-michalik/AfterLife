@@ -10,7 +10,10 @@ link: {
     type: String,
     required: true
 },
-
+dropdown: {
+        type: Boolean,
+        default: true,
+    },
 color: {
         type: String,
         default: 'white',
@@ -31,8 +34,8 @@ open.value = !open.value
         <span>{{ title }}</span> <!-- Tekst linku w osobnym elemencie -->
         
       </NuxtLink>
-      <button @click.stop="toggleOpen" class="icon-button" aria-label="Toggle Menu">
-        <Icon :name="open ? 'memory:menu-down-fill' : 'memory:menu-right-fill' "/>
+      <button v-if="dropdown" @click.stop="toggleOpen" class="icon-button" aria-label="Toggle Menu">
+        <Icon :name="open ? 'memory:menu-down-fill' : 'memory:menu-right-fill'" />
       </button>
       
       <ul v-if="open" class="subsections" :style="{color: color}">

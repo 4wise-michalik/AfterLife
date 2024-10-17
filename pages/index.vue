@@ -8,7 +8,7 @@
 <template>
   <container >
     <div>
-      <text class="greating-text rel">
+      <text class="greating-text">
         Witaj wędrowcze
       </text>
 

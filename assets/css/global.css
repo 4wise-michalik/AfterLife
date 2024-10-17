@@ -1,3 +1,27 @@
 .rel {
-    color: pink; /* Kolor tła do szybkiej weryfikacji */
-  }
+  color: pink; /* Kolor tła do szybkiej weryfikacji */
+}
+
+.default-button {
+  background-color: #4d4d4d;
+  color: white;
+  border-radius: 10px;
+  border-color: aqua;
+  border-width: 2px;
+  min-width: 5rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  margin-right: 1rem;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.default-button:hover {
+  background-color: aqua;
+  color: black;
+  border-color: black;
+}
+.default-button:disabled {
+  background-color: #4d4d4d;
+  color: white;
+  border-color: black;
+}

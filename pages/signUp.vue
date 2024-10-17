@@ -52,6 +52,10 @@
       emailAlertMessage.value = "enter your email address"
       emailInputBox.value = "input-box-alerted"
     }
+    else if ( !email.value.includes('@')  ||  !email.value.includes('.')  ||  email.value.includes('(') || email.value.includes(')') || email.value.includes('<') || email.value.includes('>') || email.value.includes(',') || email.value.includes(':') || email.value.includes(';') || email.value.includes('\\') || email.value.includes('[') || email.value.includes(']') || email.value.includes("'") || email.value.includes('"') ) {
+      emailAlertMessage.value = "incorrect email address"
+      emailInputBox.value = "input-box-alerted"
+    }
     else {
       emailAlertMessage.value = ""
       emailInputBox.value = "input-box"
@@ -88,27 +92,26 @@
 
   async function checkCredentialsAvability() {
     try {
-        const response = await axios.post('/api/signUp', {
-          name: name.value,
-          surname: surname.value,
-          email: email.value,
-          password: password.value,
-          verifingMethod: 0
-        });
-        
-        if (response.data.success === true) {
-          alertMessage.value = ""
-          navigateTo({ path: '/verification',  query: { email: email.value }})
-        }
-        else {
-          alertMessage.value = "incorrect email or password"
-        }
+      const responseSignUp = await axios.post('/api/signUp', {
+        name: name.value,
+        surname: surname.value,
+        email: email.value,
+        password: password.value,
+        verifingMethod: 0
+      });
       
-      } catch (error) {
-        console.error('Error sending email:', error);
+      if (responseSignUp.data.success === true) {
+        alertMessage.value = ""
+        navigateTo({ path: '/verification',  query: { email: email.value }})
+      }
+      else {
+        emailAlertMessage.value = responseSignUp.data.message
+        emailInputBox.value = "input-box-alerted"
       }
     
-    navigateTo('/verification')
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
   }
 </script>
 
@@ -136,7 +139,7 @@
       <div>
         <text class="label-input-box">{{ emailLabel  }}:</text>
         <text class="alert-box">* </text>
-        <input :class="emailInputBox" v-model="email"/>
+        <input type="email" :class="emailInputBox" v-model="email"/>
         <text class="alert-box">{{ emailAlertMessage }}</text>
       </div>
 

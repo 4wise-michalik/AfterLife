@@ -5,6 +5,7 @@
 
     const signInLabel = ref('sign in')
     const signUpLabel = ref('sign up')
+    const forgotPasswordLabel = ref('forgot password')
 
     const email = ref('')
     const emailLabel = ref('email')
@@ -89,6 +90,7 @@
       <div>
         <button class="default-button" @click="onSubmit">{{ signInLabel }}</button>
         <button class="default-button" @click="navigateTo('/signUp')">{{ signUpLabel }}</button>
+        <button class="default-button" @click="navigateTo('/forgotPassword')">{{ forgotPasswordLabel }}</button>
       </div>
 
     </div>
@@ -116,6 +118,7 @@
     color: black;
     width: 15rem;
     margin-top: 1.68rem;
+    margin-bottom: 2rem;
     margin-right: 2rem;
     border-radius: 3px;
   }
@@ -129,21 +132,5 @@
     color: red;
     margin-top: 1.5rem;
     font-size: 15px;
-  }
-
-  .default-button {
-    background-color: #4d4d4d;
-    color: white;
-    border-radius: 10px;
-    border-color: aqua;
-    border-width: 2px;
-    width: 5rem;
-    margin-top: 1.5rem;
-    margin-right: 1rem;
-  }
-  .default-button:hover {
-    background-color: aqua;
-    color: black;
-    border-color: black;
   }
 </style>

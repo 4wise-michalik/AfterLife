@@ -21,13 +21,16 @@
 
     
     onMounted(() => {
+      generateVerificationCode()
       sendVerificationCode()
       countDownSendNewCode()
     })
 
-    async function sendVerificationCode() {
-      generatedCode.value = (Math.floor(Math.random()*(899999)) + 100000).toString()
+    function generateVerificationCode() {
+        generatedCode.value = (Math.floor(Math.random()*(899999)) + 100000).toString()
+    }
 
+    async function sendVerificationCode() {
       try {
           const response = await axios.post('/api/sendMail', {
             email: route.query.email,
@@ -67,7 +70,7 @@
       }
     }
 
-    function chceckVerificationCode() {
+    async function chceckVerificationCode() {
       if (generatedCode.value !== verificationCode.value) {
         verificationCodeAlertMessage.value = "wrong verification code"
         verificationCodeBox.value = "input-box-alerted"
@@ -75,7 +78,14 @@
       else {
         verificationCodeAlertMessage.value = ""
         verificationCodeBox.value = "input-box"
-        navigateTo('/home')
+
+        const responseVerify = await axios.post('/api/verifyEmail', {
+          email: route.query.email
+        });
+
+        if (responseVerify.data.success){
+          navigateTo('/home')
+        }
       }      
     }
 
@@ -122,8 +132,10 @@
             <input :class="verificationCodeBox" v-model="verificationCode"/>
             <text class="alert-box">{{ verificationCodeAlertMessage }}</text>
         </div>
-
-        <button class="default-button" @click="onSubmit">{{ verificationButtonLabel }}</button>
+        
+        <div>
+          <button class="default-button" @click="onSubmit">{{ verificationButtonLabel }}</button>
+        </div>
     </div>
   </container>
 </template>

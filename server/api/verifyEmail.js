@@ -14,19 +14,10 @@ const config = {
 export default defineEventHandler(async (event) => {
   const body = await readBody(event); 
   let pool;
-
-  // resetowanie hasła
-  
   try {
     pool = await sql.connect(config);
-    const result = await pool.request().query(`SELECT * FROM users WHERE email='${body.email}'`);
-    if (result.rowsAffected[0] === 0){
-      const resultInsert = await pool.request().query(`INSERT INTO users (first_name, last_name, email, password, verified_email, verifing_method) VALUES ('${body.name}', '${body.surname}', '${body.email}', '${body.password}', 0, ${body.verifingMethod})`);
-      return { success: true, message: "given email was already used" };
-    }
-    else {
-      return { success: false, message: "given email was already used" };
-    }
+    const result = await pool.request().query(`UPDATE users SET verified_email=1 WHERE email='${body.email}';`);
+    return { success: true };
   } catch (error) {
     console.error('Database error:', error);
     return {

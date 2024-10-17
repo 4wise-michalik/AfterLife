@@ -67,7 +67,7 @@
 </script>
 
 <template>
-  <container >
+  <container>
     <div class="content-signin">
       <text class="greating-text">Sign in</text>
       

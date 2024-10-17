@@ -1,10 +1,10 @@
 <template>
-    <li>
-      <NuxtLink :to="link">{{ title }}</NuxtLink>
-    </li>
-  </template>
+  <li>
+    <NuxtLink :to="link">{{ title }}</NuxtLink>
+  </li>
+</template>
   
-  <script setup>
+<script setup>
   const props = defineProps({
     title: {
       type: String,
@@ -15,8 +15,9 @@
       required: true
     }
   })
-  </script>
+</script>
+
+<style scoped>
   
-  <style scoped>
-  </style>
+</style>
   

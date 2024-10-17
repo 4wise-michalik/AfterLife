@@ -291,7 +291,6 @@
 
   .hide-element {
     display: none;
-    
   }
   .show-element {
     display: block;

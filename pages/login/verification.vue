@@ -61,7 +61,7 @@
         verificationCodeAlertMessage.value = ""
         verificationCodeBox.value = "input-box"
 
-        const responseVerify = await axios.post('/api/verifyEmail', {
+        const responseVerify = await axios.post('/api/login/verifyEmail', {
           email: route.query.email
         });
 

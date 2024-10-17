@@ -3,7 +3,7 @@ export const getUsers = async () => {
     const error = ref(null);
     const loading = ref(true);
     try {
-        const response = await $fetch('/api/getUsers');
+        const response = await $fetch('/api/login/getUsers');
         if (response.success) {
             data.value = response.data;
         } else {

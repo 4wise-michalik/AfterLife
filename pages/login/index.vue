@@ -46,14 +46,14 @@
 
     async function checkCredentials() {
       try {
-        const response = await axios.post('/api/signIn', {
+        const response = await axios.post('/api/login/signIn', {
           email: email.value,
           password: password.value
         });
         
         if (response.data.success === true) {
           alertMessage.value = ""
-          navigateTo({ path: '/verification',  query: { email: email.value }})
+          navigateTo({ path: 'login/verification',  query: { email: email.value }})
         }
         else {
           alertMessage.value = "incorrect email or password"
@@ -89,8 +89,8 @@
 
       <div>
         <button class="default-button" @click="onSubmit">{{ signInLabel }}</button>
-        <button class="default-button" @click="navigateTo('/signUp')">{{ signUpLabel }}</button>
-        <button class="default-button" @click="navigateTo('/forgotPassword')">{{ forgotPasswordLabel }}</button>
+        <button class="default-button" @click="navigateTo('/login/signUp')">{{ signUpLabel }}</button>
+        <button class="default-button" @click="navigateTo('/login/forgotPassword')">{{ forgotPasswordLabel }}</button>
       </div>
 
     </div>

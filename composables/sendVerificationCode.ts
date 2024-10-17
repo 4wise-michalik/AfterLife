@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const sendVerificationCode = async (email, generatedCode) => {
     try {
-        const response = await axios.post('/api/sendMail', {
+        const response = await axios.post('/api/login/sendMail', {
             email: email,
             code: generatedCode
         });

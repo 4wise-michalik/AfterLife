@@ -92,7 +92,7 @@
 
   async function checkCredentialsAvability() {
     try {
-      const responseSignUp = await axios.post('/api/signUp', {
+      const responseSignUp = await axios.post('/api/login/signUp', {
         name: name.value,
         surname: surname.value,
         email: email.value,
@@ -102,7 +102,7 @@
       
       if (responseSignUp.data.success === true) {
         alertMessage.value = ""
-        navigateTo({ path: '/verification',  query: { email: email.value }})
+        navigateTo({ path: '/login/verification',  query: { email: email.value }})
       }
       else {
         emailAlertMessage.value = responseSignUp.data.message

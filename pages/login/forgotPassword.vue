@@ -63,7 +63,7 @@
 
         if (emailAlertMessage.value === '') {
             try {
-                const response = await axios.post('/api/emailExists', {
+                const response = await axios.post('/api/login/emailExists', {
                     email: email.value
                 });
                 
@@ -125,7 +125,7 @@
         verificationCodeAlertMessage.value = ""
         verificationCodeBox.value = "input-box"
 
-        const responseVerify = await axios.post('/api/verifyEmail', {
+        const responseVerify = await axios.post('/api/login/verifyEmail', {
           email: route.query.email
         });
 
@@ -187,7 +187,7 @@
 
         if (passwordAlertMessage.value === "") {
             try {
-                const response = await axios.post('/api/changePassword', {
+                const response = await axios.post('/api/login/changePassword', {
                     email: email.value,
                     password: password.value
                 });

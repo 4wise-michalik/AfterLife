@@ -12,7 +12,7 @@
         Witaj wędrowcze
       </text>
 
-      <button class="default-button" @click="navigateTo('/signIn')">{{ signIpText }}</button>
+      <button class="default-button" @click="navigateTo('/login')">{{ signIpText }}</button>
     </div>
   </container>
 </template>

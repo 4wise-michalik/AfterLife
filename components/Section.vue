@@ -1,6 +1,4 @@
 <script setup>
-
-
 const props = defineProps({
 title: {
     type: String,
@@ -16,7 +14,7 @@ dropdown: {
     },
 color: {
         type: String,
-        default: 'white',
+        default: '#bc54e3',
     },
 })
 
@@ -30,7 +28,7 @@ open.value = !open.value
 
 <template>
     <li>
-      <NuxtLink :to="link" class="menu-section">
+      <NuxtLink :to="link" class="menu-section" @click.stop.prevent="toggleOpen">
         <span>{{ title }}</span> <!-- Tekst linku w osobnym elemencie -->
         
       </NuxtLink>

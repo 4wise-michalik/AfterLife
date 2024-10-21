@@ -11,7 +11,7 @@ onMounted(async () => {
   userData.value = usersResult.data.value;
   userError.value = usersResult.error.value;
   userLoading.value = usersResult.loading.value;
-
+  
   const trustingResult = await getTrusting(1);
   trustingData.value = trustingResult.data.value;
   trustingError.value = trustingResult.error.value;
@@ -21,7 +21,7 @@ onMounted(async () => {
 
 <template>
   <div>
-        <SideBar color="lime">
+        <SideBar color=#7B4390>
           <Section title="My AfterLife" :dropdown="false" link="/home">
           </Section>
           <Section title="My Trusted Ones" link="/home/trusted">
@@ -51,12 +51,11 @@ onMounted(async () => {
 <style scoped>
 .container {
   display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Pozwól kontenerowi na elastyczne rozszerzanie */
   background-color: #4d4d4d;
   width: 100%;
-  flex-direction: column; /* Ustawienie układu w kolumnie */
-  height: 100vh; /* Cała wysokość widoku */
 }
-
 .body {
   margin-left: 230px;
   flex: 1; /* Pozwól na zajmowanie dostępnej przestrzeni */

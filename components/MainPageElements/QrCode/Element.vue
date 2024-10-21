@@ -7,12 +7,13 @@
     const capture = ref(null);
     const imageData = ref(null);
     const imageDataVisualized = ref(null);
-    const usersPage = ref('https://chatgpt.com/');
+    const usersPage = ref('');
 
     const showZoom = ref(false);
     const showEdit = ref(false);
 
     onMounted( () => {
+        getLinkFromDatabase()
         loadQrCode()
     })
 
@@ -30,23 +31,32 @@
         }
     }
 
+    async function getLinkFromDatabase() {
+        try {
+            const response = await axios.post('/api/qrCode/getQrCode', {
+                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
+            });
+            usersPage.value = response.data.data[0].link
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     const handleEditClose = (newValue) => {
         usersPage.value = newValue
         showEdit.value = false
-        saveInDataBase()
+        saveLinkInDataBase()
         loadQrCode()
     }
 
-    async function saveInDataBase() {
+    async function saveLinkInDataBase() {
         try {
             await axios.post('/api/qrCode/changeQrCode', {
-                // id: id.value,
-                // link: link.value,
-                id: 2,
+                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
                 link: usersPage.value,
             });
         } catch (error) {
-            console.error('Error updating database:', error);
+            console.error('Error:', error);
         }
     }
     
@@ -68,7 +78,7 @@
             link.click()
             document.body.removeChild(link)
         } catch (error) {
-            console.error('An unexpected error occurred:', error)
+            console.error('Error:', error)
         }
     }
 </script>

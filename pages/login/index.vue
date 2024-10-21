@@ -52,15 +52,26 @@
         });
         
         if (response.data.success === true) {
+          try {
+            const response_userData = await axios.post('/api/login/getUserInfo', {
+              email: email.value,
+            });
+            const data = response_userData.data.data
+            sessionStorage.setItem('userData', JSON.stringify(data))
+            
+          } catch (error) {
+            console.error('Error:', error);
+          }
+          
           alertMessage.value = ""
-          navigateTo({ path: 'login/verification',  query: { email: email.value }})
+          navigateTo({ path: 'login/verification'})
         }
         else {
           alertMessage.value = "incorrect email or password"
         }
       
       } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error:', error);
       }
     }
     

@@ -3,6 +3,8 @@
     import axios from 'axios';
 
 
+    const email = ref('')
+
     const sendNewCode_isActive = ref(false)
     const sendNewCodeWaitingTime = ref(60)
 
@@ -21,8 +23,10 @@
 
     
     onMounted( async () => {
+      email.value = JSON.parse(sessionStorage.getItem('userData').toString())[0].email
+      
       generatedCode.value = await generateVerificationCode()
-      sendVerificationCode(route.query.email, generatedCode.value)
+      sendVerificationCode(email.value, generatedCode.value)
       sendNewCode_isActive.value = false
       sendNewCodeWaitingTime.value = 60
       countDownSendNewCode()
@@ -62,7 +66,7 @@
         verificationCodeBox.value = "input-box"
 
         const responseVerify = await axios.post('/api/login/verifyEmail', {
-          email: route.query.email
+          email: email.value
         });
 
         if (responseVerify.data.success){
@@ -105,7 +109,7 @@
         </text>
         <div>
             <text class="send-new-code">{{ newCodeTextLabel }}</text>
-            <button :disabled="!sendNewCode_isActive" class="send-new-code-button" @click="sendVerificationCode(route.query.email, generatedCode); sendNewCode_isActive = false; sendNewCodeWaitingTime = 60">{{ sendAgainTextLabel }}</button>
+            <button :disabled="!sendNewCode_isActive" class="send-new-code-button" @click="sendVerificationCode(email, generatedCode); sendNewCode_isActive = false; sendNewCodeWaitingTime = 60">{{ sendAgainTextLabel }}</button>
             <text class="send-new-code"> {{ sendAgainTimerLabel }}</text>
         </div>
         

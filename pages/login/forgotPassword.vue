@@ -195,7 +195,7 @@
                 console.error('Error sending email:', error);
             }
 
-            navigateTo('/home')
+            navigateTo('/')
         }
     }
     

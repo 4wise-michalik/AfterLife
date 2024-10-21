@@ -14,8 +14,6 @@ const config = {
 export default defineEventHandler(async (event) => {
   const body = await readBody(event); 
   let pool;
-
-  // resetowanie hasła
   
   try {
     pool = await sql.connect(config);

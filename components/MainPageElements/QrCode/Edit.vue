@@ -3,6 +3,8 @@
         link: String,
     })
 
+    console.log(props.link)
+
     const linkValue = ref(props.link);
 </script>
 

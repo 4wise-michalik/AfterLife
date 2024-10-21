@@ -102,7 +102,19 @@
       
       if (responseSignUp.data.success === true) {
         alertMessage.value = ""
-        navigateTo({ path: '/login/verification',  query: { email: email.value }})
+
+        try {
+          const response_userData = await axios.post('/api/login/getUserInfo', {
+            email: email.value,
+          });
+          const data = response_userData.data.data
+          sessionStorage.setItem('userData', JSON.stringify(data))
+        } catch (error) {
+          console.error('Error:', error);
+        }
+
+
+        navigateTo({ path: '/login/verification'})
       }
       else {
         emailAlertMessage.value = responseSignUp.data.message
@@ -110,7 +122,7 @@
       }
     
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error('Error:', error);
     }
   }
 </script>

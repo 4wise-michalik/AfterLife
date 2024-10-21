@@ -7,7 +7,7 @@
 
 <template>
     <div>
-        <MainPageElementsQrCodeElement />            
+        <MainPageElementsQrCodeElement />
     </div>
   
 </template>

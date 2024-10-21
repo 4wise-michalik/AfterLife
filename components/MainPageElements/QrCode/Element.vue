@@ -12,10 +12,23 @@
     const showZoom = ref(false);
     const showEdit = ref(false);
 
+
     onMounted( () => {
         getLinkFromDatabase()
         loadQrCode()
     })
+
+    async function getLinkFromDatabase() {
+        try {
+            const response = await axios.post('/api/qrCode/getQrCode', {
+                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
+            });
+            
+            usersPage.value = response.data.data[0].link
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     async function loadQrCode() {
         try {
@@ -31,33 +44,11 @@
         }
     }
 
-    async function getLinkFromDatabase() {
-        try {
-            const response = await axios.post('/api/qrCode/getQrCode', {
-                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
-            });
-            usersPage.value = response.data.data[0].link
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
     const handleEditClose = (newValue) => {
         usersPage.value = newValue
         showEdit.value = false
-        saveLinkInDataBase()
+        getLinkFromDatabase()
         loadQrCode()
-    }
-
-    async function saveLinkInDataBase() {
-        try {
-            await axios.post('/api/qrCode/changeQrCode', {
-                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
-                link: usersPage.value,
-            });
-        } catch (error) {
-            console.error('Error:', error);
-        }
     }
     
     function zoomQrCode() {
@@ -98,7 +89,7 @@
     </container>
 
     <MainPageElementsQrCodeZoom v-show="showZoom" @close-modal="showZoom=false" :qrCode="imageDataVisualized" />
-    <MainPageElementsQrCodeEdit v-show="showEdit" @close-modal="handleEditClose" :link="usersPage"/>
+    <MainPageElementsQrCodeEdit v-show="showEdit" @close-modal="handleEditClose"/>
 </template>
 
 <style scoped>

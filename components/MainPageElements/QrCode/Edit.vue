@@ -1,25 +1,47 @@
 <script setup>
-    const props = defineProps({
-        link: String,
+    import axios from 'axios';
+    const linkValue = ref('');
+
+    onMounted( () => {
+        getLinkFromDatabase()
     })
 
-    console.log(props.link)
+    async function getLinkFromDatabase() {
+        try {
+            const response = await axios.post('/api/qrCode/getQrCode', {
+                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
+            });
+            
+            linkValue.value = response.data.data[0].link
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
-    const linkValue = ref(props.link);
+    async function saveLinkInDataBase() {
+        try {
+            await axios.post('/api/qrCode/changeQrCode', {
+                id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
+                link: linkValue.value,
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 </script>
 
 <template>
-    <div class="modal-overlay" @click="$emit('close-modal')">
+    <div class="modal-overlay" @click="$emit('close-modal', linkValue)">
         <div class="modal" @click.stop>
             <div class="close-div">
-                <img class="close" src="~/assets/icons/close.svg" alt="" @click="$emit('close-modal')"/>
+                <img class="close" src="~/assets/icons/close.svg" alt="" @click="$emit('close-modal', linkValue)"/>
             </div>
             <div class="input-div">
                 Link: 
                 <input class="input" v-model="linkValue"/>
             </div>
             <div class="buttons">
-                <button class="default-button" @click="$emit('close-modal', linkValue)">Save</button>
+                <button class="default-button" @click="{saveLinkInDataBase(); $emit('close-modal', linkValue)}">Save</button>
                 <button class="default-button" >Create own page</button>
             </div>
         </div>

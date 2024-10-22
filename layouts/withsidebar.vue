@@ -5,35 +5,49 @@ const userLoading = ref(true);
 const trustingData = ref(null);
 const trustingError = ref(null);
 const trustingLoading = ref(true);
+
+const usersResult = ref({ trusted: null, trusting: null }); 
+
 onMounted(async () => {
-  const usersResult = await getTrusted(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
-  userData.value = usersResult.data.value;
-  userError.value = usersResult.error.value;
-  userLoading.value = usersResult.loading.value;
+  const storedTrustedResults = sessionStorage.getItem('trusted_results');
+  const storedTrustingResults = sessionStorage.getItem('trusting_results');
   
-  const trustingResult = await getTrusting(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
-  trustingData.value = trustingResult.data.value;
-  trustingError.value = trustingResult.error.value;
-  trustingLoading.value = trustingResult.loading.value;
+  if (storedTrustedResults && storedTrustingResults) {
+    usersResult.value.trusted = JSON.parse(storedTrustedResults);
+    usersResult.value.trusting = JSON.parse(storedTrustingResults);
+  } else {
+    const response_trusted = await getTrusted(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
+    const response_trusting = await getTrusting(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
+    
+    sessionStorage.setItem('trusted_results', JSON.stringify(response_trusted.data.value));
+    sessionStorage.setItem('trusting_results', JSON.stringify(response_trusting.data.value));
+    
+    usersResult.value.trusted = response_trusted.data.value;
+    usersResult.value.trusting = response_trusting.data.value;
+  }
+  
+  console.log(usersResult.value.trusting); // Prawidłowy dostęp do wartości
 });
+
 </script>
 
 <template>
   <div>
-        <SideBar color=#7B4390>
-          <Section title="My AfterLife" :dropdown="false" link="/home">
-          </Section>
-          <Section title="My Trusted Ones" link="/home/trusted">
-            <li v-for="item in userData" :key="item.id">
-              <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusted/${item.id}`"/>
-            </li>
-          </Section>
-          <Section title="Who Trust Me" link="/home/trusting">
-            <li v-for="item in trustingData" :key="item.id">
-              <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusting/${item.id}`"/>
-            </li>
-          </Section>
-        </SideBar>
+    <SideBar color=#7B4390>
+      <Section title="My AfterLife" :dropdown="false" link="/home">
+      </Section>
+      <Section title="My Trusted Ones" link="/home/trusted">
+        <li v-for="item in usersResult.trusted" :key="item.id">
+          <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusted/${item.id}`"/>
+        </li>
+      </Section>
+
+      <Section title="Who Trust Me" link="/home/trusting">
+        <li v-for="item in usersResult.trusting" :key="item.id">
+          <Subsection :title="item.first_name + ' ' +  item.last_name" :link="`/home/trusting/${item.id}`"/>
+        </li>
+      </Section>
+    </SideBar>
     </div>
   <div class="container">
     

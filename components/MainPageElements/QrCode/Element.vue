@@ -72,13 +72,17 @@
             console.error('Error:', error)
         }
     }
+
 </script>
 
 <template>
     <container>
         <div style="display: inline-flex">
-            <div ref="capture">
+            <div v-if="usersPage !== ''" ref="capture">
                 <qrcode-vue :value="usersPage" size="15rem" level="H" render-as="svg" style="margin: 1rem;"/>
+            </div>
+            <div v-if="usersPage === ''" ref="capture">
+                <qrcode-vue value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size="15rem" level="H" render-as="svg" style="margin: 1rem;"/>
             </div>
             <div class="qr-code-side-bar">
                 <img class="qr-code-side-element" src="~/assets/icons/zoom.svg" @click="zoomQrCode"/>

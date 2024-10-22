@@ -74,6 +74,7 @@ const toggleAccountInfo = () => {
 .account-button {
     background-color: rgb(134, 0, 196); /* Kolor tła przycisku */
     border: none; /* Brak ramki */
+    border-radius: 5px;
     color: black; /* Kolor tekstu */
     cursor: pointer; /* Kursor zmienia się na wskaźnik */
     width: 100%; /* Szerokość przycisku 100% */
@@ -82,7 +83,7 @@ const toggleAccountInfo = () => {
 
 .account-info-buttons{
     margin-bottom: 2px;
-    border-radius: 20%;
+    border-radius: 5px;
     text-align: left;
     background-color: rgb(168, 0, 235);
     border: none; 

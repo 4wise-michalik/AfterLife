@@ -20,23 +20,23 @@
     const alertMessage = ref('')
 
     function onSubmit() {
-      if ( email.value.length <= 0 ) {
-        emailAlertMessage.value = "enter email"
-        emailInputBox.value = "input-box-alerted"
-      }
-      else {
-        emailAlertMessage.value = ""
-        emailInputBox.value = "input-box"
-      }
+      // if ( email.value.length <= 0 ) {
+      //   emailAlertMessage.value = "enter email"
+      //   emailInputBox.value = "input-box-alerted"
+      // }
+      // else {
+      //   emailAlertMessage.value = ""
+      //   emailInputBox.value = "input-box"
+      // }
 
-      if ( password.value.length <= 0 ) {
-        passwordAlertMessage.value = "enter password"
-        passwordInputBox.value = "input-box-alerted"
-      }
-      else {
-        passwordAlertMessage.value = ""
-        passwordInputBox.value = "input-box"
-      }
+      // if ( password.value.length <= 0 ) {
+      //   passwordAlertMessage.value = "enter password"
+      //   passwordInputBox.value = "input-box-alerted"
+      // }
+      // else {
+      //   passwordAlertMessage.value = ""
+      //   passwordInputBox.value = "input-box"
+      // }
 
 
       if (emailAlertMessage.value === "" && passwordAlertMessage.value === "") {
@@ -65,7 +65,7 @@
           }
           
           alertMessage.value = ""
-          navigateTo({ path: 'login/verification'})
+          navigateTo({ path: 'home'})
         }
         else {
           alertMessage.value = "incorrect email or password"

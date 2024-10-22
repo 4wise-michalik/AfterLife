@@ -76,7 +76,7 @@
 
 <template>
     <container>
-        <div class="element-background" style="display: inline-flex">
+        <div style="display: inline-flex">
             <div ref="capture">
                 <qrcode-vue :value="usersPage" size="15rem" level="H" render-as="svg" style="margin: 1rem;"/>
             </div>
@@ -89,7 +89,7 @@
     </container>
 
     <MainPageElementsQrCodeZoom v-show="showZoom" @close-modal="showZoom=false" :qrCode="imageDataVisualized" />
-    <MainPageElementsQrCodeEdit v-show="showEdit" @close-modal="handleEditClose"/>
+    <MainPageElementsQrCodeEdit v-show="showEdit" @close-modal-save="handleEditClose" @close-modal="{showEdit=false; getLinkFromDatabase()}"/>
 </template>
 
 <style scoped>
@@ -98,6 +98,7 @@
         align-items: center;
         border-left: 2px solid black;
         padding: 1rem;
+        color: black;
     }
     
     .qr-code-side-element, .qr-code-side-element:hover {

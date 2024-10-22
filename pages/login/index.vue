@@ -57,6 +57,7 @@
               email: email.value,
             });
             const data = response_userData.data.data
+            console.log(data.email)
             sessionStorage.setItem('userData', JSON.stringify(data))
             
           } catch (error) {
@@ -145,3 +146,8 @@
     font-size: 15px;
   }
 </style>
+
+
+
+
+<!-- parametr czy zalogowany? sprawdza po wejściu na dalsze strony -->

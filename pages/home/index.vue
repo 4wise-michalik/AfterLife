@@ -20,8 +20,7 @@
     </section>
 
     <section class="bg-purple-700 text-gray-200 p-8 rounded-lg shadow-lg">
-      <NuxtLink to="/section1" class="text-xl font-semibold mb-4 hover:text-purple-300">My memory page</NuxtLink>
-      <p class="text-sm">This is the content of Section 1.</p>
+      <MainPageElementsQrCodeElement />
     </section>
 
     <section class="bg-purple-600 text-white p-8 rounded-lg shadow-lg">

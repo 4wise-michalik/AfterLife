@@ -41,7 +41,7 @@
                 <input class="input" v-model="linkValue"/>
             </div>
             <div class="buttons">
-                <button class="default-button" @click="{saveLinkInDataBase(); $emit('close-modal', linkValue)}">Save</button>
+                <button class="default-button" @click="{saveLinkInDataBase(); $emit('close-modal-save', linkValue)}">Save</button>
                 <button class="default-button" >Create own page</button>
             </div>
         </div>
@@ -87,6 +87,7 @@
         margin-top: 2vh;
     }
     .input {
+        color: black;
         margin-left: 10px;
         height: 3vh;
         width: 25vw;

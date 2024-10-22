@@ -6,13 +6,12 @@ const trustingData = ref(null);
 const trustingError = ref(null);
 const trustingLoading = ref(true);
 onMounted(async () => {
-  // UPDATE - USER SESSION (ID)
-  const usersResult = await getTrusted(2);
+  const usersResult = await getTrusted(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
   userData.value = usersResult.data.value;
   userError.value = usersResult.error.value;
   userLoading.value = usersResult.loading.value;
   
-  const trustingResult = await getTrusting(1);
+  const trustingResult = await getTrusting(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
   trustingData.value = trustingResult.data.value;
   trustingError.value = trustingResult.error.value;
   trustingLoading.value = trustingResult.loading.value;

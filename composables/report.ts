@@ -1,5 +1,5 @@
 export const report = async (userId) => {
-    const trustedId = 1; // Ustaw trustedId na odpowiednią wartość
+    const trustedId = JSON.parse(sessionStorage.getItem('userData').toString())[0].id; 
     try {
       const response = await $fetch('/api/report', {
         method: 'POST',

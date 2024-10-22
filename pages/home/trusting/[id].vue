@@ -1,62 +1,52 @@
 <script setup lang="ts">
-const { id } = useRoute().params;
+  const { id } = useRoute().params;
+  const showConfirm = ref(false);
 
-definePageMeta({
-  layout: 'withsidebar',
-  validate: async (route) => {
-    return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
+  definePageMeta({
+    layout: 'withsidebar',
+    validate: async (route) => {
+      return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
     }
-})
-const Confirm = () => {
-  report(id)
-};
-const Report = () => {
-  report(id)
-};
+  })
 
+  const reportData = ref(null);
+  const reportError = ref(null);
+  const reportLoading = ref(true);
 
-const reportData = ref(null);
-const reportError = ref(null);
-const reportLoading = ref(true);
-
-// Wywołanie API na onMounted
-onMounted(async () => {
-  try {
-    const reportResult = await checkReport(id);
-    
-    reportData.value = reportResult.data;
-    reportError.value = reportResult.error;
-  } catch (err) {
-    reportError.value = err.message;
-  } finally {
-    reportLoading.value = false;
-  }
-});
+  // Wywołanie API na onMounted
+  onMounted(async () => {
+    try {
+      const reportResult = await checkReport(id);
+      
+      reportData.value = reportResult.data;
+      reportError.value = reportResult.error;
+    } catch (err) {
+      reportError.value = err.message;
+    } finally {
+      reportLoading.value = false;
+    }
+  });
 
 </script>
 
 <template>
   <div v-if="reportLoading">Ładowanie danych...</div>
-<div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
-<div v-else-if="reportData && reportData.value > 0" class="popup-container">
-  <div class="popup-content">
-    <p class="description">Ktoś zgłosił śmierć tego użytkownika, kliknij czerwony przycisk, aby potwierdzić:</p>
-    <button class="red-button" @click="Confirm">Potwierdź</button>
-  </div>
-</div>
-<div v-else class="popup-container">
-  <div class="popup-content">
-    <p class="description">Na razie nikt nie zgłosił śmierci tego użytkownika. Jeśli chcesz to zrobić, kliknij przycisk:</p>
-    <button class="red-button" @click="Report">Zgłoś</button>
-  </div>
-</div>
-
-
-  
-
-
-
+    <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
+    <div v-else-if="reportData && reportData.value > 0" class="popup-container">
+      <div class="popup-content">
+        <p class="description">Ktoś zgłosił śmierć tego użytkownika, kliknij czerwony przycisk, aby potwierdzić:</p>
+        <button class="red-button" @click="showConfirm = !showConfirm" reportType="0">Potwierdź</button>
+      </div>
+    </div>
+    <div v-else class="popup-container">
+      <div class="popup-content">
+        <p class="description">Na razie nikt nie zgłosił śmierci tego użytkownika. Jeśli chcesz to zrobić, kliknij przycisk:</p>
+        <button class="red-button" @click="showConfirm=!showConfirm">Zgłoś</button>
+      </div>
+    </div>
   <div>
+
+  <ReportDeath v-show="showConfirm" @close-modal="showConfirm=false"/>
     
   </div>
 </template>

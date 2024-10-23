@@ -8,10 +8,15 @@
       return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
     }
   })
-
+  
+  const name = ref('')
   const reportData = ref(null);
   const reportError = ref(null);
   const reportLoading = ref(true);
+
+  const confirmTimerLabel = ref('')
+  const confirmWaitingTime = ref(10)
+  const confirm_isActive = ref(false)
 
   // Wywołanie API na onMounted
   onMounted(async () => {
@@ -25,29 +30,73 @@
     } finally {
       reportLoading.value = false;
     }
+    const firstName = JSON.parse(sessionStorage.getItem('trusting').toString()).first_name
+    const lastName = JSON.parse(sessionStorage.getItem('trusting').toString()).last_name
+    if (firstName!==null && lastName!==null) { name.value = firstName + " " + lastName }
+    else { name.value = 'name surname' }
+
+    confirmWaitingTime.value = 10; 
+    countDownConfirm()
   });
 
+  const countDownConfirm = () => {
+    setInterval( function() {
+      if (confirmWaitingTime.value >= 0) {
+        if (confirmWaitingTime.value >= 10) {
+          var minutes = parseInt((confirmWaitingTime.value/60).toString(), 10).toString()
+          var seconds = parseInt((confirmWaitingTime.value%60).toString(), 10).toString()
+
+          if (parseInt(minutes) < 10) { minutes = '0' + minutes }
+          if (parseInt(seconds) < 10) { seconds = '0' + seconds }
+
+          confirmTimerLabel.value = minutes + ":" + seconds
+        }
+        else {
+          confirmTimerLabel.value = "00:0" + confirmWaitingTime.value
+        }
+        confirmWaitingTime.value--
+      }
+
+      if (confirmWaitingTime.value == -1) {
+        confirm_isActive.value = true
+      }
+    }, 1000)
+  }
 </script>
 
 <template>
-  <div v-if="reportLoading">Ładowanie danych...</div>
-    <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
-    <div v-else-if="reportData && reportData.value > 0" class="popup-container">
-      <div class="popup-content">
-        <p class="description">Ktoś zgłosił śmierć tego użytkownika, kliknij czerwony przycisk, aby potwierdzić:</p>
-        <button class="red-button" @click="showConfirm = !showConfirm" reportType="0">Potwierdź</button>
-      </div>
+  <div v-if="reportLoading">Loading...</div>
+  <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
+  <div v-else-if="reportData && reportData.value > 0" class="popup-container">
+    <div class="popup-content">
+      <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
+      <button class="red-button" @click="showConfirm = !showConfirm" reportType="0">Confirm</button>
     </div>
-    <div v-else class="popup-container">
-      <div class="popup-content">
-        <p class="description">Na razie nikt nie zgłosił śmierci tego użytkownika. Jeśli chcesz to zrobić, kliknij przycisk:</p>
-        <button class="red-button" @click="showConfirm=!showConfirm">Zgłoś</button>
-      </div>
+  </div>
+  <div v-else class="popup-container">
+    <div class="popup-content">
+      <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
+      <button class="red-button" @click="{confirmWaitingTime=10; showConfirm=!showConfirm;}">Report</button>
     </div>
-  <div>
+  </div>
 
-  <ReportDeath v-show="showConfirm" @close-modal="showConfirm=false"/>
-    
+  <div>
+    <div v-show="showConfirm" class="modal-overlay" @click="showConfirm=false">
+      <div class="modal" @click.stop>
+        <div class="close-div">
+          <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm=false"/>
+        </div>
+        <div class="text-div">
+          <text>Are you sure you want to report {{ name }}'s death?</text>
+        </div>
+        <div class="button-div">
+          <button :disabled="!confirm_isActive" class="red-button" @click="{report(id); showConfirm=false}">Confirm</button>
+        </div>
+        <div class="button-div">
+          <text>{{ confirmTimerLabel }}</text>
+        </div>
+      </div>
+      </div>
   </div>
 </template>
 
@@ -88,14 +137,59 @@
   transition: background-color 0.3s ease;
   margin-right: 10px;
 }
-
 .red-button:hover {
   background-color: #b71c1c; /* Jeszcze ciemniejsza czerwień na hover */
 }
-
 .red-button:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.6); /* Dodanie delikatnej obwódki */
+}
+.red-button:disabled {
+  background-color: #c06262;
+  cursor: auto;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #000000da;
+}
+
+.modal {
+  direction: rtl;
+  display: grid;
+  text-align: center;
+  justify-content: center;
+  background-color: gray;
+  height: 20vh;
+  width: 40vw;
+  margin-top: 10%;
+  border: 5px solid black;
+  border-radius: 20px;
+}
+
+.text-div {
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.close-div {
+  position: fixed;
+  margin: 1rem;
+}
+.close {
+  width: 2rem;
+  cursor: pointer;
+}
+
+.button-div {
+  margin-top: 1vh;
+  margin-bottom: 1vh;
 }
 
 </style>

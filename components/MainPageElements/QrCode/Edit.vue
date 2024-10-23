@@ -11,8 +11,9 @@
             const response = await axios.post('/api/qrCode/getQrCode', {
                 id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
             });
-            
-            linkValue.value = response.data.data[0].link
+            if (response.data.success) {
+                linkValue.value = response.data.data[0].link
+            }
         } catch (error) {
             console.error('Error:', error);
         }

@@ -17,11 +17,12 @@ export default defineEventHandler(async (event) => {
     pool = await sql.connect(config);
     const result = await pool.request()
       .input('userId', sql.Int, userId)
-      .query(`SELECT * FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=${userId})`);
+      .query(`SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=${userId})`);
     return {
       success: true,
       data: result.recordset,
     };
+    
   } catch (error) {
     console.error('Database error:', error);
     return {

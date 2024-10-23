@@ -57,7 +57,6 @@
               email: email.value,
             });
             const data = response_userData.data.data
-            console.log(data.email)
             sessionStorage.setItem('userData', JSON.stringify(data))
             
           } catch (error) {
@@ -65,6 +64,7 @@
           }
           
           alertMessage.value = ""
+          // sprawdza czy zweryfikowany: jeśli tak -home, jeśli nie -verification
           navigateTo({ path: 'home'})
         }
         else {

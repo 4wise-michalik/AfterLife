@@ -1,28 +1,41 @@
 <script setup>
-import { ref } from 'vue';
+    // Definicja właściwości komponentu
+    const props = defineProps({
+        color: {
+            type: String,
+            default: 'white',
+        }
+    });
 
-// Definicja właściwości komponentu
-const props = defineProps({
-    name: String,
-    link: String,
-    color: {
-        type: String,
-        default: 'white',
-    }
-});
+    const name = ref('')
 
-const sidebarOpen = ref(false);
-const showAccountInfo = ref(false);
+    const sidebarOpen = ref(false);
+    const showAccountInfo = ref(false);
 
-// Funkcja do przełączania sidebaru
-const toggleSidebar = () => {
-    sidebarOpen.value = !sidebarOpen.value;
-};
+    onMounted( () => {
+        const firstName = JSON.parse(sessionStorage.getItem('userData').toString())[0].first_name
+        const lastName = JSON.parse(sessionStorage.getItem('userData').toString())[0].last_name
+        if (firstName!==null && lastName!==null) { name.value = firstName + " " + lastName }
+        else { name.value = 'name surname' }
+    })
 
-// Funkcja do przełączania informacji o koncie
-const toggleAccountInfo = () => {
-    showAccountInfo.value = !showAccountInfo.value;
-};
+    // Funkcja do przełączania sidebaru
+    const toggleSidebar = () => {
+        sidebarOpen.value = !sidebarOpen.value;
+    };
+
+    // Funkcja do przełączania informacji o koncie
+    const toggleAccountInfo = () => {
+        showAccountInfo.value = !showAccountInfo.value;
+    };
+
+    // Funkcja do wylogowywania
+    const logOut = () => {
+        sessionStorage.removeItem('userData') // usuwa informacje o userze
+        sessionStorage.removeItem('trusted') // usuwa informacje o zaufanych
+        sessionStorage.removeItem('trusting') // usuwa informacje o ufających 
+        navigateTo('/')
+    };
 </script>
 
 <template>
@@ -33,14 +46,12 @@ const toggleAccountInfo = () => {
             </nav>
             <div class="account-section">
                 <div v-if="showAccountInfo" class="account-info">
-                    <p>Username: {{ props.name }}</p>
-                    <p>Email: {{ props.link }}</p>
                     <NuxtLink to="/home/settings" class="account-info-buttons">Settings</NuxtLink>
                     <NuxtLink to="/home/help" class="account-info-buttons">Help</NuxtLink>
-                    <button @click="navigateTo('/')" class="account-info-buttons">Log Out</button>
+                    <button @click="logOut" class="account-info-buttons">Log Out</button>
                 </div>
                 <button @click="toggleAccountInfo" class="account-button" aria-label="Account Info">
-                    Account
+                    {{ name }}
                 </button>
                 
             </div>

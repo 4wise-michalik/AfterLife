@@ -1,21 +1,26 @@
 <script setup>
-const userData = ref(null);
-const userError = ref(null);
-const userLoading = ref(true);
-const trustingData = ref(null);
-const trustingError = ref(null);
-const trustingLoading = ref(true);
-onMounted(async () => {
-  const usersResult = await getTrusted(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
-  userData.value = usersResult.data.value;
-  userError.value = usersResult.error.value;
-  userLoading.value = usersResult.loading.value;
-  
-  const trustingResult = await getTrusting(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
-  trustingData.value = trustingResult.data.value;
-  trustingError.value = trustingResult.error.value;
-  trustingLoading.value = trustingResult.loading.value;
-});
+  const userData = ref(null);
+  const userError = ref(null);
+  const userLoading = ref(true);
+  const trustingData = ref(null);
+  const trustingError = ref(null);
+  const trustingLoading = ref(true);
+
+  onMounted(async () => {
+    const usersResult = await getTrusted(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
+    userData.value = usersResult.data.value;
+    userError.value = usersResult.error.value;
+    userLoading.value = usersResult.loading.value;
+    
+    const trustingResult = await getTrusting(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
+    trustingData.value = trustingResult.data.value;
+    trustingError.value = trustingResult.error.value;
+    trustingLoading.value = trustingResult.loading.value;
+
+    // zapisuje info w sesji
+    sessionStorage.setItem('trusted', JSON.stringify(userData.value[0]))
+    sessionStorage.setItem('trusting', JSON.stringify(trustingData.value[0]))
+  });
 </script>
 
 <template>

@@ -23,8 +23,9 @@
             const response = await axios.post('/api/qrCode/getQrCode', {
                 id: JSON.parse(sessionStorage.getItem('userData').toString())[0].id,
             });
-            
-            usersPage.value = response.data.data[0].link
+            if (response.data.success) {
+                usersPage.value = response.data.data[0].link
+            }
         } catch (error) {
             console.error('Error:', error);
         }
@@ -77,12 +78,12 @@
 
 <template>
     <container>
-        <div style="display: inline-flex">
+        <div class="qr-code-div">
             <div v-if="usersPage !== ''" ref="capture">
-                <qrcode-vue :value="usersPage" size="15rem" level="H" render-as="svg" style="margin: 1rem;"/>
+                <qrcode-vue :value="usersPage" size="15rem" level="H" render-as="svg" class="qr-code"/>
             </div>
             <div v-if="usersPage === ''" ref="capture">
-                <qrcode-vue value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size="15rem" level="H" render-as="svg" style="margin: 1rem;"/>
+                <qrcode-vue value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size="15rem" level="H" render-as="svg" class="qr-code"/>
             </div>
             <div class="qr-code-side-bar">
                 <img class="qr-code-side-element" src="~/assets/icons/zoom.svg" @click="zoomQrCode"/>
@@ -97,12 +98,20 @@
 </template>
 
 <style scoped>
+    .qr-code-div {
+        display: flex; 
+        position:relative;
+    }
+
+    .qr-code {
+        margin: 1rem;
+    }
+
     .qr-code-side-bar {
+        position: absolute;
         display: grid;
-        align-items: center;
-        border-left: 2px solid black;
         padding: 1rem;
-        color: black;
+        right: 0;
     }
     
     .qr-code-side-element, .qr-code-side-element:hover {

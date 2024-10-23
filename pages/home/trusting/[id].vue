@@ -1,6 +1,7 @@
 <script setup lang="ts">
   const { id } = useRoute().params;
   const showConfirm = ref(false);
+  const openPopupDisabled = ref(false);
 
   definePageMeta({
     layout: 'withsidebar',
@@ -10,7 +11,8 @@
   })
   
   const name = ref('')
-  const reportData = ref(null);
+  const reportDataTotal = ref(0);
+  const reportDataReported = ref(false);
   const reportError = ref(null);
   const reportLoading = ref(true);
 
@@ -21,10 +23,19 @@
   // Wywołanie API na onMounted
   onMounted(async () => {
     try {
-      const reportResult = await checkReport(id);
-      
-      reportData.value = reportResult.data;
+      const userId = JSON.parse(sessionStorage.getItem('userData').toString())[0].id
+      const reportResult = await checkReport(id, userId);
+
+      reportDataTotal.value = reportResult.data.value.total;
+      reportDataReported.value = reportResult.data.value.reported;
       reportError.value = reportResult.error;
+
+      // if (reportDataReported.value === false) {
+      //   confirmWaitingTime.value = 10; 
+      // } else {
+      //   openPopupDisabled.value = true
+      // }
+
     } catch (err) {
       reportError.value = err.message;
     } finally {
@@ -62,21 +73,33 @@
       }
     }, 1000)
   }
+
+  function onDeathConfirm() {
+    report(id); 
+    showConfirm.value=false;
+    window.location.reload()
+  }
 </script>
 
 <template>
   <div v-if="reportLoading">Loading...</div>
   <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
-  <div v-else-if="reportData && reportData.value > 0" class="popup-container">
+  <div v-else-if="reportDataTotal > 0  &&  reportDataReported == false" class="popup-container">
     <div class="popup-content">
       <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
-      <button class="red-button" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}" reportType="0">Confirm</button>
+      <button class="red-button" :disabled="openPopupDisabled" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}" reportType="0">Confirm</button>
+    </div>
+  </div>
+  <div v-else-if="reportDataReported == true" class="popup-container">
+    <div class="popup-content">
+      <p class="description">You already reported {{ name }}'s death</p>
+      <button class="red-button" disabled="true" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}">Report</button>
     </div>
   </div>
   <div v-else class="popup-container">
     <div class="popup-content">
       <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
-      <button class="red-button" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}">Report</button>
+      <button class="red-button" :disabled="openPopupDisabled" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}">Report</button>
     </div>
   </div>
 
@@ -90,7 +113,7 @@
           <text>Are you sure you want to report {{ name }}'s death?</text>
         </div>
         <div class="button-div">
-          <button :disabled="!confirm_isActive" class="red-button" @click="{report(id); showConfirm=false}">Confirm</button>
+          <button :disabled="!confirm_isActive" class="red-button" @click="onDeathConfirm()">Confirm</button>
         </div>
         <div class="button-div">
           <text>{{ confirmTimerLabel }}</text>
@@ -174,6 +197,7 @@
 }
 
 .text-div {
+  direction: ltr;
   margin-top: 1vh;
   margin-bottom: 1vh;
 }

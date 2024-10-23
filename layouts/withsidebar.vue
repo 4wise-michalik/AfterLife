@@ -19,8 +19,6 @@ onMounted(async () => {
     usersResult.value.trusted = response_trusted.data.value;
     usersResult.value.trusting = response_trusting.data.value;
   }
-  
-  //console.log(usersResult.value.trusting); // Prawidłowy dostęp do wartości
 });
 </script>
 
@@ -49,7 +47,7 @@ onMounted(async () => {
     </div>
 
     <footer>
-      <p>© 2024 Your Company. All rights reserved.</p>
+      <p>© 2024 4WISE GROUP. All rights reserved.</p>
     </footer>
   </div>
 </template>
@@ -58,13 +56,13 @@ onMounted(async () => {
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Pozwól kontenerowi na elastyczne rozszerzanie */
+  min-height: 100vh;
   background-color: #4d4d4d;
   width: 100%;
 }
 .body {
   margin-left: 230px;
-  flex: 1; /* Pozwól na zajmowanie dostępnej przestrzeni */
+  flex: 1;
   padding: 2rem;
 }
 
@@ -73,7 +71,7 @@ footer {
   padding: 1rem;
   text-align: center;
   font-size: 16px;
-  color: aqua;
+  color: rgb(207, 48, 255);
 }
 
 @media (min-width: 1px) {

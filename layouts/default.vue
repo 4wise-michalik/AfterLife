@@ -14,7 +14,7 @@
   </div>
 
   <footer>
-      <p>© 2024 AfterLife. Wszelkie prawa zastrzeżone.</p>
+      <p>© 2024 4WISE GROUP. Wszelkie prawa zastrzeżone.</p>
     </footer>
 </template>
   

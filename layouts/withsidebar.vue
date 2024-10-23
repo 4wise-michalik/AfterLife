@@ -11,13 +11,11 @@ onMounted(async () => {
   if (storedTrustedResults && storedTrustingResults) {
     usersResult.value.trusted = JSON.parse(storedTrustedResults);
     usersResult.value.trusting = JSON.parse(storedTrustingResults);
-  } else {
+  } else {    
     const response_trusted = await getTrusted(userData.value[0].id);
     const response_trusting = await getTrusting(userData.value[0].id);
-    
-    sessionStorage.setItem('trusted', JSON.stringify(userData.value[0]))
-    sessionStorage.setItem('trusting', JSON.stringify(trustingData.value[0]))
-    
+    sessionStorage.setItem('trusted', JSON.stringify(response_trusted.data.value[0]))
+    sessionStorage.setItem('trusting', JSON.stringify(response_trusting.data.value[0]))
     usersResult.value.trusted = response_trusted.data.value;
     usersResult.value.trusting = response_trusting.data.value;
   }

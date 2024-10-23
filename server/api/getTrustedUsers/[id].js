@@ -18,10 +18,17 @@ export default defineEventHandler(async (event) => {
     const result = await pool.request()
       .input('userId', sql.Int, userId)
       .query(`SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=${userId})`);
-    return {
-      success: true,
-      data: result.recordset,
-    };
+    if (result.rowsAffected != 0) {
+      return {
+        success: true,
+        data: result.recordset,
+      };
+    } else {
+      return {
+        success: true,
+        data: [],
+      };
+    }
     
   } catch (error) {
     console.error('Database error:', error);

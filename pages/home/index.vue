@@ -1,8 +1,3 @@
-      <script setup lang="ts">
-      definePageMeta({
-        layout: 'withsidebar'
-      })
-      </script>
 <script setup lang="ts">
   definePageMeta({
     layout: 'withsidebar' // Przypisuje layout tylko do tej strony
@@ -24,9 +19,6 @@
     </section>
 
     <section class="bg-purple-800 text-white p-8 rounded-lg shadow-lg">
-      <NuxtLink to="/home" class="text-xl font-semibold mb-4 hover:text-purple-300">Connected platforms</NuxtLink>
-      <p><NuxtLink to="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Youtube</NuxtLink></p>
-      <p><NuxtLink to="https://x.com/realdonaldtrump" >X (Twitter)</NuxtLink></p>
       <NuxtLink to="/platforms" class="text-xl font-semibold mb-4 hover:text-purple-300">Connected platforms</NuxtLink>
       <div class="platforms-div">
         <PlatformButton name="Instagram" link="/platforms/instagram" :backgroundImagePath="instagramBackground" iconPath="simple-icons:instagram"/>

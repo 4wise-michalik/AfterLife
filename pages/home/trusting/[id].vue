@@ -70,13 +70,13 @@
   <div v-else-if="reportData && reportData.value > 0" class="popup-container">
     <div class="popup-content">
       <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
-      <button class="red-button" @click="showConfirm = !showConfirm" reportType="0">Confirm</button>
+      <button class="red-button" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}" reportType="0">Confirm</button>
     </div>
   </div>
   <div v-else class="popup-container">
     <div class="popup-content">
       <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
-      <button class="red-button" @click="{confirmWaitingTime=10; showConfirm=!showConfirm;}">Report</button>
+      <button class="red-button" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}">Report</button>
     </div>
   </div>
 

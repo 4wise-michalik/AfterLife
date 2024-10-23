@@ -1,23 +1,19 @@
 <script setup>
-const userData = ref(null);
-const userError = ref(null);
-const userLoading = ref(true);
-const trustingData = ref(null);
-const trustingError = ref(null);
-const trustingLoading = ref(true);
 
 const usersResult = ref({ trusted: null, trusting: null }); 
 
 onMounted(async () => {
+  const userData = ref(JSON.parse(sessionStorage.getItem('userData')))
+
   const storedTrustedResults = sessionStorage.getItem('trusted_results');
   const storedTrustingResults = sessionStorage.getItem('trusting_results');
-  
+
   if (storedTrustedResults && storedTrustingResults) {
     usersResult.value.trusted = JSON.parse(storedTrustedResults);
     usersResult.value.trusting = JSON.parse(storedTrustingResults);
   } else {
-    const response_trusted = await getTrusted(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
-    const response_trusting = await getTrusting(JSON.parse(sessionStorage.getItem('userData').toString())[0].id);
+    const response_trusted = await getTrusted(userData.value[0].id);
+    const response_trusting = await getTrusting(userData.value[0].id);
     
     sessionStorage.setItem('trusted_results', JSON.stringify(response_trusted.data.value));
     sessionStorage.setItem('trusting_results', JSON.stringify(response_trusting.data.value));
@@ -26,7 +22,7 @@ onMounted(async () => {
     usersResult.value.trusting = response_trusting.data.value;
   }
   
-  console.log(usersResult.value.trusting); // Prawidłowy dostęp do wartości
+  //console.log(usersResult.value.trusting); // Prawidłowy dostęp do wartości
 });
 
 </script>

@@ -5,7 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-  <div>INSTAGRAM</div>
+  <div>FACEBOOK</div>
 </template>
 
 <style scoped></style>

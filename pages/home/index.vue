@@ -2,16 +2,41 @@
 definePageMeta({
   layout: "withsidebar", // Przypisuje layout tylko do tej strony
 });
+import axios from "axios";
 import instagramBackground from "../assets/backgrounds/instagram_background.png";
 import facebookBackground from "../assets/backgrounds/facebook_background.png";
-// import twitterBackground from '../assets/backgrounds/twitter_background.png'
+
+const connectedPlatforms = ref([]);
+
+onMounted(() => {
+  getPlatforms();
+});
+
+async function getPlatforms() {
+  try {
+    const response = await axios.post("/api/platforms/getUserPlatforms", {
+      userId: JSON.parse(sessionStorage.getItem("userData").toString())[0].id,
+    });
+    if (response.data.success) {
+      connectedPlatforms.value = response.data.data;
+    }
+
+    // for (const platform in connectedPlatforms.value) {
+    //   console.log(connectedPlatforms.value[platform].platform_name);
+    // }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 </script>
 
 <template>
   <div
     class="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
   >
-    <section class="bg-purple-900 text-white p-8 rounded-lg shadow-lg">
+    <section
+      class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
       <h3 class="text-xl font-semibold mb-4">My Afterlife data</h3>
       <p class="text-sm">Connected platforms: 3</p>
       <p class="text-sm">Total followers: 54.3k</p>
@@ -19,39 +44,32 @@ import facebookBackground from "../assets/backgrounds/facebook_background.png";
       <p class="text-sm">Account removals: 1</p>
     </section>
 
-    <section class="bg-purple-800 text-white p-8 rounded-lg shadow-lg">
-      <NuxtLink
-        to="/platforms"
-        class="text-xl font-semibold mb-4 hover:text-purple-300"
-        >Connected platforms</NuxtLink
+    <section
+      class="bg-purple-800 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
+      <Text class="text-xl font-semibold mb-4 hover:text-purple-300"
+        >Connected platforms</Text
       >
       <div class="platforms-div">
         <MainPageElementsPlatformButton
-          name="Instagram"
-          link="/platforms/instagram"
-          :backgroundImagePath="instagramBackground"
-          iconPath="simple-icons:instagram"
+          v-for="platform in connectedPlatforms"
+          :name="platform.platform_name"
         />
-        <MainPageElementsPlatformButton
-          name="Facebook"
-          link="/platforms/facebook"
-          :backgroundImagePath="facebookBackground"
-          iconPath="bi:facebook"
-        />
-        <MainPageElementsPlatformButton
-          name="Twitter"
-          link="/platforms/twitter"
-          backgroundColor="#000000"
-          iconPath="prime:twitter"
-        />
+        <div class="add-platform-div">
+          <Icon class="icon" name="tabler:circle-plus" size="25px" />
+        </div>
       </div>
     </section>
 
-    <section class="bg-purple-700 text-gray-200 p-8 rounded-lg shadow-lg">
+    <section
+      class="bg-purple-700 text-gray-200 p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
       <MainPageElementsQrCode />
     </section>
 
-    <section class="bg-purple-600 text-white p-8 rounded-lg shadow-lg">
+    <section
+      class="bg-purple-600 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
       <NuxtLink
         to="/home/posts"
         class="text-xl font-semibold mb-4 hover:text-purple-200"
@@ -60,7 +78,9 @@ import facebookBackground from "../assets/backgrounds/facebook_background.png";
       <p class="text-sm">This is the content of Section 1.</p>
     </section>
 
-    <section class="bg-purple-500 text-white p-8 rounded-lg shadow-lg">
+    <section
+      class="bg-purple-500 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
       <NuxtLink
         to="/home"
         class="text-xl font-semibold mb-4 hover:text-purple-200"
@@ -69,7 +89,9 @@ import facebookBackground from "../assets/backgrounds/facebook_background.png";
       <p class="text-sm">This is the content of Section 1.</p>
     </section>
 
-    <section class="bg-purple-400 text-white p-8 rounded-lg shadow-lg">
+    <section
+      class="bg-purple-400 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
       <NuxtLink
         to="/home"
         class="text-xl font-semibold mb-4 hover:text-purple-200"
@@ -83,5 +105,25 @@ import facebookBackground from "../assets/backgrounds/facebook_background.png";
 <style scoped>
 .platforms-div {
   display: inline-block;
+}
+
+.add-platform-div {
+  float: left;
+  border-radius: 15px;
+  padding: 5px;
+  padding-left: 2vw;
+  padding-right: 2vw;
+  margin-top: 1vh;
+  margin-right: 1vw;
+  border-color: "white";
+  border-width: 2px;
+}
+.add-platform-div:hover {
+  cursor: pointer;
+  filter: brightness(90%);
+}
+
+.icon {
+  float: left;
 }
 </style>

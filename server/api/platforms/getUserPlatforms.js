@@ -14,12 +14,14 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event); // Read the request body
   let pool;
 
+  console.log(body.userId);
+
   try {
     pool = await sql.connect(config);
     const result = await pool
       .request()
       .query(
-        `SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE email='${body.email}';`
+        `SELECT user_id, platform_id, (SELECT name FROM platforms WHERE platform_id=id) as platform_name FROM connected_platforms WHERE user_id=${body.userId};`
       );
     return {
       success: true,

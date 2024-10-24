@@ -15,12 +15,12 @@ export default defineEventHandler(async (event) => {
   let pool;
   try {
     pool = await sql.connect(config);
-    const result = await pool
-      .request()
-      .input("userId", sql.Int, userId)
-      .query(
-        `SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE id IN (SELECT user_id FROM trusted WHERE trusted_id=${userId})`
-      );
+    const result = await pool.request().input("userId", sql.Int, userId).query(`
+        SELECT p.*, pt.*
+        FROM posts p
+        LEFT JOIN platforms pt ON p.platform_id = pt.id
+        WHERE p.user_id = ${userId}
+      `);
     if (result.rowsAffected != 0) {
       return {
         success: true,

@@ -1,9 +1,9 @@
-export const getTrusting = async (userId) => {
+export const getPosts = async (userId) => {
   const data = ref(null);
   const error = ref(null);
   const loading = ref(true);
   try {
-    const response = await $fetch(`/api/getTrustingUsers/${userId}`);
+    const response = await $fetch(`/api/getPosts/${userId}`);
     if (response.success) {
       data.value = response.data;
     } else {

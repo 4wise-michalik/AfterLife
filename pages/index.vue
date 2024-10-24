@@ -1,24 +1,33 @@
 <script setup lang="ts">
-
-  const route = useRoute()
-  
-  const signIpText = ref('sign in')
+const route = useRoute();
+const signIpText = ref("sign in");
+const isLogged = ref(false);
+onMounted(() => {
+  if (sessionStorage.getItem("userData")) {
+    const userData = ref(
+      JSON.parse(sessionStorage.getItem("userData") || "{}")
+    );
+    if (userData.value[0].id) {
+      navigateTo("/home");
+    }
+  }
+});
 </script>
 
 <template>
-  <container >
+  <container>
     <div>
-      <text class="greating-text">
-        Witaj wędrowcze
-      </text>
+      <text class="greating-text"> Witaj wędrowcze </text>
 
-      <button class="default-button" @click="navigateTo('/login')">{{ signIpText }}</button>
+      <button class="default-button" @click="navigateTo('/login')">
+        {{ signIpText }}
+      </button>
     </div>
   </container>
 </template>
 
 <style>
-  .greating-text {
-    font-size: 50px;
-  }
+.greating-text {
+  font-size: 50px;
+}
 </style>

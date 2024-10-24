@@ -1,128 +1,208 @@
 <script setup lang="ts">
-  const { id } = useRoute().params;
-  const showConfirm = ref(false);
-  const openPopupDisabled = ref(false);
+const { id } = useRoute().params;
+const showConfirm = ref(false);
+const openPopupDisabled = ref(false);
 
-  definePageMeta({
-    layout: 'withsidebar',
-    validate: async (route) => {
-      return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
-    }
-  })
-  
-  const name = ref('')
-  const reportDataTotal = ref(0);
-  const reportDataReported = ref(false);
-  const reportError = ref(null);
-  const reportLoading = ref(true);
+definePageMeta({
+  layout: "withsidebar",
+  validate: async (route) => {
+    return typeof route.params.id === "string" && /^\d+$/.test(route.params.id);
+  },
+});
 
-  const confirmTimerLabel = ref('')
-  const confirmWaitingTime = ref(10)
-  const confirm_isActive = ref(false)
+const name = ref("");
+const reportDataTotal = ref(0);
+const reportDataReported = ref(false);
+const reportError = ref(null);
+const reportLoading = ref(true);
 
-  // Wywołanie API na onMounted
-  onMounted(async () => {
-    try {
-      const userId = JSON.parse(sessionStorage.getItem('userData').toString())[0].id
-      const reportResult = await checkReport(id, userId);
+const confirmTimerLabel = ref("");
+const confirmWaitingTime = ref(10);
+const confirm_isActive = ref(false);
 
-      reportDataTotal.value = reportResult.data.value.total;
-      reportDataReported.value = reportResult.data.value.reported;
-      reportError.value = reportResult.error;
+// Wywołanie API na onMounted
+onMounted(async () => {
+  try {
+    const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+      .id;
+    const reportResult = await checkReport(id, userId);
 
-      // if (reportDataReported.value === false) {
-      //   confirmWaitingTime.value = 10; 
-      // } else {
-      //   openPopupDisabled.value = true
-      // }
+    reportDataTotal.value = reportResult.data.value.total;
+    reportDataReported.value = reportResult.data.value.reported;
+    reportError.value = reportResult.error;
 
-    } catch (err) {
-      reportError.value = err.message;
-    } finally {
-      reportLoading.value = false;
-    }
-    const firstName = JSON.parse(sessionStorage.getItem('trusting').toString()).first_name
-    const lastName = JSON.parse(sessionStorage.getItem('trusting').toString()).last_name
-    if (firstName!==null && lastName!==null) { name.value = firstName + " " + lastName }
-    else { name.value = 'name surname' }
-
-    confirmWaitingTime.value = 10; 
-    countDownConfirm()
-  });
-
-  const countDownConfirm = () => {
-    setInterval( function() {
-      if (confirmWaitingTime.value >= 0) {
-        if (confirmWaitingTime.value >= 10) {
-          var minutes = parseInt((confirmWaitingTime.value/60).toString(), 10).toString()
-          var seconds = parseInt((confirmWaitingTime.value%60).toString(), 10).toString()
-
-          if (parseInt(minutes) < 10) { minutes = '0' + minutes }
-          if (parseInt(seconds) < 10) { seconds = '0' + seconds }
-
-          confirmTimerLabel.value = minutes + ":" + seconds
-        }
-        else {
-          confirmTimerLabel.value = "00:0" + confirmWaitingTime.value
-        }
-        confirmWaitingTime.value--
-      }
-
-      if (confirmWaitingTime.value == -1) {
-        confirm_isActive.value = true
-      }
-    }, 1000)
+    // if (reportDataReported.value === false) {
+    //   confirmWaitingTime.value = 10;
+    // } else {
+    //   openPopupDisabled.value = true
+    // }
+  } catch (err) {
+    reportError.value = err.message;
+  } finally {
+    reportLoading.value = false;
+  }
+  const firstName = JSON.parse(
+    sessionStorage.getItem("trusting").toString()
+  ).first_name;
+  const lastName = JSON.parse(
+    sessionStorage.getItem("trusting").toString()
+  ).last_name;
+  if (firstName !== null && lastName !== null) {
+    name.value = firstName + " " + lastName;
+  } else {
+    name.value = "name surname";
   }
 
-  function onDeathConfirm() {
-    report(id); 
-    showConfirm.value=false;
-    window.location.reload()
-  }
+  confirmWaitingTime.value = 10;
+  countDownConfirm();
+});
+
+const countDownConfirm = () => {
+  setInterval(function () {
+    if (confirmWaitingTime.value >= 0) {
+      if (confirmWaitingTime.value >= 10) {
+        var minutes = parseInt(
+          (confirmWaitingTime.value / 60).toString(),
+          10
+        ).toString();
+        var seconds = parseInt(
+          (confirmWaitingTime.value % 60).toString(),
+          10
+        ).toString();
+
+        if (parseInt(minutes) < 10) {
+          minutes = "0" + minutes;
+        }
+        if (parseInt(seconds) < 10) {
+          seconds = "0" + seconds;
+        }
+
+        confirmTimerLabel.value = minutes + ":" + seconds;
+      } else {
+        confirmTimerLabel.value = "00:0" + confirmWaitingTime.value;
+      }
+      confirmWaitingTime.value--;
+    }
+
+    if (confirmWaitingTime.value == -1) {
+      confirm_isActive.value = true;
+    }
+  }, 1000);
+};
+
+function onDeathConfirm() {
+  report(id);
+  showConfirm.value = false;
+  window.location.reload();
+}
 </script>
 
 <template>
   <div v-if="reportLoading">Loading...</div>
-  <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
-  <div v-else-if="reportDataTotal > 0  &&  reportDataReported == false" class="popup-container">
+  <div v-else-if="reportError && reportError.length > 0">
+    Błąd: {{ reportError }}
+  </div>
+  <div
+    v-else-if="reportDataTotal > 0 && reportDataReported == false"
+    class="popup-container"
+  >
     <div class="popup-content">
-      <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
-      <button class="red-button" :disabled="openPopupDisabled" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}" reportType="0">Confirm</button>
+      <p class="description">
+        There's been a report about {{ name }}'s death. Do you confirm it?
+      </p>
+      <button
+        class="red-button"
+        :disabled="openPopupDisabled"
+        @click="
+          {
+            confirmWaitingTime = 10;
+            confirmTimerLabel = '00:10';
+            confirm_isActive = false;
+            showConfirm = !showConfirm;
+          }
+        "
+        reportType="0"
+      >
+        Confirm
+      </button>
     </div>
   </div>
   <div v-else-if="reportDataReported == true" class="popup-container">
     <div class="popup-content">
       <p class="description">You already reported {{ name }}'s death</p>
-      <button class="red-button" disabled="true" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}">Report</button>
+      <button
+        class="red-button"
+        disabled="true"
+        @click="
+          {
+            confirmWaitingTime = 10;
+            confirmTimerLabel = '00:10';
+            confirm_isActive = false;
+            showConfirm = !showConfirm;
+          }
+        "
+      >
+        Report
+      </button>
     </div>
   </div>
   <div v-else class="popup-container">
     <div class="popup-content">
-      <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
-      <button class="red-button" :disabled="openPopupDisabled" @click="{confirmWaitingTime=10; confirmTimerLabel='00:10'; confirm_isActive=false; showConfirm=!showConfirm;}">Report</button>
+      <p class="description">
+        There was no report about {{ name }}'s death. Want to do something about
+        it?
+      </p>
+      <button
+        class="red-button"
+        :disabled="openPopupDisabled"
+        @click="
+          {
+            confirmWaitingTime = 10;
+            confirmTimerLabel = '00:10';
+            confirm_isActive = false;
+            showConfirm = !showConfirm;
+          }
+        "
+      >
+        Report
+      </button>
     </div>
   </div>
 
   <div>
-    <div v-show="showConfirm" class="modal-overlay" @click="showConfirm=false">
+    <div
+      v-show="showConfirm"
+      class="modal-overlay"
+      @click="showConfirm = false"
+    >
       <div class="modal" @click.stop>
         <div class="close-div">
-          <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm=false"/>
+          <img
+            class="close"
+            src="~/assets/icons/close.svg"
+            alt=""
+            @click="showConfirm = false"
+          />
         </div>
         <div class="text-div">
           <text>Are you sure you want to report {{ name }}'s death?</text>
         </div>
         <div class="button-div">
-          <button :disabled="!confirm_isActive" class="red-button" @click="onDeathConfirm()">Confirm</button>
+          <button
+            :disabled="!confirm_isActive"
+            class="red-button"
+            @click="onDeathConfirm()"
+          >
+            Confirm
+          </button>
         </div>
         <div class="button-div">
           <text>{{ confirmTimerLabel }}</text>
         </div>
       </div>
-      </div>
+    </div>
   </div>
 </template>
-
 
 <style scoped>
 .popup-container {
@@ -215,5 +295,4 @@
   margin-top: 1vh;
   margin-bottom: 1vh;
 }
-
 </style>

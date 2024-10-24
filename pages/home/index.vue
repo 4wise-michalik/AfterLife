@@ -2,31 +2,18 @@
 definePageMeta({
   layout: "withsidebar", // Przypisuje layout tylko do tej strony
 });
-import axios from "axios";
-import instagramBackground from "../assets/backgrounds/instagram_background.png";
-import facebookBackground from "../assets/backgrounds/facebook_background.png";
 
 const connectedPlatforms = ref([]);
+const showAddPlatform = ref(false);
 
 onMounted(() => {
   getPlatforms();
 });
 
 async function getPlatforms() {
-  try {
-    const response = await axios.post("/api/platforms/getUserPlatforms", {
-      userId: JSON.parse(sessionStorage.getItem("userData").toString())[0].id,
-    });
-    if (response.data.success) {
-      connectedPlatforms.value = response.data.data;
-    }
-
-    // for (const platform in connectedPlatforms.value) {
-    //   console.log(connectedPlatforms.value[platform].platform_name);
-    // }
-  } catch (error) {
-    console.error("Error:", error);
-  }
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
+  connectedPlatforms.value = (await getUserPlatforms(userId)).data;
 }
 </script>
 
@@ -55,7 +42,10 @@ async function getPlatforms() {
           v-for="platform in connectedPlatforms"
           :name="platform.platform_name"
         />
-        <div class="add-platform-div">
+        <div
+          class="add-platform-div"
+          @click="showAddPlatform = !showAddPlatform"
+        >
           <Icon class="icon" name="tabler:circle-plus" size="25px" />
         </div>
       </div>
@@ -100,6 +90,15 @@ async function getPlatforms() {
       <p class="text-sm">This is the content of Section 1.</p>
     </section>
   </div>
+
+  <MainPageElementsAddPlatform
+    v-show="showAddPlatform"
+    @close-modal="
+      {
+        showAddPlatform = false;
+      }
+    "
+  />
 </template>
 
 <style scoped>

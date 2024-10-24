@@ -1,0 +1,157 @@
+<script setup>
+const avaliablePlatforms = ref([]);
+const selectedPlatform = ref();
+const login = ref("");
+const password = ref("");
+
+onMounted(() => {
+  getAvaliablePlatforms();
+});
+
+async function getAvaliablePlatforms() {
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
+  avaliablePlatforms.value = (await getUserAvaliablePlatforms(userId)).data;
+}
+
+async function saveNewPlatformInDataBase() {
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
+  const platformId = selectedPlatform.value.id;
+
+  addUserPlatform(userId, platformId);
+  // próbuje się zalogować do platformy
+  goToNewPlatform();
+}
+
+function goToNewPlatform() {
+  if (selectedPlatform.value.name === "Instagram") {
+    navigateTo("/platforms/instagram");
+  }
+  if (selectedPlatform.value.name === "Facebook") {
+    navigateTo("/platforms/facebook");
+  }
+  if (selectedPlatform.value.name === "Twitter") {
+    navigateTo("/platforms/twitter");
+  }
+}
+</script>
+
+<template>
+  <div class="modal-overlay" @click="$emit('close-modal')">
+    <div class="modal" @click.stop>
+      <div class="close-div">
+        <img
+          class="close"
+          src="~/assets/icons/close.svg"
+          alt=""
+          @click="$emit('close-modal')"
+        />
+      </div>
+
+      <div>
+        <div class="input-div">
+          Choose platform:
+          <select class="platforms-drop-down" v-model="selectedPlatform">
+            <option
+              v-for="platform in avaliablePlatforms"
+              :key="platform"
+              :value="platform"
+            >
+              {{ platform.name }}
+            </option>
+          </select>
+        </div>
+        <div class="input-div">
+          Credentials:
+          <input
+            class="input"
+            id="platform_login"
+            v-model="login"
+            placeholder="login"
+          />
+          <input
+            id="platform_password"
+            class="input"
+            type="password"
+            v-model="password"
+            placeholder="password"
+          />
+        </div>
+        <div class="buttons">
+          <button
+            class="default-button"
+            @click="
+              {
+                saveNewPlatformInDataBase();
+                $emit('close-modal');
+              }
+            "
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #000000da;
+}
+
+.modal {
+  direction: rtl;
+  display: grid;
+  text-align: center;
+  justify-content: center;
+  background-color: gray;
+  height: 20vh;
+  width: 40vw;
+  margin-top: 10%;
+  border: 5px solid black;
+  border-radius: 20px;
+}
+
+.close-div {
+  position: fixed;
+  margin: 1rem;
+}
+.close {
+  width: 2rem;
+  cursor: pointer;
+}
+
+.input-div {
+  direction: ltr;
+  margin-top: 2vh;
+}
+.input {
+  color: black;
+  margin-left: 10px;
+  height: 3vh;
+  width: 15vw;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+.platforms-drop-down {
+  color: black;
+  margin-left: 10px;
+  height: 3vh;
+  width: 10vw;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.buttons {
+  direction: ltr;
+}
+</style>

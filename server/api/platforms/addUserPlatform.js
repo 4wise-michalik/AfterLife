@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     const result = await pool
       .request()
       .query(
-        `SELECT user_id, platform_id, (SELECT name FROM platforms WHERE platform_id=id) as platform_name FROM connected_platforms WHERE user_id=${body.userId};`
+        `INSERT INTO connected_platforms (user_id, platform_id) VALUES (${body.userId}, ${body.platformId});`
       );
     return {
       success: true,

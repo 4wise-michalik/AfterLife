@@ -7,7 +7,6 @@ import facebookBackground from "../assets/backgrounds/facebook_background.png";
 
 const divStyle = ref("");
 const link = ref("");
-// const backgroundImagePath = ref("");
 const iconPath = ref("");
 
 onMounted(() => {

@@ -1,12 +1,12 @@
 <script setup>
 const props = defineProps({
+  id: Number,
   name: String,
 });
 import instagramBackground from "../assets/backgrounds/instagram_background.png";
 import facebookBackground from "../assets/backgrounds/facebook_background.png";
 
 const divStyle = ref("");
-const link = ref("");
 const iconPath = ref("");
 
 onMounted(() => {
@@ -15,15 +15,12 @@ onMounted(() => {
 
 function getProperties() {
   if (props.name === "Instagram") {
-    link.value = "/platforms/instagram";
     divStyle.value = `background-image: url(${instagramBackground})`;
     iconPath.value = "simple-icons:instagram";
   } else if (props.name === "Facebook") {
-    link.value = "/platforms/facebook";
     divStyle.value = `background-image: url(${facebookBackground})`;
     iconPath.value = "bi:facebook";
   } else if (props.name === "Twitter") {
-    link.value = "/platforms/twitter";
     divStyle.value = `background-color: #000000`;
     iconPath.value = "prime:twitter";
   }
@@ -31,7 +28,11 @@ function getProperties() {
 </script>
 
 <template>
-  <div class="platform-div" :style="`${divStyle}`" @click="navigateTo(link)">
+  <div
+    class="platform-div"
+    :style="`${divStyle}`"
+    @click="navigateTo(`/platform/${props.id}`)"
+  >
     <Icon class="icon" :name="iconPath" size="25px" />
     <p style="float: left">{{ props.name }}</p>
   </div>

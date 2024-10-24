@@ -40,6 +40,7 @@ async function getPlatforms() {
       <div class="platforms-div">
         <MainPageElementsPlatformButton
           v-for="platform in connectedPlatforms"
+          :id="platform.platform_id"
           :name="platform.platform_name"
         />
         <div

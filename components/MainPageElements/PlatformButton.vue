@@ -2,14 +2,23 @@
     const props = defineProps({
         name: String,
         link: String,
-        backgroundImagePath: String,
         iconPath: String,
+        backgroundImagePath: String,
+        backgroundColor: String,
+    })
+
+    const divStyle = ref('');
+
+    onMounted( () => {
+        if (props.backgroundImagePath !== undefined) { divStyle.value += `background-image: url(${props.backgroundImagePath})` }
+        if (props.backgroundColor !== undefined) { divStyle.value += `background-color: ${props.backgroundColor}` }
+        
     })
 
 </script>
 
 <template>
-    <div class="platform-div" :style="`background-image: url(${props.backgroundImagePath})`" @click="navigateTo(props.link)">
+    <div class="platform-div" :style="`${divStyle}`" @click="navigateTo(props.link)">
         <Icon class="icon" :name="iconPath" size="25px" />
         <p style="float: left;" >{{props.name}}</p>
     </div>
@@ -26,6 +35,7 @@
         margin-right: 1vw;
         font-size: 20px;
         width: fit-content;
+        background-size: cover;
     }
     .platform-div:hover {
         cursor: pointer;

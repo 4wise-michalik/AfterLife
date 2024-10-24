@@ -2,9 +2,24 @@
 definePageMeta({
   layout: "withsidebar",
 });
+const groupedPosts = ref([]);
+const posts = ref({});
+onMounted(async () => {
+  const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
+
+  posts.value = await getPosts(userData.value[0].id);
+
+  posts.value.data.forEach((post) => {
+    console.log(post.name); // Logs each number
+    groupedPosts.value[post.name].push({
+      content: post.content,
+      time: post.hours + " hours",
+    });
+  });
+});
 
 // Group posts into sections
-const groupedPosts = {
+groupedPosts.value = {
   Facebook: [
     {
       content: "Lorem ipsum dolor sit amet,  tempor incididunt ut labuat.",
@@ -44,10 +59,10 @@ const groupedPosts = {
 <template>
   <div class="container mx-auto px-4 py-8">
     <SectionGroup
-      v-for="(posts, title) in groupedPosts"
-      :key="title"
+      v-for="(posts, platform) in groupedPosts"
+      :key="platform"
       :posts="posts"
-      :title="title"
+      :platform="platform"
     />
   </div>
 </template>

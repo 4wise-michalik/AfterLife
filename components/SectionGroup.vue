@@ -1,13 +1,13 @@
 <script setup lang="ts">
 defineProps({
   posts: Array,
-  title: String,
+  platform: String,
 });
 </script>
 
 <template>
   <section class="bg-purple-900 text-white p-7 rounded-lg shadow-lg my-5">
-    <h2 class="text-xl mb-4">{{ title }}</h2>
+    <h2 class="text-xl mb-4">{{ platform }}</h2>
     <div class="flex flex-wrap -mx-4">
       <div
         v-for="(post, index) in posts"

@@ -1,16 +1,26 @@
 <script setup lang="ts">
+import { debounceFilter } from "@vueuse/core";
+
 definePageMeta({
   layout: "withsidebar",
 });
 const groupedPosts = ref([]);
 const posts = ref({});
+const platforms = ref({});
 onMounted(async () => {
+  platforms.value = JSON.parse(sessionStorage.getItem("platforms"));
+  posts.value = JSON.parse(sessionStorage.getItem("posts"));
   const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
-
-  posts.value = await getPosts(userData.value[0].id);
-
+  if (!platforms.value || !posts.value) {
+    posts.value = await getPosts(userData.value[0].id);
+    platforms.value = (await getPlatforms()).data;
+    sessionStorage.setItem("posts", JSON.stringify(posts.value));
+    sessionStorage.setItem("platforms", JSON.stringify(platforms.value));
+  }
+  platforms.value.forEach((platform) => {
+    groupedPosts.value[platform.name] = []; // Tworzymy pustą tablicę dla każdej platformy
+  });
   posts.value.data.forEach((post) => {
-    console.log(post.name); // Logs each number
     groupedPosts.value[post.name].push({
       content: post.content,
       time: post.hours + " hours",
@@ -20,49 +30,18 @@ onMounted(async () => {
 
 // Group posts into sections
 groupedPosts.value = {
-  Facebook: [
-    {
-      content: "Lorem ipsum dolor sit amet,  tempor incididunt ut labuat.",
-      time: "1 day",
-    },
-    {
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis  do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      time: "1 day",
-    },
-    {
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      time: "1 day",
-    },
-    {
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      time: "3 days",
-    },
-  ],
-  Instagram: [
-    {
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-      time: "Immediately",
-    },
-    {
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-      time: "1 week",
-    },
-  ],
+  Facebook: [],
+  Instagram: [],
 };
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div v-if="platforms && platforms.length" class="container mx-auto px-4 py-8">
     <SectionGroup
-      v-for="(posts, platform) in groupedPosts"
-      :key="platform"
-      :posts="posts"
-      :platform="platform"
+      v-for="platform in platforms"
+      :posts="groupedPosts[platform.name]"
+      :platform="platform.name"
+      :platform_id="platform.id"
     />
   </div>
 </template>

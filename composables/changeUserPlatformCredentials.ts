@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const addUserPlatform = async (userId, platformId, login, password) => {
+export const changeUserPlatformCredentials = async (userId, platformId, login, password) => {
   try {
-    const response = await axios.post("/api/platforms/addUserPlatform", {
+    const response = await axios.post("/api/platforms/changeUserPlatformCredentials", {
       userId: userId,
       platformId: platformId,
       login: login,

@@ -6,10 +6,7 @@ export const getUserPlatforms = async (userId) => {
       userId: userId,
     });
     if (response.data.success) {
-      sessionStorage.setItem(
-        "userPlatforms",
-        JSON.stringify(response.data.data)
-      );
+      sessionStorage.setItem("userPlatforms", JSON.stringify(response.data.data));
       return { success: true, data: response.data.data };
     }
   } catch (error) {

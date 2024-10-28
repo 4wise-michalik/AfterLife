@@ -1,12 +1,10 @@
 import axios from "axios";
 
-export const addUserPlatform = async (userId, platformId, login, password) => {
+export const removeUserPlatform = async (userId, platformId) => {
   try {
-    const response = await axios.post("/api/platforms/addUserPlatform", {
+    const response = await axios.post("/api/platforms/removeUserPlatform", {
       userId: userId,
       platformId: platformId,
-      login: login,
-      password: password,
     });
     if (response.data.success) {
       return { success: true };

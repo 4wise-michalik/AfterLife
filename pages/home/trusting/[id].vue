@@ -23,8 +23,7 @@ const confirm_isActive = ref(false);
 // Wywołanie API na onMounted
 onMounted(async () => {
   try {
-    const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-      .id;
+    const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
     const reportResult = await checkReport(id, userId);
 
     reportDataTotal.value = reportResult.data.value.total;
@@ -41,12 +40,8 @@ onMounted(async () => {
   } finally {
     reportLoading.value = false;
   }
-  const firstName = JSON.parse(
-    sessionStorage.getItem("trusting").toString()
-  ).first_name;
-  const lastName = JSON.parse(
-    sessionStorage.getItem("trusting").toString()
-  ).last_name;
+  const firstName = JSON.parse(sessionStorage.getItem("trusting").toString()).first_name;
+  const lastName = JSON.parse(sessionStorage.getItem("trusting").toString()).last_name;
   if (firstName !== null && lastName !== null) {
     name.value = firstName + " " + lastName;
   } else {
@@ -61,14 +56,8 @@ const countDownConfirm = () => {
   setInterval(function () {
     if (confirmWaitingTime.value >= 0) {
       if (confirmWaitingTime.value >= 10) {
-        var minutes = parseInt(
-          (confirmWaitingTime.value / 60).toString(),
-          10
-        ).toString();
-        var seconds = parseInt(
-          (confirmWaitingTime.value % 60).toString(),
-          10
-        ).toString();
+        var minutes = parseInt((confirmWaitingTime.value / 60).toString(), 10).toString();
+        var seconds = parseInt((confirmWaitingTime.value % 60).toString(), 10).toString();
 
         if (parseInt(minutes) < 10) {
           minutes = "0" + minutes;
@@ -99,17 +88,10 @@ function onDeathConfirm() {
 
 <template>
   <div v-if="reportLoading">Loading...</div>
-  <div v-else-if="reportError && reportError.length > 0">
-    Błąd: {{ reportError }}
-  </div>
-  <div
-    v-else-if="reportDataTotal > 0 && reportDataReported == false"
-    class="popup-container"
-  >
+  <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
+  <div v-else-if="reportDataTotal > 0 && reportDataReported == false" class="popup-container">
     <div class="popup-content">
-      <p class="description">
-        There's been a report about {{ name }}'s death. Do you confirm it?
-      </p>
+      <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
       <button
         class="red-button"
         :disabled="openPopupDisabled"
@@ -148,10 +130,7 @@ function onDeathConfirm() {
   </div>
   <div v-else class="popup-container">
     <div class="popup-content">
-      <p class="description">
-        There was no report about {{ name }}'s death. Want to do something about
-        it?
-      </p>
+      <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
       <button
         class="red-button"
         :disabled="openPopupDisabled"
@@ -170,31 +149,16 @@ function onDeathConfirm() {
   </div>
 
   <div>
-    <div
-      v-show="showConfirm"
-      class="modal-overlay"
-      @click="showConfirm = false"
-    >
+    <div v-show="showConfirm" class="modal-overlay" @click="showConfirm = false">
       <div class="modal" @click.stop>
         <div class="close-div">
-          <img
-            class="close"
-            src="~/assets/icons/close.svg"
-            alt=""
-            @click="showConfirm = false"
-          />
+          <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm = false" />
         </div>
         <div class="text-div">
           <text>Are you sure you want to report {{ name }}'s death?</text>
         </div>
         <div class="button-div">
-          <button
-            :disabled="!confirm_isActive"
-            class="red-button"
-            @click="onDeathConfirm()"
-          >
-            Confirm
-          </button>
+          <button :disabled="!confirm_isActive" class="red-button" @click="onDeathConfirm()">Confirm</button>
         </div>
         <div class="button-div">
           <text>{{ confirmTimerLabel }}</text>

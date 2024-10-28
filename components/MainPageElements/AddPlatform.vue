@@ -3,37 +3,35 @@ const avaliablePlatforms = ref([]);
 const selectedPlatform = ref();
 const login = ref("");
 const password = ref("");
+const errorMessage = ref("");
 
 onMounted(() => {
   getAvaliablePlatforms();
 });
 
 async function getAvaliablePlatforms() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .id;
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
   avaliablePlatforms.value = (await getUserAvaliablePlatforms(userId)).data;
 }
 
-async function saveNewPlatformInDataBase() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .id;
-  const platformId = selectedPlatform.value.id;
-
-  addUserPlatform(userId, platformId);
-  // próbuje się zalogować do platformy
-  goToNewPlatform();
+function onSave() {
+  if (login.value == "" || password.value == "") {
+    errorMessage.value = "enter your credentials";
+  } else if (!selectedPlatform.value) {
+    errorMessage.value = "choose pltform";
+  } else {
+    saveNewPlatformInDataBase();
+  }
 }
 
-function goToNewPlatform() {
-  if (selectedPlatform.value.name === "Instagram") {
-    navigateTo("/platforms/instagram");
-  }
-  if (selectedPlatform.value.name === "Facebook") {
-    navigateTo("/platforms/facebook");
-  }
-  if (selectedPlatform.value.name === "Twitter") {
-    navigateTo("/platforms/twitter");
-  }
+async function saveNewPlatformInDataBase() {
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const platformId = selectedPlatform.value.id;
+
+  await addUserPlatform(userId, platformId, login.value, password.value);
+  // tu powinien próbować się zalogować do platformy
+  await getUserPlatforms(userId);
+  navigateTo(`/platform/${platformId}`);
 }
 </script>
 
@@ -41,55 +39,28 @@ function goToNewPlatform() {
   <div class="modal-overlay" @click="$emit('close-modal')">
     <div class="modal" @click.stop>
       <div class="close-div">
-        <img
-          class="close"
-          src="~/assets/icons/close.svg"
-          alt=""
-          @click="$emit('close-modal')"
-        />
+        <img class="close" src="~/assets/icons/close.svg" alt="" @click="$emit('close-modal')" />
       </div>
 
       <div>
         <div class="input-div">
           Choose platform:
           <select class="platforms-drop-down" v-model="selectedPlatform">
-            <option
-              v-for="platform in avaliablePlatforms"
-              :key="platform"
-              :value="platform"
-            >
+            <option v-for="platform in avaliablePlatforms" :key="platform" :value="platform">
               {{ platform.name }}
             </option>
           </select>
         </div>
         <div class="input-div">
           Credentials:
-          <input
-            class="input"
-            id="platform_login"
-            v-model="login"
-            placeholder="login"
-          />
-          <input
-            id="platform_password"
-            class="input"
-            type="password"
-            v-model="password"
-            placeholder="password"
-          />
+          <input class="input" id="platform_login" v-model="login" placeholder=" login" />
+          <input id="platform_password" class="input" type="password" v-model="password" placeholder=" password" />
+        </div>
+        <div class="text-div">
+          <text class="error-text">{{ errorMessage }}</text>
         </div>
         <div class="buttons">
-          <button
-            class="default-button"
-            @click="
-              {
-                saveNewPlatformInDataBase();
-                $emit('close-modal');
-              }
-            "
-          >
-            Save
-          </button>
+          <button class="default-button" @click="onSave()">Save</button>
         </div>
       </div>
     </div>
@@ -114,7 +85,7 @@ function goToNewPlatform() {
   text-align: center;
   justify-content: center;
   background-color: gray;
-  height: 20vh;
+  height: 25vh;
   width: 40vw;
   margin-top: 10%;
   border: 5px solid black;
@@ -153,5 +124,16 @@ function goToNewPlatform() {
 
 .buttons {
   direction: ltr;
+}
+
+.text-div {
+  display: grid;
+  direction: ltr;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.error-text {
+  color: red;
 }
 </style>

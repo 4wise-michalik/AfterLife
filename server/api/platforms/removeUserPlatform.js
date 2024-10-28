@@ -16,11 +16,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     pool = await sql.connect(config);
-    const result = await pool
-      .request()
-      .query(
-        `SELECT user_id, platform_id, (SELECT name FROM platforms WHERE platform_id=id) as platform_name, what_happends_to_account FROM connected_platforms WHERE user_id=${body.userId};`
-      );
+    const result = await pool.request().query(`DELETE FROM connected_platforms WHERE user_id=${body.userId} AND  platform_id=${body.platformId};`);
     return {
       success: true,
       data: result.recordset,

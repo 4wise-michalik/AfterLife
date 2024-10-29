@@ -1,5 +1,6 @@
 <script setup>
 const props = defineProps({});
+const emit = defineEmits(["date"]);
 
 const years = ref(0);
 const months = ref(0);
@@ -9,8 +10,6 @@ const date = ref(new Date());
 date.value.setFullYear(0);
 date.value.setMonth(0);
 date.value.setDate(1);
-
-onMounted(() => {});
 
 function addOneYear() {
   years.value++;
@@ -28,8 +27,10 @@ function addOneMonth() {
   updateDate();
 }
 const subsOneMonth = () => {
-  months.value--;
-  updateDate();
+  if (years.value > 0 || months.value > 0) {
+    months.value--;
+    updateDate();
+  }
 };
 
 function addOneDay() {
@@ -37,8 +38,10 @@ function addOneDay() {
   updateDate();
 }
 const subsOneDay = () => {
-  days.value--;
-  updateDate();
+  if (years.value > 0 || months.value > 0 || days.value > 1) {
+    days.value--;
+    updateDate();
+  }
 };
 
 function updateDate() {
@@ -46,6 +49,9 @@ function updateDate() {
   years.value = date.value.getFullYear();
   months.value = date.value.getMonth();
   days.value = date.value.getDate();
+  const dateToSend = { years: years.value, months: months.value, days: days.value };
+
+  emit("date", dateToSend);
 }
 </script>
 

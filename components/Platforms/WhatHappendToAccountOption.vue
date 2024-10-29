@@ -8,6 +8,8 @@ const version = ref(0);
 const showAdvanced = ref(false);
 const divStyle = ref("what-happends-to-account-element");
 
+const calendarRef = ref(null);
+
 onMounted(() => {
   if (props.text == "leave it as it was") {
     version.value = 0;
@@ -46,8 +48,8 @@ function getPlatformData() {
         <button class="what-happends-to-account-element-save">choose</button>
       </div>
       <div v-if="version === 1" @click.stop>
-        <Calendar />
-        <button class="what-happends-to-account-element-save">choose</button>
+        <Calendar @date="(value) => (calendarRef = value)" />
+        <button class="what-happends-to-account-element-save" @click="console.log(calendarRef)">choose</button>
       </div>
       <div v-if="version === 2" @click.stop>
         <button class="what-happends-to-account-element-save">choose</button>

@@ -15,11 +15,28 @@ const password = ref("");
 const errorMessage = ref("");
 
 const name = ref("");
+const whatHappendsToAccount = ref(0);
 
 const showWhatHappendsToAccount = ref(false);
+const showAdvanced0 = ref(false);
+const showAdvanced1 = ref(false);
+const showAdvanced2 = ref(false);
+const showAdvanced3 = ref(false);
+const showAdvanced4 = ref(false);
+
+const divStyle0 = ref("what-happends-to-account-element");
+const divStyle1 = ref("what-happends-to-account-element");
+const divStyle2 = ref("what-happends-to-account-element");
+const divStyle3 = ref("what-happends-to-account-element");
+const divStyle4 = ref("what-happends-to-account-element");
+
+const date1 = ref();
+const date2 = ref();
+const date3 = ref();
 
 onMounted(() => {
   getPlatformData();
+
   confirmWaitingTime.value = 10;
   countDownConfirm();
 });
@@ -29,8 +46,46 @@ function getPlatformData() {
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       name.value = platformData[platform].platform_name;
+      whatHappendsToAccount.value = platformData[platform].what_happends_to_account;
     }
   }
+
+  divStyle0.value = "what-happends-to-account-element";
+  divStyle1.value = "what-happends-to-account-element";
+  divStyle2.value = "what-happends-to-account-element";
+  divStyle3.value = "what-happends-to-account-element";
+  divStyle4.value = "what-happends-to-account-element";
+
+  if (whatHappendsToAccount.value === 0) {
+    divStyle0.value = "what-happends-to-account-element-choosen";
+  } else if (whatHappendsToAccount.value === 1) {
+    divStyle1.value = "what-happends-to-account-element-choosen";
+  } else if (whatHappendsToAccount.value === 2) {
+    divStyle2.value = "what-happends-to-account-element-choosen";
+  } else if (whatHappendsToAccount.value === 3) {
+    divStyle3.value = "what-happends-to-account-element-choosen";
+  } else if (whatHappendsToAccount.value === 4) {
+    divStyle4.value = "what-happends-to-account-element-choosen";
+  }
+}
+
+async function onWhatHappendsToAccountChange(option: Number) {
+  // zapisanie w bazie
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const platformId = parseInt(id);
+  await changeWhatHappendsToAccount(userId, platformId, option);
+
+  // nadpisanie w sesji
+  const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
+  for (const platform in platformData) {
+    if (platformData[platform].platform_id == parseInt(id)) {
+      platformData[platform].what_happends_to_account = option;
+    }
+  }
+  sessionStorage.setItem("userPlatforms", JSON.stringify(platformData));
+
+  // aktualizuje widok
+  getPlatformData();
 }
 
 const countDownConfirm = () => {
@@ -77,6 +132,24 @@ function onEditConfirm() {
     errorMessage.value = "enter your credentials";
   }
 }
+
+function closeAllSubTubs(option: Number) {
+  if (option != 0) {
+    showAdvanced0.value = false;
+  }
+  if (option != 1) {
+    showAdvanced1.value = false;
+  }
+  if (option != 2) {
+    showAdvanced2.value = false;
+  }
+  if (option != 3) {
+    showAdvanced3.value = false;
+  }
+  if (option != 4) {
+    showAdvanced4.value = false;
+  }
+}
 </script>
 
 <template>
@@ -101,12 +174,154 @@ function onEditConfirm() {
         <Text @click="showWhatHappendsToAccount = !showWhatHappendsToAccount" style="cursor: pointer"
           >What do you want us to do with your {{ name }} account in Afterlife</Text
         >
-        <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 gap-8">
-          <PlatformsWhatHappendToAccountOption text="Leave it as it was" />
-          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and preserve it" />
-          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and keep it alive for some time" />
-          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and give it over to someone" />
-          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and delete it after some time" />
+
+        <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 gap-6">
+          <div :class="divStyle0">
+            <div
+              style="cursor: pointer"
+              @click="
+                {
+                  closeAllSubTubs(0);
+                  showAdvanced0 = !showAdvanced0;
+                }
+              "
+            >
+              <Text style="font-weight: 700">Leave it as it was</Text>
+            </div>
+            <div>
+              <div v-if="showAdvanced0" class="advanced-options-div">
+                <div @click.stop>
+                  <Text>Doesn't change anything on the account, just publishes scheduled post and sends messages.</Text>
+                  <div class="choose-button">
+                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(0)">choose</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div :class="divStyle1">
+            <div
+              style="cursor: pointer"
+              @click="
+                {
+                  closeAllSubTubs(1);
+                  showAdvanced1 = !showAdvanced1;
+                }
+              "
+            >
+              <Text style="font-weight: 700">Take over the account (change email and password) and preserve it</Text>
+            </div>
+            <div>
+              <div v-if="showAdvanced1" class="advanced-options-div">
+                <div @click.stop>
+                  <Text
+                    >Takes over control over the account and keeps it safe (changes email and password once in a while). Also publishes scheduled post
+                    and sends messages.</Text
+                  >
+                  <div style="display: flex">
+                    <Text style="align-self: center">For how long do you want us look after it?</Text>
+                    <Calendar @date="(value) => (date1 = value)" />
+                    <Text style="align-self: center">after death</Text>
+                  </div>
+                  <div class="choose-button">
+                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(1)">choose</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div :class="divStyle2">
+            <div
+              style="cursor: pointer"
+              @click="
+                {
+                  closeAllSubTubs(2);
+                  showAdvanced2 = !showAdvanced2;
+                }
+              "
+            >
+              <Text style="font-weight: 700">Take over the account (change email and password) and keep it alive for some time</Text>
+            </div>
+            <div>
+              <div v-if="showAdvanced2" class="advanced-options-div">
+                <div @click.stop>
+                  <Text
+                    >Takes over control over the account, keeps it safe (changes email and password once in a while) for a given time. Also publishes
+                    scheduled post and sends messages.</Text
+                  >
+                  <div style="display: flex">
+                    <Text style="align-self: center">For how long do you want us to keep it alive?</Text>
+                    <Calendar @date="(value) => (date2 = value)" />
+                    <Text style="align-self: center">after death</Text>
+                  </div>
+                  <div class="choose-button">
+                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(2)">choose</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div :class="divStyle3">
+            <div
+              style="cursor: pointer"
+              @click="
+                {
+                  closeAllSubTubs(3);
+                  showAdvanced3 = !showAdvanced3;
+                }
+              "
+            >
+              <Text style="font-weight: 700">Take over the account (change email and password) and delete it after some time</Text>
+            </div>
+            <div>
+              <div v-if="showAdvanced3" class="advanced-options-div">
+                <div @click.stop>
+                  <Text
+                    >Takes over control over the account, keeps it safe (changes email and password once in a while) and deletes after given time.
+                    Also publishes scheduled post and sends messages.</Text
+                  >
+                  <div style="display: flex">
+                    <Text style="align-self: center">When do you want to delete your account?</Text>
+                    <Calendar @date="(value) => (date3 = value)" />
+                    <Text style="align-self: center">after death</Text>
+                  </div>
+                  <div class="choose-button">
+                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(3)">choose</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div :class="divStyle4">
+            <div
+              style="cursor: pointer"
+              @click="
+                {
+                  closeAllSubTubs(4);
+                  showAdvanced4 = !showAdvanced4;
+                }
+              "
+            >
+              <Text style="font-weight: 700">Take over the account (change email and password) and give it over to someone</Text>
+            </div>
+            <div>
+              <div v-if="showAdvanced4" class="advanced-options-div">
+                <div @click.stop>
+                  <Text
+                    >Takes over control over the account, changes email and password and passes them to given trusted person. Also publishes scheduled
+                    post and sends messages.</Text
+                  >
+                  <div class="choose-button">
+                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(4)">choose</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -325,5 +540,44 @@ function onEditConfirm() {
 
 .error-text {
   color: red;
+}
+
+.what-happends-to-account-element {
+  background-color: aqua;
+  color: black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.what-happends-to-account-element-choosen {
+  background-color: aqua;
+  color: black;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0px 0px 12px 10px #744444;
+}
+
+.advanced-options-div {
+  margin-top: 10px;
+}
+
+.what-happends-to-account-element-save {
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+.what-happends-to-account-element-save:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.choose-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
 }
 </style>

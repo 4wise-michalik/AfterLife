@@ -24,7 +24,10 @@ const saveData = () => {
     content.value,
     hours.value
   );
-  sessionStorage.removeItem("posts");
+
+  //sessionStorage.removeItem("posts");
+  hours.value = 24;
+  content.value = "";
   closePopup();
 };
 </script>
@@ -48,7 +51,7 @@ const saveData = () => {
         :key="index"
         class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8"
       >
-        <Post :content="post.content" :time="post.time" />
+        <Post :content="post.content" :time="post.time" :id="post.id[0]" />
       </div>
     </div>
   </section>
@@ -60,8 +63,8 @@ const saveData = () => {
   >
     <div>
       <div @click.stop class="bg-gray-400 p-6 rounded-lg w-96">
-        <h3 class="text-lg font-semibold mb-4">Stwórz posta</h3>
-        <textarea v-model="content" placeholder="add multiple lines"></textarea>
+        <h3 class="text-lg font-semibold mb-4">Create post</h3>
+        <textarea v-model="content" placeholder="Text here"></textarea>
         <input
           type="range"
           v-model="hours"
@@ -76,21 +79,21 @@ const saveData = () => {
             @click="closePopup"
             class="px-4 py-2 bg-gray-400 text-white rounded"
           >
-            Anuluj
+            Cancel
           </button>
           <button
             v-if="content.length > 0"
             @click="saveData"
             class="px-4 py-2 bg-blue-500 text-white rounded"
           >
-            Zapisz
+            Save
           </button>
           <button
             v-else
             disabled
             class="px-4 py-2 bg-gray-300 text-red-400 rounded"
           >
-            Zapisz
+            Save
           </button>
         </div>
       </div>

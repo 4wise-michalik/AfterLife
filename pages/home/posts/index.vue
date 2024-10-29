@@ -24,15 +24,10 @@ onMounted(async () => {
     groupedPosts.value[post.name].push({
       content: post.content,
       time: post.hours + " hours",
+      id: post.id,
     });
   });
 });
-
-// Group posts into sections
-groupedPosts.value = {
-  Facebook: [],
-  Instagram: [],
-};
 </script>
 
 <template>

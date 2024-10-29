@@ -2,14 +2,28 @@
 const props = defineProps({});
 const emit = defineEmits(["date"]);
 
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
 const years = ref(0);
 const months = ref(0);
-const days = ref(0);
+const days = ref(1);
+const hours = ref(0);
+const minutes = ref(0);
 
 const date = ref(new Date());
 date.value.setFullYear(0);
 date.value.setMonth(0);
 date.value.setDate(1);
+date.value.setHours(1);
+date.value.setMinutes(1);
+
+const time = ref({ hours: 0, minutes: 0 });
+
+onMounted(() => {
+  updateDate();
+  // console.log(time.value.getHours(), time.value.getMinutes());
+});
 
 function addOneYear() {
   years.value++;
@@ -49,15 +63,23 @@ function updateDate() {
   years.value = date.value.getFullYear();
   months.value = date.value.getMonth();
   days.value = date.value.getDate();
-  const dateToSend = { years: years.value, months: months.value, days: days.value };
 
+  date.value.setHours(time.value.hours);
+  date.value.setMinutes(time.value.minutes);
+  hours.value = date.value.getHours();
+  minutes.value = date.value.getMinutes();
+
+  const dateToSend = { years: years.value, months: months.value, days: days.value, hours: hours.value, minutes: minutes.value };
   emit("date", dateToSend);
 }
+
+watch(time, () => {
+  updateDate();
+});
 </script>
 
 <template>
   <div class="timer-div">
-    <Text class="element">time: </Text>
     <div class="element" style="display: grid">
       <Button @click="addOneYear()">+</Button>
       <Text>{{ years }} years</Text>
@@ -74,6 +96,10 @@ function updateDate() {
       <Button @click="addOneDay()">+</Button>
       <Text>{{ days }} days</Text>
       <Button @click="subsOneDay()">-</Button>
+    </div>
+
+    <div class="element" style="display: grid; margin-right: 0">
+      <VueDatePicker v-model="time" time-picker style="width: 10vw"></VueDatePicker>
     </div>
   </div>
 </template>

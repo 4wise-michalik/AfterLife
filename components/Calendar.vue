@@ -22,12 +22,13 @@ const time = ref({ hours: 0, minutes: 0 });
 
 onMounted(() => {
   updateDate();
-  // console.log(time.value.getHours(), time.value.getMinutes());
 });
 
 function addOneYear() {
-  years.value++;
-  updateDate();
+  if (years.value < 30) {
+    years.value++;
+    updateDate();
+  }
 }
 const subsOneYear = () => {
   if (years.value > 0) {
@@ -37,8 +38,10 @@ const subsOneYear = () => {
 };
 
 function addOneMonth() {
-  months.value++;
-  updateDate();
+  if (years.value < 30 || months.value < 11) {
+    months.value++;
+    updateDate();
+  }
 }
 const subsOneMonth = () => {
   if (years.value > 0 || months.value > 0) {
@@ -48,8 +51,10 @@ const subsOneMonth = () => {
 };
 
 function addOneDay() {
-  days.value++;
-  updateDate();
+  if (years.value < 30 || months.value < 11 || days.value < 31) {
+    days.value++;
+    updateDate();
+  }
 }
 const subsOneDay = () => {
   if (years.value > 0 || months.value > 0 || days.value > 1) {

@@ -20,7 +20,7 @@ async function getPlatforms() {
   <div class="container mx-auto px-4 py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
     <section class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <h3 class="text-xl font-semibold mb-4">My Afterlife data</h3>
-      <p class="text-sm">Connected platforms: 3</p>
+      <p class="text-sm">Connected platforms: {{ connectedPlatforms.length }}</p>
       <p class="text-sm">Total followers: 54.3k</p>
       <p class="text-sm">Scheduled after-posts: 5</p>
       <p class="text-sm">Account removals: 1</p>

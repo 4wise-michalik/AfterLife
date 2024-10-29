@@ -30,6 +30,7 @@ const divStyle2 = ref("what-happends-to-account-element");
 const divStyle3 = ref("what-happends-to-account-element");
 const divStyle4 = ref("what-happends-to-account-element");
 
+const date = ref();
 const date1 = ref();
 const date2 = ref();
 const date3 = ref();
@@ -73,7 +74,16 @@ async function onWhatHappendsToAccountChange(option: Number) {
   // zapisanie w bazie
   const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
   const platformId = parseInt(id);
-  await changeWhatHappendsToAccount(userId, platformId, option);
+  if (option == 1) {
+    date.value = date1.value;
+  }
+  if (option == 2) {
+    date.value = date2.value;
+  }
+  if (option == 3) {
+    date.value = date3.value;
+  }
+  await changeWhatHappendsToAccount(userId, platformId, option, date.value);
 
   // nadpisanie w sesji
   const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
@@ -115,10 +125,10 @@ const countDownConfirm = () => {
   }, 1000);
 };
 
-function onRemoveConfirm() {
+async function onRemoveConfirm() {
   const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
   const platformId = parseInt(id);
-  removeUserPlatform(userId, platformId);
+  await removeUserPlatform(userId, platformId);
   navigateTo("/home");
 }
 
@@ -171,8 +181,9 @@ function closeAllSubTubs(option: Number) {
       </div>
 
       <div class="option-div">
+        <Icon class="icon" name="mdi:grave-stone" size="25px" />
         <Text @click="showWhatHappendsToAccount = !showWhatHappendsToAccount" style="cursor: pointer"
-          >What do you want us to do with your {{ name }} account in Afterlife</Text
+          >What do you want us to do with your {{ name }} account in your Afterlife</Text
         >
 
         <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 gap-6">

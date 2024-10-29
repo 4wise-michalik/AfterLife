@@ -10,36 +10,43 @@ date.value.setFullYear(0);
 date.value.setMonth(0);
 date.value.setDate(1);
 
-onMounted(() => {
-  console.log(date.value.getFullYear(), date.value.getMonth(), date.value.getDate());
-});
+onMounted(() => {});
 
 function addOneYear() {
-  date.value.setFullYear(date.value.getFullYear() + 1);
+  years.value++;
+  updateDate();
 }
 const subsOneYear = () => {
   if (years.value > 0) {
     years.value--;
+    updateDate();
   }
 };
 
 function addOneMonth() {
-  date.value.setMonth(date.value.getMonth() + 1);
+  months.value++;
+  updateDate();
 }
 const subsOneMonth = () => {
-  if (months.value > 0) {
-    months.value--;
-  }
+  months.value--;
+  updateDate();
 };
 
 function addOneDay() {
-  date.value.setDate(date.value.getDate() + 1);
+  days.value++;
+  updateDate();
 }
 const subsOneDay = () => {
-  if (days.value > 0) {
-    days.value--;
-  }
+  days.value--;
+  updateDate();
 };
+
+function updateDate() {
+  date.value.setFullYear(years.value, months.value, days.value);
+  years.value = date.value.getFullYear();
+  months.value = date.value.getMonth();
+  days.value = date.value.getDate();
+}
 </script>
 
 <template>
@@ -47,19 +54,19 @@ const subsOneDay = () => {
     <Text class="element">time: </Text>
     <div class="element" style="display: grid">
       <Button @click="addOneYear()">+</Button>
-      <Text>{{ date.getFullYear() }} years</Text>
+      <Text>{{ years }} years</Text>
       <Button @click="subsOneYear()">-</Button>
     </div>
 
     <div class="element" style="display: grid">
       <Button @click="addOneMonth()">+</Button>
-      <Text>{{ date.getMonth() }} months</Text>
+      <Text>{{ months }} months</Text>
       <Button @click="subsOneMonth()">-</Button>
     </div>
 
     <div class="element" style="display: grid">
       <Button @click="addOneDay()">+</Button>
-      <Text>{{ date.getDate() }} days</Text>
+      <Text>{{ days }} days</Text>
       <Button @click="subsOneDay()">-</Button>
     </div>
   </div>

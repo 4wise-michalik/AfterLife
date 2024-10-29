@@ -56,14 +56,7 @@ async function getPlatforms() {
     </section>
   </div>
 
-  <MainPageElementsAddPlatform
-    v-show="showAddPlatform"
-    @close-modal="
-      {
-        showAddPlatform = false;
-      }
-    "
-  />
+  <MainPageElementsAddPlatform v-show="showAddPlatform" @close-modal="showAddPlatform = false" />
 </template>
 
 <style scoped>

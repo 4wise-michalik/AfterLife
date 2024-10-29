@@ -83,8 +83,8 @@ function onEditConfirm() {
   <div class="popup-container">
     <div class="popup-content">
       <p class="title-text">
-        What do you want us to do with your
-        <Text style="font-weight: 800">{{ name }}</Text> account after you pass away?
+        What happends on your
+        <Text style="font-weight: 800">{{ name }}</Text> account after you pass away
       </p>
     </div>
   </div>
@@ -101,12 +101,12 @@ function onEditConfirm() {
         <Text @click="showWhatHappendsToAccount = !showWhatHappendsToAccount" style="cursor: pointer"
           >What do you want us to do with your {{ name }} account in Afterlife</Text
         >
-        <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <PlatformsWhatHappendToAccountOption text="leave it as it was" />
-          <PlatformsWhatHappendToAccountOption text="take over the account (change email and password) and keep it alive for some time" />
-          <PlatformsWhatHappendToAccountOption text="take over the account (change email and password) and preserve it" />
-          <PlatformsWhatHappendToAccountOption text="take over the account (change email and password) and give it over to someone" />
-          <PlatformsWhatHappendToAccountOption text="take over the account (change email and password) and delete it after some time" />
+        <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 gap-8">
+          <PlatformsWhatHappendToAccountOption text="Leave it as it was" />
+          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and preserve it" />
+          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and keep it alive for some time" />
+          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and give it over to someone" />
+          <PlatformsWhatHappendToAccountOption text="Take over the account (change email and password) and delete it after some time" />
         </div>
       </div>
 

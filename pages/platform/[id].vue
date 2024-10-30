@@ -34,9 +34,15 @@ const date = ref();
 const date1 = ref();
 const date2 = ref();
 const date3 = ref();
+const date4 = ref();
+
+const trustedPersons = ref([]);
+const selectedTrustedPerson = ref(null);
 
 onMounted(() => {
   getPlatformData();
+
+  trustedPersons.value = JSON.parse(sessionStorage.getItem("trusted").toString());
 
   confirmWaitingTime.value = 10;
   countDownConfirm();
@@ -74,16 +80,21 @@ async function onWhatHappendsToAccountChange(option: Number) {
   // zapisanie w bazie
   const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
   const platformId = parseInt(id);
-  if (option == 1) {
+  if (option === 1) {
     date.value = date1.value;
   }
-  if (option == 2) {
+  if (option === 2) {
     date.value = date2.value;
   }
-  if (option == 3) {
+  if (option === 3) {
     date.value = date3.value;
   }
-  await changeWhatHappendsToAccount(userId, platformId, option, date.value);
+  if (option === 4) {
+    date.value = date4.value;
+  }
+  var whoToPassAccount = selectedTrustedPerson.value;
+
+  await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount);
 
   // nadpisanie w sesji
   const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
@@ -181,10 +192,10 @@ function closeAllSubTubs(option: Number) {
       </div>
 
       <div class="option-div">
-        <Icon class="icon" name="mdi:grave-stone" size="25px" />
-        <Text @click="showWhatHappendsToAccount = !showWhatHappendsToAccount" style="cursor: pointer"
-          >What do you want us to do with your {{ name }} account in your Afterlife</Text
-        >
+        <div @click="showWhatHappendsToAccount = !showWhatHappendsToAccount" style="cursor: pointer">
+          <Icon class="icon" name="mdi:grave-stone" size="25px" />
+          <Text>What do you want us to do with your {{ name }} account in your Afterlife</Text>
+        </div>
 
         <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 gap-6">
           <div :class="divStyle0">
@@ -323,9 +334,20 @@ function closeAllSubTubs(option: Number) {
               <div v-if="showAdvanced4" class="advanced-options-div">
                 <div @click.stop>
                   <Text
-                    >Takes over control over the account, changes email and password and passes them to given trusted person. Also publishes scheduled
-                    post and sends messages.</Text
+                    >Takes over control over the account, changes email and password and passes them to given trusted person after given time. Also
+                    publishes scheduled post and sends messages.</Text
                   >
+                  <div style="display: flex">
+                    <Text style="align-self: center">Who do you want to us to pass the account to?</Text>
+                    <select class="trusted-drop-down" v-model="selectedTrustedPerson">
+                      <option v-for="person in trustedPersons" :key="person" :value="person">{{ person.first_name }} {{ person.last_name }}</option>
+                    </select>
+                  </div>
+                  <div style="display: flex">
+                    <Text style="align-self: center">When do you want to us to pass the account?</Text>
+                    <Calendar @date="(value) => (date4 = value)" />
+                    <Text style="align-self: center">after death</Text>
+                  </div>
                   <div class="choose-button">
                     <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(4)">choose</button>
                   </div>
@@ -344,6 +366,7 @@ function closeAllSubTubs(option: Number) {
             errorMessage = '';
           }
         "
+        style="cursor: pointer"
       >
         <Icon class="icon" name="streamline:interface-edit-write-2-change-document-edit-modify-paper-pencil-write-writing" size="25px" />
         <Text>change account credentials</Text>
@@ -359,6 +382,7 @@ function closeAllSubTubs(option: Number) {
             showConfirm = !showConfirm;
           }
         "
+        style="cursor: pointer"
       >
         <Icon class="icon" name="material-symbols:delete-outline" size="25px" />
         <Text>remove platform from Afterlife</Text>
@@ -590,5 +614,14 @@ function closeAllSubTubs(option: Number) {
   display: flex;
   justify-content: center;
   margin-top: 5px;
+}
+
+.trusted-drop-down {
+  color: black;
+  margin-left: 10px;
+  height: 3vh;
+  width: 10vw;
+  border: 2px solid black;
+  border-radius: 5px;
 }
 </style>

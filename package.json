@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@nuxt/icon": "^1.5.6",
+    "@pinia/nuxt": "^0.5.5",
     "@vuepic/vue-datepicker": "^9.0.3",
     "@vueuse/core": "^11.1.0",
     "axios": "^1.7.7",
@@ -24,7 +25,9 @@
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.15",
     "nuxt": "^3.13.0",
+    "nuxt-auth-utils": "^0.5.0",
     "nuxt-storage": "^1.2.2",
+    "pinia": "^2.2.4",
     "qrcode": "^1.5.4",
     "qrcode.vue": "^3.5.1",
     "vue": "latest",
@@ -34,5 +37,8 @@
     "@iconify-json/material-symbols": "^1.2.4",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@types/nodemailer": "^6.4.16"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }

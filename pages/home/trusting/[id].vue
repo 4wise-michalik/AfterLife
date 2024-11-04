@@ -18,13 +18,13 @@ const reportDataDeceased = ref(false);
 const reportDataReported = ref(false);
 const whatHappendsToAccountGiveAccountId = ref(0);
 const whatHappendsToAccountGiveAccountMessage = ref("");
-const whatHappendsToAccountPlatform = ref();
-const whatHappendsToAccountTime = ref();
-const email = ref();
-const whatHappendsToAccountGiveAccountEmail = ref();
+const whatHappendsToAccountPlatform = ref("");
+const whatHappendsToAccountTime = ref(new Date(2100, 1, 1));
+const email = ref("");
+const whatHappendsToAccountGiveAccountEmail = ref("");
 const whatHappendsToAccountGiveAccountEmailCensored = ref("********************");
-const password = ref();
-const whatHappendsToAccountGiveAccountPassword = ref();
+const password = ref("");
+const whatHappendsToAccountGiveAccountPassword = ref("");
 const whatHappendsToAccountGiveAccountPasswordCensored = ref("**************");
 const didGivenTimePassed = ref(false);
 const reportError = ref(null);
@@ -79,7 +79,7 @@ onMounted(async () => {
 
     var deathTime = new Date(deceasedResult.data.value.death_time);
     const givenTime = adjustDeathTime(whatHappendsToAccountTime.value, deathTime);
-    console.log(givenTime);
+    // givenTime jest o godzine 24 minuty do przodu ba tak
 
     if (givenTime <= new Date()) {
       didGivenTimePassed.value = true;
@@ -149,17 +149,16 @@ function censoreString(text: String) {
   return textCensored;
 }
 
-// wczytuje złą godzine
+// do poprawy - wczytuje złą godzine (dokładnie o 1h 24min za dużo)
 function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
-  whatHappendsToAccountTime.setFullYear(whatHappendsToAccountTime.getFullYear() - 1);
-  whatHappendsToAccountTime.setDate(whatHappendsToAccountTime.getDate() - 1);
-
   var newDate = new Date();
-  newDate.setFullYear(whatHappendsToAccountTime.getFullYear() + deathTime.getFullYear());
+  newDate.setFullYear(whatHappendsToAccountTime.getFullYear() + deathTime.getFullYear() - 1);
   newDate.setMonth(whatHappendsToAccountTime.getMonth() + deathTime.getMonth());
-  newDate.setDate(whatHappendsToAccountTime.getDate() + deathTime.getDate());
+  newDate.setDate(whatHappendsToAccountTime.getDate() + deathTime.getDate() - 1);
   newDate.setHours(whatHappendsToAccountTime.getHours() + deathTime.getHours());
   newDate.setMinutes(whatHappendsToAccountTime.getMinutes() + deathTime.getMinutes());
+
+  console.log(newDate);
 
   return newDate;
 }
@@ -177,7 +176,10 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
   </div>
   <div v-else-if="reportDataTotal > 0 && reportDataReported == false" class="popup-container">
     <div class="container-content">
-      <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
+      <p class="description">
+        There's been a report about <text style="font-weight: 700">{{ name }}</text
+        >'s death. Do you confirm it?
+      </p>
       <button
         class="red-button"
         :disabled="openPopupDisabled"
@@ -197,7 +199,10 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
   </div>
   <div v-else-if="reportDataReported == true" class="popup-container">
     <div class="container-content">
-      <p class="description">You already reported {{ name }}'s death</p>
+      <p class="description">
+        You already reported <text style="font-weight: 700">{{ name }}</text
+        >'s death
+      </p>
       <button
         class="red-button"
         disabled="true"
@@ -216,7 +221,10 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
   </div>
   <div v-else class="popup-container">
     <div class="container-content">
-      <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
+      <p class="description">
+        There was no report about <text style="font-weight: 700">{{ name }}</text
+        >'s death. Want to do something about it?
+      </p>
       <button
         class="red-button"
         :disabled="openPopupDisabled"
@@ -258,7 +266,10 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
           <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm = false" />
         </div>
         <div class="text-div">
-          <text>Are you sure you want to report {{ name }}'s death?</text>
+          <text
+            >Are you sure you want to report <text style="font-weight: 700">{{ name }}</text
+            >'s death?</text
+          >
         </div>
         <div class="button-div">
           <button :disabled="!confirm_isActive" class="red-button" @click="onDeathConfirm()">Confirm</button>

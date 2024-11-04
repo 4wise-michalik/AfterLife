@@ -5,10 +5,18 @@ definePageMeta({
 
 const connectedPlatforms = ref([]);
 const showAddPlatform = ref(false);
+const isAlive = ref(true);
 
 onMounted(() => {
+  checkIfIsDead();
   getPlatforms();
 });
+
+async function checkIfIsDead() {
+  if (JSON.parse(sessionStorage.getItem("userData").toString())[0].deceased) {
+    isAlive.value = false;
+  }
+}
 
 async function getPlatforms() {
   const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
@@ -17,7 +25,7 @@ async function getPlatforms() {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <div v-if="isAlive" class="container mx-auto px-4 py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
     <section class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <h3 class="text-xl font-semibold mb-4">My Afterlife data</h3>
       <p class="text-sm">Connected platforms: {{ connectedPlatforms.length }}</p>
@@ -54,6 +62,11 @@ async function getPlatforms() {
       <NuxtLink to="/home" class="text-xl font-semibold mb-4 hover:text-purple-200">My trusted ones</NuxtLink>
       <p class="text-sm">This is the content of Section 1.</p>
     </section>
+  </div>
+
+  <div v-else class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
+    <p class="text-sm">Unfortunatly you're dead</p>
+    <p class="text-sm">If you want to revive, please contact us</p>
   </div>
 
   <MainPageElementsAddPlatform v-show="showAddPlatform" @close-modal="showAddPlatform = false" />

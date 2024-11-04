@@ -18,9 +18,7 @@ export default defineEventHandler(async (event) => {
     pool = await sql.connect(config);
     const result = await pool
       .request()
-      .query(
-        `SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE email='${body.email}';`
-      );
+      .query(`SELECT id, first_name, last_name, email, verified_email, verifing_method, deceased FROM users WHERE email='${body.email}';`);
     return {
       success: true,
       data: result.recordset,

@@ -1,4 +1,4 @@
-import sql from 'mssql';
+import sql from "mssql";
 const config = {
   user: process.env.AZURE_SQL_USER,
   password: process.env.AZURE_SQL_PASSWORD,
@@ -15,9 +15,12 @@ export default defineEventHandler(async (event) => {
   let pool;
   try {
     pool = await sql.connect(config);
-    const result = await pool.request()
-      .input('userId', sql.Int, userId)
-      .query(`SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=${userId})`);
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query(
+        `SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=${userId})`
+      );
     if (result.rowsAffected != 0) {
       return {
         success: true,
@@ -29,12 +32,11 @@ export default defineEventHandler(async (event) => {
         data: [],
       };
     }
-    
   } catch (error) {
-    console.error('Database error:', error);
+    console.error("Database error:", error);
     return {
       success: false,
-      error: 'Database connection failed',
+      error: "Database connection failed",
     };
   } finally {
     if (pool) await pool.close();

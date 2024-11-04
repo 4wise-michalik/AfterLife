@@ -35,12 +35,7 @@ async function saveLinkInDataBase() {
   <div class="modal-overlay" @click="$emit('close-modal', linkValue)">
     <div class="modal" @click.stop>
       <div class="close-div">
-        <img
-          class="close"
-          src="~/assets/icons/close.svg"
-          alt=""
-          @click="$emit('close-modal', linkValue)"
-        />
+        <img class="close" src="~/assets/icons/close.svg" alt="" @click="$emit('close-modal', linkValue)" />
       </div>
       <div class="input-div">
         Link:

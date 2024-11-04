@@ -4,9 +4,7 @@ const signIpText = ref("sign in");
 const isLogged = ref(false);
 onMounted(() => {
   if (sessionStorage.getItem("userData")) {
-    const userData = ref(
-      JSON.parse(sessionStorage.getItem("userData") || "{}")
-    );
+    const userData = ref(JSON.parse(sessionStorage.getItem("userData") || "{}"));
     if (userData.value[0].id) {
       navigateTo("/home");
     }

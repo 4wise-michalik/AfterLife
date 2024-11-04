@@ -1,6 +1,13 @@
 import axios from "axios";
 
-export const changeWhatHappendsToAccount = async (userId, platformId, whatHappendsToAccount, whatHappendsToAccountTime, whoToPassAccount) => {
+export const changeWhatHappendsToAccount = async (
+  userId,
+  platformId,
+  whatHappendsToAccount,
+  whatHappendsToAccountTime,
+  whoToPassAccount,
+  message
+) => {
   try {
     const response = await axios.post("/api/platforms/changeWhatHappendsToAccount", {
       userId: userId,
@@ -8,6 +15,7 @@ export const changeWhatHappendsToAccount = async (userId, platformId, whatHappen
       whatHappendsToAccount: whatHappendsToAccount,
       whatHappendsToAccountTime: whatHappendsToAccountTime,
       whoToPassAccount: whoToPassAccount,
+      message: message,
     });
     if (response.data.success) {
       return { success: true };

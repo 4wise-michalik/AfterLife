@@ -1,4 +1,4 @@
-import sql from 'mssql';
+import sql from "mssql";
 const config = {
   user: process.env.AZURE_SQL_USER,
   password: process.env.AZURE_SQL_PASSWORD,
@@ -11,21 +11,28 @@ const config = {
 };
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event); 
+  const body = await readBody(event);
 
   let pool;
   try {
     pool = await sql.connect(config);
-    const result = await pool.request().query(`SELECT reported, (SELECT COUNT(*) AS total FROM trusted WHERE reported=1 AND user_id=${body.userId}) AS total FROM trusted WHERE trusted_id=${body.trustedId} AND user_id=${body.userId};`);
+    const result = await pool.request().query(
+      `SELECT 
+          reported, 
+          (SELECT COUNT(*) AS total FROM trusted WHERE reported=1 AND user_id=${body.userId}) AS total, 
+          (SELECT COUNT(*) FROM trusted where user_id=${body.userId}) AS trusted_number, 
+          (SELECT deceased FROM users where id=${body.userId}) AS is_deceased
+          FROM trusted WHERE trusted_id=${body.trustedId} AND user_id=${body.userId};`
+    );
     return {
       success: true,
       data: result.recordset,
     };
   } catch (error) {
-    console.error('Database error:', error);
+    console.error("Database error:", error);
     return {
       success: false,
-      error: 'Database connection failed',
+      error: "Database connection failed",
     };
   } finally {
     if (pool) pool.close();
@@ -39,7 +46,7 @@ export default defineEventHandler(async (event) => {
   //     .input('trustedId', sql.Int, trustedId) // Przekazujemy trustedId jako parametr
   //     // .query('SELECT COUNT(*) AS total FROM trusted WHERE reported = 1 AND user_id = @userId');
   //     .query('SELECT reported, (SELECT COUNT(*) AS total FROM trusted WHERE reported=1 AND user_id = @userId) FROM trusted WHERE trusted_id = @trustedId AND user_id = @userId;');
-      
+
   //   console.log(result.recordset[0].reported)
   //   return {
   //     success: true,
@@ -55,5 +62,4 @@ export default defineEventHandler(async (event) => {
   // } finally {
   //   if (pool) await pool.close();
   // }
-  });
-  
+});

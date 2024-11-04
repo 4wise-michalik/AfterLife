@@ -13,10 +13,8 @@ const sidebarOpen = ref(false);
 const showAccountInfo = ref(false);
 
 onMounted(() => {
-  const firstName = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .first_name;
-  const lastName = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .last_name;
+  const firstName = JSON.parse(sessionStorage.getItem("userData").toString())[0].first_name;
+  const lastName = JSON.parse(sessionStorage.getItem("userData").toString())[0].last_name;
   if (firstName !== null && lastName !== null) {
     name.value = firstName + " " + lastName;
   } else {
@@ -47,26 +45,16 @@ const logOut = () => {
 <template>
   <div>
     <aside :class="{ open: sidebarOpen }" class="sidebar">
-      <nav
-        class="mobile-margin"
-        style="list-style-type: none"
-        :style="{ color: props.color }"
-      >
+      <nav class="mobile-margin" style="list-style-type: none" :style="{ color: props.color }">
         <slot />
       </nav>
       <div class="account-section">
         <div v-if="showAccountInfo" class="account-info">
-          <NuxtLink to="/home/settings" class="account-info-buttons"
-            >Settings</NuxtLink
-          >
+          <NuxtLink to="/home/settings" class="account-info-buttons">Settings</NuxtLink>
           <NuxtLink to="/home/help" class="account-info-buttons">Help</NuxtLink>
           <button @click="logOut" class="account-info-buttons">Log Out</button>
         </div>
-        <button
-          @click="toggleAccountInfo"
-          class="account-button"
-          aria-label="Account Info"
-        >
+        <button @click="toggleAccountInfo" class="account-button" aria-label="Account Info">
           {{ name }}
         </button>
       </div>

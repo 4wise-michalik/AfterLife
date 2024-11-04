@@ -12,6 +12,8 @@ definePageMeta({
 
 const name = ref("");
 const reportDataTotal = ref(0);
+const reportDataTrustedNumber = ref(0);
+const reportDataDeceased = ref(0);
 const reportDataReported = ref(false);
 const reportError = ref(null);
 const reportLoading = ref(true);
@@ -26,26 +28,28 @@ onMounted(async () => {
     const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
     const reportResult = await checkReport(id, userId);
 
-    reportDataTotal.value = reportResult.data.value.total;
     reportDataReported.value = reportResult.data.value.reported;
+    reportDataTotal.value = reportResult.data.value.total;
+    reportDataTrustedNumber.value = reportResult.data.value.trusted_number;
+    reportDataDeceased.value = reportResult.data.value.is_deceased;
     reportError.value = reportResult.error;
-
-    // if (reportDataReported.value === false) {
-    //   confirmWaitingTime.value = 10;
-    // } else {
-    //   openPopupDisabled.value = true
-    // }
   } catch (err) {
     reportError.value = err.message;
   } finally {
     reportLoading.value = false;
   }
-  const firstName = JSON.parse(sessionStorage.getItem("trusting").toString()).first_name;
-  const lastName = JSON.parse(sessionStorage.getItem("trusting").toString()).last_name;
-  if (firstName !== null && lastName !== null) {
-    name.value = firstName + " " + lastName;
-  } else {
-    name.value = "name surname";
+  const trustingTable = JSON.parse(sessionStorage.getItem("trusting").toString());
+  for (const trusting in trustingTable) {
+    if (trustingTable[trusting].id == id) {
+      const firstName = trustingTable[trusting].first_name;
+      const lastName = trustingTable[trusting].last_name;
+
+      if (firstName !== null && lastName !== null) {
+        name.value = firstName + " " + lastName;
+      } else {
+        name.value = "name surname";
+      }
+    }
   }
 
   confirmWaitingTime.value = 10;
@@ -89,6 +93,11 @@ function onDeathConfirm() {
 <template>
   <div v-if="reportLoading">Loading...</div>
   <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
+  <div v-else-if="reportDataDeceased" class="popup-container">
+    <div class="popup-content">
+      <p class="description">Sadly {{ name }} passed away</p>
+    </div>
+  </div>
   <div v-else-if="reportDataTotal > 0 && reportDataReported == false" class="popup-container">
     <div class="popup-content">
       <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
@@ -149,7 +158,7 @@ function onDeathConfirm() {
   </div>
 
   <div>
-    <div v-show="showConfirm" class="modal-overlay" @click="showConfirm = false">
+    <div v-show="showConfirm" class="modal-overlay">
       <div class="modal" @click.stop>
         <div class="close-div">
           <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm = false" />

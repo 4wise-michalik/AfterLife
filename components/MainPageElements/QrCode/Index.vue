@@ -77,48 +77,20 @@ const downloadQrCode = () => {
   <container>
     <div class="qr-code-div">
       <div v-if="usersPage !== ''" ref="capture">
-        <qrcode-vue
-          :value="usersPage"
-          size="15rem"
-          level="H"
-          render-as="svg"
-          class="qr-code"
-        />
+        <qrcode-vue :value="usersPage" size="15rem" level="H" render-as="svg" class="qr-code" />
       </div>
       <div v-if="usersPage === ''" ref="capture">
-        <qrcode-vue
-          value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          size="15rem"
-          level="H"
-          render-as="svg"
-          class="qr-code"
-        />
+        <qrcode-vue value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size="15rem" level="H" render-as="svg" class="qr-code" />
       </div>
       <div class="qr-code-side-bar">
-        <img
-          class="qr-code-side-element"
-          src="~/assets/icons/zoom.svg"
-          @click="zoomQrCode"
-        />
-        <img
-          class="qr-code-side-element"
-          src="~/assets/icons/edit.svg"
-          @click="editQrCode"
-        />
-        <img
-          class="qr-code-side-element"
-          src="~/assets/icons/download.svg"
-          @click="downloadQrCode"
-        />
+        <Icon class="qr-code-side-element" name="tdesign:zoom-in" size="5rem" @click="zoomQrCode" />
+        <Icon class="qr-code-side-element" name="material-symbols:edit-square-outline" size="5rem" @click="editQrCode" />
+        <Icon class="qr-code-side-element" name="material-symbols:download-2-outline" size="5rem" @click="downloadQrCode" />
       </div>
     </div>
   </container>
 
-  <MainPageElementsQrCodeZoom
-    v-show="showZoom"
-    @close-modal="showZoom = false"
-    :qrCode="imageDataVisualized"
-  />
+  <MainPageElementsQrCodeZoom v-show="showZoom" @close-modal="showZoom = false" :qrCode="imageDataVisualized" />
   <MainPageElementsQrCodeEdit
     v-show="showEdit"
     @close-modal-save="handleEditClose"
@@ -135,6 +107,7 @@ const downloadQrCode = () => {
 .qr-code-div {
   display: flex;
   position: relative;
+  justify-content: center;
 }
 
 .qr-code {
@@ -142,16 +115,13 @@ const downloadQrCode = () => {
 }
 
 .qr-code-side-bar {
-  position: absolute;
   display: grid;
   padding: 1rem;
-  right: 0;
 }
 
 .qr-code-side-element,
 .qr-code-side-element:hover {
-  width: 5rem;
-  height: auto;
+  color: black;
 }
 .qr-code-side-element:hover {
   background-color: #538a8c;

@@ -39,10 +39,13 @@ const date4 = ref();
 const trustedPersons = ref([]);
 const selectedTrustedPerson = ref(null);
 
+const message = ref("");
+
 onMounted(() => {
   getPlatformData();
 
   trustedPersons.value = JSON.parse(sessionStorage.getItem("trusted").toString());
+  selectedTrustedPerson.value = trustedPersons.value[0];
 
   confirmWaitingTime.value = 10;
   countDownConfirm();
@@ -93,8 +96,9 @@ async function onWhatHappendsToAccountChange(option: Number) {
     date.value = date4.value;
   }
   var whoToPassAccount = selectedTrustedPerson.value;
+  var messagePassAccount = message.value;
 
-  await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount);
+  await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount, messagePassAccount);
 
   // nadpisanie w sesji
   const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
@@ -171,6 +175,8 @@ function closeAllSubTubs(option: Number) {
     showAdvanced4.value = false;
   }
 }
+
+// dodać wczytywanie danych z bazy
 </script>
 
 <template>
@@ -347,6 +353,10 @@ function closeAllSubTubs(option: Number) {
                     <Text style="align-self: center">When do you want to us to pass the account?</Text>
                     <Calendar @date="(value) => (date4 = value)" />
                     <Text style="align-self: center">after death</Text>
+                  </div>
+                  <div style="display: flex">
+                    <Text style="align-self: center">Do you want to leave him any message regarding your account?</Text>
+                    <textarea class="email-input-box" v-model="message" placeholder=" message" maxlength="750" />
                   </div>
                   <div class="choose-button">
                     <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(4)">choose</button>
@@ -620,7 +630,18 @@ function closeAllSubTubs(option: Number) {
   color: black;
   margin-left: 10px;
   height: 3vh;
-  width: 10vw;
+  width: 20vw;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+.email-input-box {
+  background-color: white;
+  color: black;
+  width: 45vw;
+  margin: 10px;
+  min-height: 3vh;
+  max-height: 15vh;
   border: 2px solid black;
   border-radius: 5px;
 }

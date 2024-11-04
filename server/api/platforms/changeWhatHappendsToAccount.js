@@ -30,17 +30,15 @@ export default defineEventHandler(async (event) => {
   var minutes = body.whatHappendsToAccountTime.minutes;
 
   var date = year + "-" + months + "-" + days + " " + hours + ":" + minutes + ":00";
-
   var personId = body.whoToPassAccount.id;
-  console.log(personId);
 
   try {
     pool = await sql.connect(config);
-    const result = await pool
-      .request()
-      .query(
-        `UPDATE connected_platforms SET what_happends_to_account=${body.whatHappendsToAccount}, what_happends_to_account_time='${date}', what_happends_to_account_give_account_id=${personId} WHERE user_id=${body.userId} AND platform_id=${body.platformId};`
-      );
+    const result = await pool.request().query(
+      `UPDATE connected_platforms 
+          SET what_happends_to_account=${body.whatHappendsToAccount}, what_happends_to_account_time='${date}', what_happends_to_account_give_account_id=${personId}, what_happends_to_account_give_account_message='${body.message}' 
+          WHERE user_id=${body.userId} AND platform_id=${body.platformId};`
+    );
     return {
       success: true,
       data: result.recordset,

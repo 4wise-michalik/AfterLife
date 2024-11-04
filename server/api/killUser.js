@@ -1,5 +1,4 @@
 import sql from "mssql";
-import { readBody } from "h3";
 const config = {
   user: process.env.AZURE_SQL_USER,
   password: process.env.AZURE_SQL_PASSWORD,
@@ -13,7 +12,9 @@ const config = {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const { userId, trustedId } = body;
+  const { userId } = body;
+
+  console.log(userId);
 
   let pool;
   try {
@@ -21,10 +22,10 @@ export default defineEventHandler(async (event) => {
     pool = await sql.connect(config);
 
     // Wykonaj zapytanie SQL do aktualizacji danych użytkownika
-    const result = await pool.request().input("userId", sql.Int, userId).input("trustedId", sql.Int, trustedId).query(`
-          UPDATE trusted 
-          SET reported = 1
-          WHERE user_id=@userId AND trusted_id=@trustedId
+    const result = await pool.request().input("userId", sql.Int, userId).query(`
+          UPDATE users 
+          SET deceased=1
+          WHERE id=@userId
         `);
 
     return {

@@ -1,9 +1,11 @@
 export const makeDeceased = async (userId) => {
+  const deceasedTime = new Date();
   try {
-    const response = await $fetch("/api/killUser", {
+    const response = await $fetch("/api/makeDeceased", {
       method: "POST",
       body: {
         userId,
+        deceasedTime,
       },
     });
     if (response.success) {

@@ -12,7 +12,7 @@ const config = {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const { userId } = body;
+  const { userId, deceasedTime } = body;
 
   console.log(userId);
 
@@ -22,9 +22,9 @@ export default defineEventHandler(async (event) => {
     pool = await sql.connect(config);
 
     // Wykonaj zapytanie SQL do aktualizacji danych użytkownika
-    const result = await pool.request().input("userId", sql.Int, userId).query(`
+    const result = await pool.request().input("userId", sql.Int, userId).input("deceasedTime", deceasedTime).query(`
           UPDATE users 
-          SET deceased=1
+          SET deceased=1, deceased_time=@deceasedTime
           WHERE id=@userId
         `);
 

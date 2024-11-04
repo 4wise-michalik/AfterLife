@@ -19,12 +19,14 @@ const reportDataReported = ref(false);
 const whatHappendsToAccountGiveAccountId = ref(0);
 const whatHappendsToAccountGiveAccountMessage = ref("");
 const whatHappendsToAccountPlatform = ref();
+const whatHappendsToAccountTime = ref();
 const email = ref();
 const whatHappendsToAccountGiveAccountEmail = ref();
 const whatHappendsToAccountGiveAccountEmailCensored = ref("********************");
 const password = ref();
 const whatHappendsToAccountGiveAccountPassword = ref();
 const whatHappendsToAccountGiveAccountPasswordCensored = ref("**************");
+const didGivenTimePassed = ref(false);
 const reportError = ref(null);
 const reportLoading = ref(true);
 const showCensored = ref(false);
@@ -66,18 +68,27 @@ onMounted(async () => {
     }
   }
 
+  // when pearson that trust the user is dead and the user is supposed to get access to the account
   if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == userId.value) {
     const deceasedResult = await getDeceasedInfo(id, userId.value);
     whatHappendsToAccountGiveAccountMessage.value = deceasedResult.data.value.what_happends_to_account_give_account_message;
     whatHappendsToAccountGiveAccountEmail.value = deceasedResult.data.value.email;
     whatHappendsToAccountGiveAccountPassword.value = deceasedResult.data.value.password;
     whatHappendsToAccountPlatform.value = deceasedResult.data.value.platform;
+    whatHappendsToAccountTime.value = new Date(deceasedResult.data.value.what_happends_to_account_time);
 
-    whatHappendsToAccountGiveAccountEmailCensored.value = censoreString(whatHappendsToAccountGiveAccountEmail.value);
-    whatHappendsToAccountGiveAccountPasswordCensored.value = censoreString(whatHappendsToAccountGiveAccountPassword.value);
+    var deathTime = new Date(deceasedResult.data.value.death_time);
+    const givenTime = adjustDeathTime(whatHappendsToAccountTime.value, deathTime);
+    console.log(givenTime);
 
-    email.value = whatHappendsToAccountGiveAccountEmailCensored.value;
-    password.value = whatHappendsToAccountGiveAccountPasswordCensored.value;
+    if (givenTime <= new Date()) {
+      didGivenTimePassed.value = true;
+      whatHappendsToAccountGiveAccountEmailCensored.value = censoreString(whatHappendsToAccountGiveAccountEmail.value);
+      whatHappendsToAccountGiveAccountPasswordCensored.value = censoreString(whatHappendsToAccountGiveAccountPassword.value);
+
+      email.value = whatHappendsToAccountGiveAccountEmailCensored.value;
+      password.value = whatHappendsToAccountGiveAccountPasswordCensored.value;
+    }
   }
 
   confirmWaitingTime.value = 10;
@@ -111,8 +122,8 @@ const countDownConfirm = () => {
   }, 1000);
 };
 
-function onDeathConfirm() {
-  report(id);
+async function onDeathConfirm() {
+  await report(id);
   showConfirm.value = false;
   window.location.reload();
 }
@@ -136,6 +147,21 @@ function censoreString(text: String) {
     textCensored += "*";
   }
   return textCensored;
+}
+
+// wczytuje złą godzine
+function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
+  whatHappendsToAccountTime.setFullYear(whatHappendsToAccountTime.getFullYear() - 1);
+  whatHappendsToAccountTime.setDate(whatHappendsToAccountTime.getDate() - 1);
+
+  var newDate = new Date();
+  newDate.setFullYear(whatHappendsToAccountTime.getFullYear() + deathTime.getFullYear());
+  newDate.setMonth(whatHappendsToAccountTime.getMonth() + deathTime.getMonth());
+  newDate.setDate(whatHappendsToAccountTime.getDate() + deathTime.getDate());
+  newDate.setHours(whatHappendsToAccountTime.getHours() + deathTime.getHours());
+  newDate.setMinutes(whatHappendsToAccountTime.getMinutes() + deathTime.getMinutes());
+
+  return newDate;
 }
 </script>
 
@@ -208,7 +234,7 @@ function censoreString(text: String) {
     </div>
   </div>
 
-  <div v-if="reportDataDeceased == true && whatHappendsToAccountGiveAccountId == userId" class="popup-container">
+  <div v-if="reportDataDeceased == true && whatHappendsToAccountGiveAccountId == userId && didGivenTimePassed == true" class="popup-container">
     <div class="container-content-deceased">
       <p class="description">
         But he left his <text style="font-weight: 700">{{ whatHappendsToAccountPlatform }}</text> account for you

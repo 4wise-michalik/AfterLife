@@ -20,6 +20,6 @@ export const report = async (userId) => {
 
   const reportResult = await checkReport(userId, trustedId);
   if (reportResult.data.value.total / reportResult.data.value.trusted_number >= 0.75) {
-    makeDeceased(userId);
+    await makeDeceased(userId);
   }
 };

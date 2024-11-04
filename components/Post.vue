@@ -33,7 +33,7 @@ const closePopup = () => {
 };
 
 const saveData = () => {
-  // updatePost(props.id, content.value, props.time.value);
+  updatePost(props.id, content.value, props.time.value);
   // //sessionStorage.removeItem("posts");
   // hours.value = 24;
   // content.value = "";
@@ -80,7 +80,7 @@ const saveData = () => {
       >
         <h3 class="text-lg font-semibold mb-4">Create post</h3>
         <textarea v-model="content" style="color: black"></textarea>
-        <Calendar v-on:date="(value) => (newTime = value)" />
+        <Calendar @date="(value) => (newTime = value)" />
         <div class="flex justify-end space-x-2">
           <button
             @click="closePopup"

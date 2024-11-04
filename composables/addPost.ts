@@ -1,12 +1,12 @@
 import axios from "axios";
 
-export const addPost = async (userId, platformId, content, hours) => {
+export const addPost = async (userId, platformId, content, time) => {
   try {
     const response = await axios.post("/api/platforms/addPost", {
       userId: userId,
       platformId: platformId,
       content: content,
-      hours: hours,
+      time: time,
     });
     if (response.data.success) {
       return { success: true };

@@ -11,12 +11,24 @@ definePageMeta({
 });
 
 const name = ref("");
+const userId = ref(0);
 const reportDataTotal = ref(0);
 const reportDataTrustedNumber = ref(0);
-const reportDataDeceased = ref(0);
+const reportDataDeceased = ref(false);
 const reportDataReported = ref(false);
+const whatHappendsToAccountGiveAccountId = ref(0);
+const whatHappendsToAccountGiveAccountMessage = ref("");
+const whatHappendsToAccountPlatform = ref();
+const email = ref();
+const whatHappendsToAccountGiveAccountEmail = ref();
+const whatHappendsToAccountGiveAccountEmailCensored = ref("********************");
+const password = ref();
+const whatHappendsToAccountGiveAccountPassword = ref();
+const whatHappendsToAccountGiveAccountPasswordCensored = ref("**************");
 const reportError = ref(null);
 const reportLoading = ref(true);
+const showCensored = ref(false);
+const showCensoredIcon = ref("clarity:eye-line");
 
 const confirmTimerLabel = ref("");
 const confirmWaitingTime = ref(10);
@@ -25,13 +37,15 @@ const confirm_isActive = ref(false);
 // Wywołanie API na onMounted
 onMounted(async () => {
   try {
-    const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
-    const reportResult = await checkReport(id, userId);
+    userId.value = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+    const reportResult = await checkReport(id, userId.value);
 
     reportDataReported.value = reportResult.data.value.reported;
     reportDataTotal.value = reportResult.data.value.total;
     reportDataTrustedNumber.value = reportResult.data.value.trusted_number;
     reportDataDeceased.value = reportResult.data.value.is_deceased;
+    whatHappendsToAccountGiveAccountId.value = reportResult.data.value.what_happends_to_account_give_account_id;
+
     reportError.value = reportResult.error;
   } catch (err) {
     reportError.value = err.message;
@@ -50,6 +64,20 @@ onMounted(async () => {
         name.value = "name surname";
       }
     }
+  }
+
+  if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == userId.value) {
+    const deceasedResult = await getDeceasedInfo(id, userId.value);
+    whatHappendsToAccountGiveAccountMessage.value = deceasedResult.data.value.what_happends_to_account_give_account_message;
+    whatHappendsToAccountGiveAccountEmail.value = deceasedResult.data.value.email;
+    whatHappendsToAccountGiveAccountPassword.value = deceasedResult.data.value.password;
+    whatHappendsToAccountPlatform.value = deceasedResult.data.value.platform;
+
+    whatHappendsToAccountGiveAccountEmailCensored.value = censoreString(whatHappendsToAccountGiveAccountEmail.value);
+    whatHappendsToAccountGiveAccountPasswordCensored.value = censoreString(whatHappendsToAccountGiveAccountPassword.value);
+
+    email.value = whatHappendsToAccountGiveAccountEmailCensored.value;
+    password.value = whatHappendsToAccountGiveAccountPasswordCensored.value;
   }
 
   confirmWaitingTime.value = 10;
@@ -88,18 +116,41 @@ function onDeathConfirm() {
   showConfirm.value = false;
   window.location.reload();
 }
+
+function switchShowCredentials() {
+  if (showCensored.value) {
+    showCensoredIcon.value = "clarity:eye-line";
+    email.value = whatHappendsToAccountGiveAccountEmailCensored.value;
+    password.value = whatHappendsToAccountGiveAccountPasswordCensored.value;
+  } else {
+    showCensoredIcon.value = "clarity:eye-hide-line";
+    email.value = whatHappendsToAccountGiveAccountEmail.value;
+    password.value = whatHappendsToAccountGiveAccountPassword.value;
+  }
+  showCensored.value = !showCensored.value;
+}
+
+function censoreString(text: String) {
+  var textCensored = "";
+  for (const char in text) {
+    textCensored += "*";
+  }
+  return textCensored;
+}
 </script>
 
 <template>
   <div v-if="reportLoading">Loading...</div>
   <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
   <div v-else-if="reportDataDeceased" class="popup-container">
-    <div class="popup-content">
-      <p class="description">Sadly {{ name }} passed away</p>
+    <div class="container-content">
+      <p class="description">
+        Sadly, <text style="font-weight: 700">{{ name }}</text> passed away
+      </p>
     </div>
   </div>
   <div v-else-if="reportDataTotal > 0 && reportDataReported == false" class="popup-container">
-    <div class="popup-content">
+    <div class="container-content">
       <p class="description">There's been a report about {{ name }}'s death. Do you confirm it?</p>
       <button
         class="red-button"
@@ -119,7 +170,7 @@ function onDeathConfirm() {
     </div>
   </div>
   <div v-else-if="reportDataReported == true" class="popup-container">
-    <div class="popup-content">
+    <div class="container-content">
       <p class="description">You already reported {{ name }}'s death</p>
       <button
         class="red-button"
@@ -138,7 +189,7 @@ function onDeathConfirm() {
     </div>
   </div>
   <div v-else class="popup-container">
-    <div class="popup-content">
+    <div class="container-content">
       <p class="description">There was no report about {{ name }}'s death. Want to do something about it?</p>
       <button
         class="red-button"
@@ -154,6 +205,23 @@ function onDeathConfirm() {
       >
         Report
       </button>
+    </div>
+  </div>
+
+  <div v-if="reportDataDeceased == true && whatHappendsToAccountGiveAccountId == userId" class="popup-container">
+    <div class="container-content-deceased">
+      <p class="description">
+        But he left his <text style="font-weight: 700">{{ whatHappendsToAccountPlatform }}</text> account for you
+      </p>
+      <p class="description">
+        message: <text style="font-weight: 700">{{ whatHappendsToAccountGiveAccountMessage }}</text>
+      </p>
+      <p class="description">credentials:</p>
+      <p class="description">
+        email: <text style="font-weight: 700">{{ email }}</text> password:
+        <text style="font-weight: 700">{{ password }}</text>
+        <Icon :name="showCensoredIcon" size="20px" @click="switchShowCredentials" style="margin-left: 10px" />
+      </p>
     </div>
   </div>
 
@@ -184,6 +252,7 @@ function onDeathConfirm() {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
   background-color: #333; /* Ciemne tło */
   border: 1px solid #555; /* Subtelna ramka */
   border-radius: 8px;
@@ -191,8 +260,13 @@ function onDeathConfirm() {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Dodanie cienia */
 }
 
-.popup-content {
+.container-content {
   display: flex;
+  align-items: center;
+}
+
+.container-content-deceased {
+  display: block;
   align-items: center;
 }
 

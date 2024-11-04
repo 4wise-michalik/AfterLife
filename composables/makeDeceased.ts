@@ -1,5 +1,4 @@
 export const makeDeceased = async (userId) => {
-  console.log("zginął");
   try {
     const response = await $fetch("/api/killUser", {
       method: "POST",

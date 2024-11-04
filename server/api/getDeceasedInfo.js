@@ -16,15 +16,11 @@ export default defineEventHandler(async (event) => {
   let pool;
   try {
     pool = await sql.connect(config);
-    const result = await pool.request().query(
-      `SELECT 
-          reported, 
-          (SELECT COUNT(*) AS total FROM trusted WHERE reported=1 AND user_id=${body.userId}) AS total, 
-          (SELECT COUNT(*) FROM trusted where user_id=${body.userId}) AS trusted_number, 
-          (SELECT deceased FROM users where id=${body.userId}) AS is_deceased, 
-          (SELECT what_happends_to_account_give_account_id FROM connected_platforms WHERE user_id=${body.userId} AND what_happends_to_account_give_account_id=${body.trustedId}) AS what_happends_to_account_give_account_id
-          FROM trusted WHERE trusted_id=${body.trustedId} AND user_id=${body.userId};`
-    );
+    const result = await pool
+      .request()
+      .query(
+        `SELECT (SELECT name FROM platforms WHERE platforms.id=platform_id) as platform, email, password, what_happends_to_account, what_happends_to_account_time, what_happends_to_account_give_account_id, what_happends_to_account_give_account_message FROM connected_platforms WHERE user_id=${body.userId} AND what_happends_to_account_give_account_id=${body.trustedId}`
+      );
     return {
       success: true,
       data: result.recordset,

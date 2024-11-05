@@ -31,32 +31,50 @@ const divStyle3 = ref("what-happends-to-account-element");
 const divStyle4 = ref("what-happends-to-account-element");
 
 const date = ref();
-const date1 = ref();
-const date2 = ref();
-const date3 = ref();
-const date4 = ref();
+const date1 = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+const date2 = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+const date3 = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+const date4 = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 
 const trustedPersons = ref([]);
-const selectedTrustedPerson = ref(null);
+const selectedTrustedPerson = ref(0);
 
 const message = ref("");
 
 onMounted(() => {
-  getPlatformData();
-
   trustedPersons.value = JSON.parse(sessionStorage.getItem("trusted").toString());
   selectedTrustedPerson.value = trustedPersons.value[0];
+
+  getPlatformData();
 
   confirmWaitingTime.value = 10;
   countDownConfirm();
 });
 
 function getPlatformData() {
+  var messageTemp = "";
+  var selectedTemp = 0;
+
+  name.value = "";
+  whatHappendsToAccount.value = 0;
+  date.value = {};
+  selectedTrustedPerson.value = trustedPersons.value[0];
+  messageTemp = "";
+
   const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       name.value = platformData[platform].platform_name;
       whatHappendsToAccount.value = platformData[platform].what_happends_to_account;
+      date.value = platformData[platform].what_happends_to_account_time;
+      selectedTemp = platformData[platform].what_happends_to_account_give_account_id;
+      messageTemp = platformData[platform].what_happends_to_account_give_account_message;
+    }
+  }
+
+  for (const trustedPerson in trustedPersons.value) {
+    if (trustedPersons.value[trustedPerson].id == selectedTemp) {
+      selectedTrustedPerson.value = trustedPersons.value[trustedPerson];
     }
   }
 
@@ -70,12 +88,17 @@ function getPlatformData() {
     divStyle0.value = "what-happends-to-account-element-choosen";
   } else if (whatHappendsToAccount.value === 1) {
     divStyle1.value = "what-happends-to-account-element-choosen";
+    date1.value = date.value;
   } else if (whatHappendsToAccount.value === 2) {
     divStyle2.value = "what-happends-to-account-element-choosen";
+    date2.value = date.value;
   } else if (whatHappendsToAccount.value === 3) {
     divStyle3.value = "what-happends-to-account-element-choosen";
+    date3.value = date.value;
   } else if (whatHappendsToAccount.value === 4) {
     divStyle4.value = "what-happends-to-account-element-choosen";
+    date4.value = date.value;
+    message.value = messageTemp;
   }
 }
 
@@ -98,6 +121,7 @@ async function onWhatHappendsToAccountChange(option: Number) {
   var whoToPassAccount = selectedTrustedPerson.value;
   var messagePassAccount = message.value;
 
+  // convert to time
   await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount, messagePassAccount);
 
   // nadpisanie w sesji
@@ -105,6 +129,10 @@ async function onWhatHappendsToAccountChange(option: Number) {
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       platformData[platform].what_happends_to_account = option;
+      platformData[platform].what_happends_to_account = whatHappendsToAccount.value;
+      platformData[platform].what_happends_to_account_time = date.value;
+      platformData[platform].what_happends_to_account_give_account_id = selectedTrustedPerson.value.id;
+      platformData[platform].what_happends_to_account_give_account_message = message.value;
     }
   }
   sessionStorage.setItem("userPlatforms", JSON.stringify(platformData));
@@ -249,7 +277,7 @@ function closeAllSubTubs(option: Number) {
                   >
                   <div style="display: flex">
                     <Text style="align-self: center">For how long do you want us look after it?</Text>
-                    <Calendar @date="(value) => (date1 = value)" />
+                    <Calendar :dateIn="date1" @date="(value) => (date1 = value)" />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div class="choose-button">
@@ -281,7 +309,7 @@ function closeAllSubTubs(option: Number) {
                   >
                   <div style="display: flex">
                     <Text style="align-self: center">For how long do you want us to keep it alive?</Text>
-                    <Calendar @date="(value) => (date2 = value)" />
+                    <Calendar :dateIn="date2" @date="(value) => (date2 = value)" />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div class="choose-button">
@@ -313,7 +341,7 @@ function closeAllSubTubs(option: Number) {
                   >
                   <div style="display: flex">
                     <Text style="align-self: center">When do you want to delete your account?</Text>
-                    <Calendar @date="(value) => (date3 = value)" />
+                    <Calendar :dateIn="date3" @date="(value) => (date3 = value)" />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div class="choose-button">
@@ -351,7 +379,7 @@ function closeAllSubTubs(option: Number) {
                   </div>
                   <div style="display: flex">
                     <Text style="align-self: center">When do you want to us to pass the account?</Text>
-                    <Calendar @date="(value) => (date4 = value)" />
+                    <Calendar :dateIn="date4" @date="(value) => (date4 = value)" />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div style="display: flex">

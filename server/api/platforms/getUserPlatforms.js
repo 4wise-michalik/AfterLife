@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     const result = await pool
       .request()
       .query(
-        `SELECT user_id, platform_id, (SELECT name FROM platforms WHERE platform_id=id) as platform_name, what_happends_to_account FROM connected_platforms WHERE user_id=${body.userId};`
+        `SELECT user_id, platform_id, (SELECT name FROM platforms WHERE platform_id=id) as platform_name, what_happends_to_account, what_happends_to_account_time, what_happends_to_account_give_account_id, what_happends_to_account_give_account_message FROM connected_platforms WHERE user_id=${body.userId};`
       );
     return {
       success: true,

@@ -1,3 +1,3 @@
 export const useUpdatePost = () => {
-  return ref()
-}
+  return ref();
+};

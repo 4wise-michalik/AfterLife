@@ -13,15 +13,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <container>
-    <div>
-      <text class="greating-text"> Witaj wędrowcze </text>
+  <div>
+    <text class="greating-text"> Witaj wędrowcze </text>
 
-      <button class="default-button" @click="navigateTo('/login')">
-        {{ signIpText }}
-      </button>
-    </div>
-  </container>
+    <button class="default-button" @click="navigateTo('/login')">
+      {{ signIpText }}
+    </button>
+  </div>
 </template>
 
 <style>

@@ -38,6 +38,7 @@ const logOut = () => {
   sessionStorage.removeItem("trusted"); // usuwa informacje o zaufanych
   sessionStorage.removeItem("trusting"); // usuwa informacje o ufających
   sessionStorage.removeItem("userPlatforms"); // usuwa informacje o połączonych platformach
+  sessionStorage.removeItem("posts"); // usuwa informacje o postach
   navigateTo("/");
 };
 </script>

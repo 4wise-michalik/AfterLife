@@ -1,4 +1,5 @@
 import sql from "mssql";
+import { convertCalendar } from "@/composables/convertCalendar";
 const config = {
   user: process.env.AZURE_SQL_USER,
   password: process.env.AZURE_SQL_PASSWORD,
@@ -13,30 +14,21 @@ const config = {
 export default defineEventHandler(async (event) => {
   const body = await readBody(event); // Read the request body
   let pool;
+  const { convertCalendarToDate, convertCalendarToObj } = convertCalendar();
 
-  var year = "";
-  if (body.whatHappendsToAccountTime.years < 9) {
-    year = "000" + (body.whatHappendsToAccountTime.years + 1); // +1 bo nie można wpisać do bazy roku '0000'
-  } else {
-    year = "00" + (body.whatHappendsToAccountTime.years + 1); // +1 bo nie można wpisać do bazy roku '0000'
-  }
-  var months = body.whatHappendsToAccountTime.months + 1; // +1 bo nie można wpisać do bazy roku '0000'
-  var days = body.whatHappendsToAccountTime.days + 1; // +1 bo nie można wpisać do bazy roku '0000'
-  if (days > 31) {
-    days = 1;
-    months++;
-  }
-  var hours = body.whatHappendsToAccountTime.hours;
-  var minutes = body.whatHappendsToAccountTime.minutes;
-
-  var date = year + "-" + months + "-" + days + " " + hours + ":" + minutes + ":00";
   var personId = body.whoToPassAccount.id;
+  var date = await convertCalendarToDate(body.whatHappendsToAccountTime);
+  console.log(date.toISOString());
 
   try {
     pool = await sql.connect(config);
     const result = await pool.request().query(
-      `UPDATE connected_platforms 
-          SET what_happends_to_account=${body.whatHappendsToAccount}, what_happends_to_account_time='${date}', what_happends_to_account_give_account_id=${personId}, what_happends_to_account_give_account_message='${body.message}' 
+      `UPDATE connected_platforms
+          SET what_happends_to_account=${
+            body.whatHappendsToAccount
+          }, what_happends_to_account_time='${date.toISOString()}', what_happends_to_account_give_account_id=${personId}, what_happends_to_account_give_account_message='${
+        body.message
+      }'
           WHERE user_id=${body.userId} AND platform_id=${body.platformId};`
     );
     return {

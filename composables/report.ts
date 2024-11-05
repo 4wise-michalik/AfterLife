@@ -1,10 +1,11 @@
-export const report = async (userId) => {
-  const trustedId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+export const report = async (trustingId) => {
+  const trustedId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
   try {
     const response = await $fetch("/api/report", {
       method: "POST",
       body: {
-        userId,
+        trustingId,
         trustedId,
       },
     });
@@ -19,7 +20,10 @@ export const report = async (userId) => {
   }
 
   const reportResult = await checkReport(userId, trustedId);
-  if (reportResult.data.value.total / reportResult.data.value.trusted_number >= 0.75) {
+  if (
+    reportResult.data.value.total / reportResult.data.value.trusted_number >=
+    0.75
+  ) {
     await makeDeceased(userId);
   }
 };

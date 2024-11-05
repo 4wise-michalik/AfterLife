@@ -1,32 +1,30 @@
-import sql from "mssql";
+import mysql from "mysql2/promise";
 const config = {
-  user: process.env.AZURE_SQL_USER,
-  password: process.env.AZURE_SQL_PASSWORD,
-  server: process.env.AZURE_SQL_SERVER,
-  database: process.env.AZURE_SQL_DATABASE,
-  options: {
-    encrypt: true,
-    trustServerCertificate: false,
-  },
+  host: process.env.MARIA_DB_HOST,
+  user: process.env.MARIA_DB_USER,
+  password: process.env.MARIA_DB_PASSWORD,
+  database: process.env.MARIA_DB_DATABASE,
+  port: 3306,
 };
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { userId, deceasedTime } = body;
 
-  console.log(userId);
-
-  let pool;
+  let connection;
   try {
-    // Połącz się z bazą danych
-    pool = await sql.connect(config);
+    // Connect to MySQL
+    connection = await mysql.createConnection(config);
 
-    // Wykonaj zapytanie SQL do aktualizacji danych użytkownika
-    const result = await pool.request().input("userId", sql.Int, userId).input("deceasedTime", deceasedTime).query(`
-          UPDATE users 
-          SET deceased=1, deceased_time=@deceasedTime
-          WHERE id=@userId
-        `);
+    // Execute SQL query to update user data
+    const [rows] = await connection.execute(
+      `
+      UPDATE users 
+      SET deceased=1, deceased_time=?
+      WHERE id=?
+    `,
+      [deceasedTime, userId]
+    );
 
     return {
       success: true,
@@ -39,6 +37,6 @@ export default defineEventHandler(async (event) => {
       error: "Failed to update user data",
     };
   } finally {
-    if (pool) pool.close();
+    if (connection) connection.end();
   }
 });

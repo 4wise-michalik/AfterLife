@@ -1,37 +1,33 @@
-import sql from "mssql";
+import mysql from "mysql2/promise";
+
 const config = {
-  user: process.env.AZURE_SQL_USER,
-  password: process.env.AZURE_SQL_PASSWORD,
-  server: process.env.AZURE_SQL_SERVER,
-  database: process.env.AZURE_SQL_DATABASE,
-  options: {
-    encrypt: true,
-    trustServerCertificate: false,
-  },
+  host: process.env.MARIA_DB_HOST,
+  user: process.env.MARIA_DB_USER,
+  password: process.env.MARIA_DB_PASSWORD,
+  database: process.env.MARIA_DB_DATABASE,
+  port: 3306,
 };
 
 export default defineEventHandler(async (event) => {
   const userId = event.context.params.id;
-  let pool;
+  let connection;
+
   try {
-    pool = await sql.connect(config);
-    const result = await pool.request().input("userId", sql.Int, userId).query(`
-        SELECT p.*, pt.*
-        FROM posts p
-        LEFT JOIN platforms pt ON p.platform_id = pt.id
-        WHERE p.user_id = ${userId}
-      `);
-    if (result.rowsAffected != 0) {
-      return {
-        success: true,
-        data: result.recordset,
-      };
-    } else {
-      return {
-        success: true,
-        data: [],
-      };
-    }
+    connection = await mysql.createConnection(config);
+    const [rows] = await connection.query(
+      `
+      SELECT p.*, pt.*
+      FROM posts p
+      LEFT JOIN platforms pt ON p.platform_id = pt.id
+      WHERE p.user_id = ?
+    `,
+      [userId]
+    );
+
+    return {
+      success: true,
+      data: rows,
+    };
   } catch (error) {
     console.error("Database error:", error);
     return {
@@ -39,6 +35,6 @@ export default defineEventHandler(async (event) => {
       error: "Database connection failed",
     };
   } finally {
-    if (pool) pool.close();
+    if (connection) await connection.end();
   }
 });

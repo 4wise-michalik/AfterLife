@@ -1,32 +1,30 @@
-import sql from "mssql";
+import mysql from "mysql2/promise";
 
 const config = {
-  user: process.env.AZURE_SQL_USER,
-  password: process.env.AZURE_SQL_PASSWORD,
-  server: process.env.AZURE_SQL_SERVER,
-  database: process.env.AZURE_SQL_DATABASE,
-  options: {
-    encrypt: true,
-    trustServerCertificate: false,
-  },
+  host: process.env.MARIA_DB_HOST,
+  user: process.env.MARIA_DB_USER,
+  password: process.env.MARIA_DB_PASSWORD,
+  database: process.env.MARIA_DB_DATABASE,
+  port: 3306,
 };
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  let pool;
+  let connection;
   try {
-    pool = await sql.connect(config);
-    const result = await pool
-      .request()
-      .query(`SELECT * FROM memoryPages WHERE user_id=${body.id};`);
-    if (result.rowsAffected[0] === 0) {
+    connection = await mysql.createConnection(config);
+    const [rows] = await connection.query(
+      `SELECT * FROM memory_pages WHERE user_id = ?`,
+      [body.id]
+    );
+    if (rows.length === 0) {
       return {
         success: false,
       };
     } else {
       return {
         success: true,
-        data: result.recordset,
+        data: rows,
       };
     }
   } catch (error) {
@@ -36,6 +34,6 @@ export default defineEventHandler(async (event) => {
       error: "Database connection failed",
     };
   } finally {
-    if (pool) pool.close();
+    if (connection) await connection.end();
   }
 });

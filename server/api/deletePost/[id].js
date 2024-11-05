@@ -1,28 +1,26 @@
-import sql from "mssql";
+import mysql from "mysql2/promise";
+
 const config = {
-  user: process.env.AZURE_SQL_USER,
-  password: process.env.AZURE_SQL_PASSWORD,
-  server: process.env.AZURE_SQL_SERVER,
-  database: process.env.AZURE_SQL_DATABASE,
-  options: {
-    encrypt: true,
-    trustServerCertificate: false,
-  },
+  host: process.env.MARIA_DB_HOST,
+  user: process.env.MARIA_DB_USER,
+  password: process.env.MARIA_DB_PASSWORD,
+  database: process.env.MARIA_DB_DATABASE,
+  port: 3306,
 };
 
 export default defineEventHandler(async (event) => {
   const postId = event.context.params.id;
-  let pool;
+  let connection;
 
   try {
-    pool = await sql.connect(config);
-    const result = await pool
-      .request()
-      .input("postId", sql.Int, postId)
-      .query(`DELETE FROM posts WHERE id = ${postId};`);
+    connection = await mysql.createConnection(config);
+    const [result] = await connection.query(`DELETE FROM posts WHERE id = ?`, [
+      postId,
+    ]);
+
     return {
       success: true,
-      data: result.recordset,
+      data: result,
     };
   } catch (error) {
     console.error("Database error:", error);
@@ -31,6 +29,6 @@ export default defineEventHandler(async (event) => {
       error: "Database connection failed",
     };
   } finally {
-    if (pool) pool.close();
+    if (connection) await connection.end();
   }
 });

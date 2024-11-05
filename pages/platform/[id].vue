@@ -42,7 +42,9 @@ const selectedTrustedPerson = ref(0);
 const message = ref("");
 
 onMounted(() => {
-  trustedPersons.value = JSON.parse(sessionStorage.getItem("trusted").toString());
+  trustedPersons.value = JSON.parse(
+    sessionStorage.getItem("trusted").toString()
+  );
   selectedTrustedPerson.value = trustedPersons.value[0];
 
   getPlatformData();
@@ -61,14 +63,19 @@ function getPlatformData() {
   selectedTrustedPerson.value = trustedPersons.value[0];
   messageTemp = "";
 
-  const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
+  const platformData = JSON.parse(
+    sessionStorage.getItem("userPlatforms").toString()
+  );
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       name.value = platformData[platform].platform_name;
-      whatHappendsToAccount.value = platformData[platform].what_happends_to_account;
-      date.value = platformData[platform].what_happends_to_account_time;
-      selectedTemp = platformData[platform].what_happends_to_account_give_account_id;
-      messageTemp = platformData[platform].what_happends_to_account_give_account_message;
+      whatHappendsToAccount.value =
+        platformData[platform].what_happens_to_account;
+      date.value = platformData[platform].what_happens_to_account_time;
+      selectedTemp =
+        platformData[platform].what_happens_to_account_give_account_id;
+      messageTemp =
+        platformData[platform].what_happens_to_account_give_account_message;
     }
   }
 
@@ -104,7 +111,8 @@ function getPlatformData() {
 
 async function onWhatHappendsToAccountChange(option: Number) {
   // zapisanie w bazie
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
   const platformId = parseInt(id);
   if (option === 1) {
     date.value = date1.value;
@@ -122,17 +130,29 @@ async function onWhatHappendsToAccountChange(option: Number) {
   var messagePassAccount = message.value;
 
   // convert to time
-  await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount, messagePassAccount);
+  await changeWhatHappendsToAccount(
+    userId,
+    platformId,
+    option,
+    date.value,
+    whoToPassAccount,
+    messagePassAccount
+  );
 
   // nadpisanie w sesji
-  const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
+  const platformData = JSON.parse(
+    sessionStorage.getItem("userPlatforms").toString()
+  );
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
-      platformData[platform].what_happends_to_account = option;
-      platformData[platform].what_happends_to_account = whatHappendsToAccount.value;
-      platformData[platform].what_happends_to_account_time = date.value;
-      platformData[platform].what_happends_to_account_give_account_id = selectedTrustedPerson.value.id;
-      platformData[platform].what_happends_to_account_give_account_message = message.value;
+      platformData[platform].what_happens_to_account = option;
+      platformData[platform].what_happens_to_account =
+        whatHappendsToAccount.value;
+      platformData[platform].what_happens_to_account_time = date.value;
+      platformData[platform].what_happens_to_account_give_account_id =
+        selectedTrustedPerson.value.id;
+      platformData[platform].what_happens_to_account_give_account_message =
+        message.value;
     }
   }
   sessionStorage.setItem("userPlatforms", JSON.stringify(platformData));
@@ -145,8 +165,14 @@ const countDownConfirm = () => {
   setInterval(function () {
     if (confirmWaitingTime.value >= 0) {
       if (confirmWaitingTime.value >= 10) {
-        var minutes = parseInt((confirmWaitingTime.value / 60).toString(), 10).toString();
-        var seconds = parseInt((confirmWaitingTime.value % 60).toString(), 10).toString();
+        var minutes = parseInt(
+          (confirmWaitingTime.value / 60).toString(),
+          10
+        ).toString();
+        var seconds = parseInt(
+          (confirmWaitingTime.value % 60).toString(),
+          10
+        ).toString();
 
         if (parseInt(minutes) < 10) {
           minutes = "0" + minutes;
@@ -169,17 +195,24 @@ const countDownConfirm = () => {
 };
 
 async function onRemoveConfirm() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
   const platformId = parseInt(id);
   await removeUserPlatform(userId, platformId);
   navigateTo("/home");
 }
 
 function onEditConfirm() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
   const platformId = parseInt(id);
   if (login.value != "" && password.value != "") {
-    changeUserPlatformCredentials(userId, platformId, login.value, password.value);
+    changeUserPlatformCredentials(
+      userId,
+      platformId,
+      login.value,
+      password.value
+    );
     showEdit.value = false;
   } else {
     errorMessage.value = "enter your credentials";
@@ -212,26 +245,46 @@ function closeAllSubTubs(option: Number) {
     <div class="popup-content">
       <p class="title-text">
         What happends on your
-        <Text style="font-weight: 800">{{ name }}</Text> account after you pass away
+        <Text style="font-weight: 800">{{ name }}</Text> account after you pass
+        away
       </p>
     </div>
   </div>
   <div class="container mx-auto py-8 grid grid-cols-1 grid-cols-1gap-2">
-    <section class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl">POSTS</section>
-    <section class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl">MESSAGES</section>
+    <section
+      class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
+      POSTS
+    </section>
+    <section
+      class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
+      MESSAGES
+    </section>
 
-    <section class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl">
+    <section
+      class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl"
+    >
       <div>
         <Text>ACCOUNT</Text>
       </div>
 
       <div class="option-div">
-        <div @click="showWhatHappendsToAccount = !showWhatHappendsToAccount" style="cursor: pointer">
+        <div
+          @click="showWhatHappendsToAccount = !showWhatHappendsToAccount"
+          style="cursor: pointer"
+        >
           <Icon class="icon" name="mdi:grave-stone" size="25px" />
-          <Text>What do you want us to do with your {{ name }} account in your Afterlife</Text>
+          <Text
+            >What do you want us to do with your {{ name }} account in your
+            Afterlife</Text
+          >
         </div>
 
-        <div v-if="showWhatHappendsToAccount" class="container mx-auto py-8 grid grid-cols-1 gap-6">
+        <div
+          v-if="showWhatHappendsToAccount"
+          class="container mx-auto py-8 grid grid-cols-1 gap-6"
+        >
           <div :class="divStyle0">
             <div
               style="cursor: pointer"
@@ -247,9 +300,17 @@ function closeAllSubTubs(option: Number) {
             <div>
               <div v-if="showAdvanced0" class="advanced-options-div">
                 <div @click.stop>
-                  <Text>Doesn't change anything on the account, just publishes scheduled post and sends messages.</Text>
+                  <Text
+                    >Doesn't change anything on the account, just publishes
+                    scheduled post and sends messages.</Text
+                  >
                   <div class="choose-button">
-                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(0)">choose</button>
+                    <button
+                      class="what-happends-to-account-element-save"
+                      @click="onWhatHappendsToAccountChange(0)"
+                    >
+                      choose
+                    </button>
                   </div>
                 </div>
               </div>
@@ -266,22 +327,36 @@ function closeAllSubTubs(option: Number) {
                 }
               "
             >
-              <Text style="font-weight: 700">Take over the account (change email and password) and preserve it</Text>
+              <Text style="font-weight: 700"
+                >Take over the account (change email and password) and preserve
+                it</Text
+              >
             </div>
             <div>
               <div v-if="showAdvanced1" class="advanced-options-div">
                 <div @click.stop>
                   <Text
-                    >Takes over control over the account and keeps it safe (changes email and password once in a while). Also publishes scheduled post
-                    and sends messages.</Text
+                    >Takes over control over the account and keeps it safe
+                    (changes email and password once in a while). Also publishes
+                    scheduled post and sends messages.</Text
                   >
                   <div style="display: flex">
-                    <Text style="align-self: center">For how long do you want us look after it?</Text>
-                    <Calendar :dateIn="date1" @date="(value) => (date1 = value)" />
+                    <Text style="align-self: center"
+                      >For how long do you want us look after it?</Text
+                    >
+                    <Calendar
+                      :dateIn="date1"
+                      @date="(value) => (date1 = value)"
+                    />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div class="choose-button">
-                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(1)">choose</button>
+                    <button
+                      class="what-happends-to-account-element-save"
+                      @click="onWhatHappendsToAccountChange(1)"
+                    >
+                      choose
+                    </button>
                   </div>
                 </div>
               </div>
@@ -298,22 +373,36 @@ function closeAllSubTubs(option: Number) {
                 }
               "
             >
-              <Text style="font-weight: 700">Take over the account (change email and password) and keep it alive for some time</Text>
+              <Text style="font-weight: 700"
+                >Take over the account (change email and password) and keep it
+                alive for some time</Text
+              >
             </div>
             <div>
               <div v-if="showAdvanced2" class="advanced-options-div">
                 <div @click.stop>
                   <Text
-                    >Takes over control over the account, keeps it safe (changes email and password once in a while) for a given time. Also publishes
-                    scheduled post and sends messages.</Text
+                    >Takes over control over the account, keeps it safe (changes
+                    email and password once in a while) for a given time. Also
+                    publishes scheduled post and sends messages.</Text
                   >
                   <div style="display: flex">
-                    <Text style="align-self: center">For how long do you want us to keep it alive?</Text>
-                    <Calendar :dateIn="date2" @date="(value) => (date2 = value)" />
+                    <Text style="align-self: center"
+                      >For how long do you want us to keep it alive?</Text
+                    >
+                    <Calendar
+                      :dateIn="date2"
+                      @date="(value) => (date2 = value)"
+                    />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div class="choose-button">
-                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(2)">choose</button>
+                    <button
+                      class="what-happends-to-account-element-save"
+                      @click="onWhatHappendsToAccountChange(2)"
+                    >
+                      choose
+                    </button>
                   </div>
                 </div>
               </div>
@@ -330,22 +419,37 @@ function closeAllSubTubs(option: Number) {
                 }
               "
             >
-              <Text style="font-weight: 700">Take over the account (change email and password) and delete it after some time</Text>
+              <Text style="font-weight: 700"
+                >Take over the account (change email and password) and delete it
+                after some time</Text
+              >
             </div>
             <div>
               <div v-if="showAdvanced3" class="advanced-options-div">
                 <div @click.stop>
                   <Text
-                    >Takes over control over the account, keeps it safe (changes email and password once in a while) and deletes after given time.
-                    Also publishes scheduled post and sends messages.</Text
+                    >Takes over control over the account, keeps it safe (changes
+                    email and password once in a while) and deletes after given
+                    time. Also publishes scheduled post and sends
+                    messages.</Text
                   >
                   <div style="display: flex">
-                    <Text style="align-self: center">When do you want to delete your account?</Text>
-                    <Calendar :dateIn="date3" @date="(value) => (date3 = value)" />
+                    <Text style="align-self: center"
+                      >When do you want to delete your account?</Text
+                    >
+                    <Calendar
+                      :dateIn="date3"
+                      @date="(value) => (date3 = value)"
+                    />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div class="choose-button">
-                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(3)">choose</button>
+                    <button
+                      class="what-happends-to-account-element-save"
+                      @click="onWhatHappendsToAccountChange(3)"
+                    >
+                      choose
+                    </button>
                   </div>
                 </div>
               </div>
@@ -362,32 +466,66 @@ function closeAllSubTubs(option: Number) {
                 }
               "
             >
-              <Text style="font-weight: 700">Take over the account (change email and password) and give it over to someone</Text>
+              <Text style="font-weight: 700"
+                >Take over the account (change email and password) and give it
+                over to someone</Text
+              >
             </div>
             <div>
               <div v-if="showAdvanced4" class="advanced-options-div">
                 <div @click.stop>
                   <Text
-                    >Takes over control over the account, changes email and password and passes them to given trusted person after given time. Also
-                    publishes scheduled post and sends messages.</Text
+                    >Takes over control over the account, changes email and
+                    password and passes them to given trusted person after given
+                    time. Also publishes scheduled post and sends
+                    messages.</Text
                   >
                   <div style="display: flex">
-                    <Text style="align-self: center">Who do you want to us to pass the account to?</Text>
-                    <select class="trusted-drop-down" v-model="selectedTrustedPerson">
-                      <option v-for="person in trustedPersons" :key="person" :value="person">{{ person.first_name }} {{ person.last_name }}</option>
+                    <Text style="align-self: center"
+                      >Who do you want to us to pass the account to?</Text
+                    >
+                    <select
+                      class="trusted-drop-down"
+                      v-model="selectedTrustedPerson"
+                    >
+                      <option
+                        v-for="person in trustedPersons"
+                        :key="person"
+                        :value="person"
+                      >
+                        {{ person.first_name }} {{ person.last_name }}
+                      </option>
                     </select>
                   </div>
                   <div style="display: flex">
-                    <Text style="align-self: center">When do you want to us to pass the account?</Text>
-                    <Calendar :dateIn="date4" @date="(value) => (date4 = value)" />
+                    <Text style="align-self: center"
+                      >When do you want to us to pass the account?</Text
+                    >
+                    <Calendar
+                      :dateIn="date4"
+                      @date="(value) => (date4 = value)"
+                    />
                     <Text style="align-self: center">after death</Text>
                   </div>
                   <div style="display: flex">
-                    <Text style="align-self: center">Do you want to leave him any message regarding your account?</Text>
-                    <textarea class="email-input-box" v-model="message" placeholder=" message" maxlength="750" />
+                    <Text style="align-self: center"
+                      >Do you want to leave him any message regarding your
+                      account?</Text
+                    >
+                    <textarea
+                      class="email-input-box"
+                      v-model="message"
+                      placeholder=" message"
+                      maxlength="750"
+                    />
                   </div>
                   <div class="choose-button">
-                    <button class="what-happends-to-account-element-save" @click="onWhatHappendsToAccountChange(4)">choose</button>
+                    <button
+                      class="what-happends-to-account-element-save"
+                      @click="onWhatHappendsToAccountChange(4)"
+                    >
+                      choose
+                    </button>
                   </div>
                 </div>
               </div>
@@ -406,7 +544,11 @@ function closeAllSubTubs(option: Number) {
         "
         style="cursor: pointer"
       >
-        <Icon class="icon" name="streamline:interface-edit-write-2-change-document-edit-modify-paper-pencil-write-writing" size="25px" />
+        <Icon
+          class="icon"
+          name="streamline:interface-edit-write-2-change-document-edit-modify-paper-pencil-write-writing"
+          size="25px"
+        />
         <Text>change account credentials</Text>
       </div>
 
@@ -429,17 +571,35 @@ function closeAllSubTubs(option: Number) {
   </div>
 
   <div>
-    <div v-show="showConfirm" class="modal-overlay" @click="showConfirm = false">
+    <div
+      v-show="showConfirm"
+      class="modal-overlay"
+      @click="showConfirm = false"
+    >
       <div class="modal" @click.stop>
         <div class="close-div">
-          <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm = false" />
+          <img
+            class="close"
+            src="~/assets/icons/close.svg"
+            alt=""
+            @click="showConfirm = false"
+          />
         </div>
         <div class="text-div">
-          <text>Are you sure you want to remove your {{ name }} account from Afterlife profile?</text>
+          <text
+            >Are you sure you want to remove your {{ name }} account from
+            Afterlife profile?</text
+          >
           <text> All of your planned posts and messages will be gone.</text>
         </div>
         <div class="button-div">
-          <button :disabled="!confirm_isActive" class="red-button" @click="onRemoveConfirm()">Confirm</button>
+          <button
+            :disabled="!confirm_isActive"
+            class="red-button"
+            @click="onRemoveConfirm()"
+          >
+            Confirm
+          </button>
         </div>
         <div class="button-div">
           <text>{{ confirmTimerLabel }}</text>
@@ -451,15 +611,31 @@ function closeAllSubTubs(option: Number) {
   <div v-show="showEdit" class="modal-overlay" @click="showEdit = false">
     <div class="modal" @click.stop>
       <div class="close-div">
-        <img class="close" src="~/assets/icons/close.svg" alt="" @click="showEdit = false" />
+        <img
+          class="close"
+          src="~/assets/icons/close.svg"
+          alt=""
+          @click="showEdit = false"
+        />
       </div>
       <div class="text-div">
         <text>Update your {{ name }} account credentials</text>
       </div>
       <div>
         <div class="input-div">
-          <input class="input" id="platform_login" v-model="login" placeholder=" login" />
-          <input id="platform_password" class="input" type="password" v-model="password" placeholder=" password" />
+          <input
+            class="input"
+            id="platform_login"
+            v-model="login"
+            placeholder=" login"
+          />
+          <input
+            id="platform_password"
+            class="input"
+            type="password"
+            v-model="password"
+            placeholder=" password"
+          />
         </div>
         <div class="text-div">
           <text class="error-text">{{ errorMessage }}</text>

@@ -190,8 +190,6 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
     whatHappendsToAccountTime.getMinutes() + deathTime.getMinutes()
   );
 
-  console.log(newDate);
-
   return newDate;
 }
 </script>

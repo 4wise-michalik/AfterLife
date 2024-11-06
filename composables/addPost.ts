@@ -16,3 +16,19 @@ export const addPost = async (userId, platformId, content, time) => {
   }
   return { success: false };
 };
+
+export const updatePost = async (post_id, content, time) => {
+  try {
+    const response = await axios.post("/api/platforms/updatePost", {
+      postId: post_id, // Użyj camelCase, aby zachować spójność
+      content: content,
+      time: time,
+    });
+    if (response.data.success) {
+      return { success: true };
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+  return { success: false };
+};

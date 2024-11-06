@@ -38,20 +38,57 @@ const date4 = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 
 const trustedPersons = ref([]);
 const selectedTrustedPerson = ref(0);
+const isPopupOpen = ref(false);
 
 const message = ref("");
-
-onMounted(() => {
+const platformPosts = ref(null);
+const content = ref("");
+const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+onMounted(async () => {
   trustedPersons.value = JSON.parse(
     sessionStorage.getItem("trusted").toString()
   );
   selectedTrustedPerson.value = trustedPersons.value[0];
+  platformPosts.value = await getPlatformPosts();
 
   getPlatformData();
-
   confirmWaitingTime.value = 10;
   countDownConfirm();
 });
+
+async function getPlatformPosts() {
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
+    .id;
+  const posts = (await getPosts(userId)).data.value;
+  const filteredPosts = posts.filter((item) => item.platform_id === Number(id));
+
+  return filteredPosts;
+}
+const openPopup = () => {
+  isPopupOpen.value = true;
+};
+const closePopup = () => {
+  isPopupOpen.value = false;
+};
+const saveData = async () => {
+  const userId = JSON.parse(sessionStorage.getItem("userData"))[0].id;
+  await addPost(userId, id, content.value, time.value);
+  const lastPost = (await getPosts(userId)).data.value.slice(-1);
+
+  platformPosts.value.push({
+    content: content.value,
+    time: time.value,
+    id: lastPost[0].id,
+  });
+  // window.location.reload();
+  time.value = { years: 0, months: 0, days: 1, hours: 0, minutes: 0 };
+  content.value = "";
+  closePopup();
+};
+
+const removePost = (id) => {
+  platformPosts.value = platformPosts.value.filter((post) => post.id !== id);
+};
 
 function getPlatformData() {
   var messageTemp = "";
@@ -251,10 +288,32 @@ function closeAllSubTubs(option: Number) {
     </div>
   </div>
   <div class="container mx-auto py-8 grid grid-cols-1 grid-cols-1gap-2">
-    <section
-      class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
-      POSTS
+    <section class="bg-blue-900 text-white p-5 rounded-lg shadow-lg my-3">
+      <div class="flex items-center justify-between mb-4">
+        POSTS
+        <button
+          @click="openPopup"
+          :id="parseInt(id)"
+          class="w-8 h-8 flex items-center justify-center"
+        >
+          <Icon name="bi:plus-circle-fill" size="2em" />
+        </button>
+      </div>
+
+      <div class="flex flex-wrap -mx-4">
+        <div
+          v-for="(post, index) in platformPosts"
+          :key="index"
+          class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8"
+        >
+          <Post
+            :content="post.content"
+            :time="post.time"
+            :id="post.id"
+            @removePost="removePost"
+          />
+        </div>
+      </div>
     </section>
     <section
       class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl"
@@ -642,6 +701,42 @@ function closeAllSubTubs(option: Number) {
         </div>
         <div class="buttons">
           <button class="default-button" @click="onEditConfirm()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    v-if="isPopupOpen"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10"
+    @click="closePopup"
+  >
+    <div>
+      <div @click.stop class="bg-gray-400 p-6 rounded-lg w-96">
+        <h3 class="text-lg font-semibold mb-4">Create post</h3>
+        <textarea v-model="content" placeholder="Text here"></textarea>
+        <Calendar :date-in="time" @date="(value) => (time = value)" />
+        <div class="flex justify-end space-x-2">
+          <button
+            @click="closePopup"
+            class="px-4 py-2 bg-gray-400 text-white rounded"
+          >
+            Cancel
+          </button>
+          <button
+            v-if="content.length > 0"
+            @click="saveData"
+            class="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Save
+          </button>
+          <button
+            v-else
+            disabled
+            class="px-4 py-2 bg-gray-300 text-red-400 rounded"
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>

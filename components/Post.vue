@@ -35,8 +35,6 @@ const formatPostingTime = () => {
 };
 const emit = defineEmits(["removePost"]);
 const delPost = async () => {
-  console.log(props.id);
-
   emit("removePost", props.id);
   await deletePost(props.id);
 };

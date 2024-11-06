@@ -18,11 +18,8 @@ const closePopup = () => {
 };
 const removePost = (id) => {
   console.log(postsArray.value);
-  const filteredArray = JSON.parse(JSON.stringify(postsArray.value)).filter(
-    (post) => post.id !== id
-  );
-  console.log(filteredArray);
-  postsArray.value = filteredArray;
+
+  postsArray.value = postsArray.value.filter((post) => post.id !== id);
 
   console.log(postsArray.value);
 };
@@ -31,7 +28,7 @@ const saveData = async () => {
   await addPost(userId, props.platform_id, content.value, time.value);
   const lastPost = (await getPosts(userId)).data.value.slice(-1);
 
-  props.posts?.push({
+  postsArray.value.push({
     content: content.value,
     time: time.value,
     id: lastPost[0].id,
@@ -58,7 +55,7 @@ const saveData = async () => {
     <div class="flex flex-wrap -mx-4">
       <div
         v-for="(post, index) in postsArray"
-        :key="index"
+        :key="post.id"
         class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8"
       >
         <Post

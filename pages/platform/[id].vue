@@ -303,7 +303,7 @@ function closeAllSubTubs(option: Number) {
       <div class="flex flex-wrap -mx-4">
         <div
           v-for="(post, index) in platformPosts"
-          :key="index"
+          :key="post.id"
           class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8"
         >
           <Post

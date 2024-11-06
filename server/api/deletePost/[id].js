@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -14,9 +13,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     connection = await mysql.createConnection(config);
-    const [result] = await connection.query(`DELETE FROM posts WHERE id = ?`, [
-      postId,
-    ]);
+    const [result] = await connection.query(`DELETE FROM posts WHERE id = ?`, [postId]);
 
     return {
       success: true,

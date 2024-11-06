@@ -39,7 +39,7 @@ const saveData = () => {
 
     <div class="flex flex-wrap -mx-4">
       <div v-for="(post, index) in posts" :key="index" class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
-        <Post :content="post.content" :time="post.time" :id="post.id[0]" />
+        <Post :content="post.content" :time="post.time" :id="post.id" />
       </div>
     </div>
   </section>

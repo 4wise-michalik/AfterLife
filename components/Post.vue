@@ -11,7 +11,6 @@ const isPopupOpen = ref(false);
 const isShown = ref(true);
 const newTime = ref(props.time);
 const timeToPost = ref("");
-// const date = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 
 onMounted(() => {
   formatPostingTime();
@@ -37,16 +36,15 @@ const formatPostingTime = () => {
 };
 
 const delPost = () => {
-  isShown.value = false;
-  const temp = JSON.parse(sessionStorage.getItem("posts"));
+  // isShown.value = false;
+  // const temp = JSON.parse(sessionStorage.getItem("posts"));
+  // temp.data = temp.data.filter((post) => post.id[0] !== props.id);
+  // if (temp.data.length > 0) {
+  //   sessionStorage.setItem("posts", JSON.stringify(temp));
+  // }
 
-  temp.data = temp.data.filter((post) => post.id[0] !== props.id);
   deletePost(props.id);
-  if (temp.data.length > 0) {
-    sessionStorage.setItem("posts", JSON.stringify(temp));
-  } else {
-    sessionStorage.removeItem("posts");
-  }
+  window.location.reload();
 };
 
 const openPopup = () => {

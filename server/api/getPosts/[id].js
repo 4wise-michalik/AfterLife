@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -14,19 +13,20 @@ export default defineEventHandler(async (event) => {
 
   try {
     connection = await mysql.createConnection(config);
-    const [rows] = await connection.query(
+    const [result] = await connection.query(
       `
-      SELECT p.*, pt.*
-      FROM posts p
-      LEFT JOIN platforms pt ON p.platform_id = pt.id
-      WHERE p.user_id = ?
+      SELECT p.id as id, p.platform_id, content, time, user_id, pt.name,
+        CAST(p.time AS CHAR) AS time
+        FROM posts p
+        LEFT JOIN platforms pt ON p.platform_id = pt.id
+        WHERE p.user_id = ?
     `,
       [userId]
     );
 
     return {
       success: true,
-      data: rows,
+      data: result,
     };
   } catch (error) {
     console.error("Database error:", error);

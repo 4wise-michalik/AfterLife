@@ -1,4 +1,4 @@
-import sql from "mysql2/promise";
+import mysql from "mysql2/promise";
 import { convertCalendar } from "@/composables/convertCalendar";
 const config = {
   host: process.env.MARIA_DB_HOST,
@@ -10,21 +10,19 @@ const config = {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  console.log(body.time);
+  let connection;
 
   const { convertCalendarToDate, convertCalendarToObj } = convertCalendar();
   var date = await convertCalendarToDate(body.time);
 
-  console.log(date);
-
   try {
-    pool = await sql.connect(config);
-    const result = await pool
-      .request()
-      .query(`INSERT INTO posts (platform_id, content, time, user_id) VALUES (${body.platformId}, '${body.content}', '${date}', ${body.userId});`);
+    connection = await mysql.createConnection(config);
+    const [rows] = await connection.query(
+      `INSERT INTO posts (platform_id, content, time, user_id) VALUES (${body.platformId}, '${body.content}', '${date}', ${body.userId});`
+    );
     return {
       success: true,
-      data: result,
+      data: rows,
     };
   } catch (error) {
     console.error("Database error:", error);

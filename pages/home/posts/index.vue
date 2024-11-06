@@ -13,8 +13,8 @@ onMounted(async () => {
   platforms.value = (await getUserPlatforms(userData.value[0].id)).data;
   sessionStorage.setItem("posts", JSON.stringify(posts.value));
   sessionStorage.setItem("userPlatforms", JSON.stringify(platforms.value));
-  platforms.value = JSON.parse(sessionStorage.getItem("userPlatforms"));
   posts.value = JSON.parse(sessionStorage.getItem("posts"));
+  platforms.value = JSON.parse(sessionStorage.getItem("userPlatforms"));
 
   platforms.value.forEach((platform) => {
     groupedPosts.value[platform.platform_name] = [];

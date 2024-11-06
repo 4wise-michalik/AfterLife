@@ -9,7 +9,7 @@ const isAlive = ref(true);
 const posts = ref({});
 
 onMounted(() => {
-  getPosts();
+  getPostsFunction();
   checkIfIsDead();
   getPlatforms();
 });
@@ -25,7 +25,7 @@ async function getPlatforms() {
   connectedPlatforms.value = (await getUserPlatforms(userId)).data;
 }
 
-async function getPosts() {
+async function getPostsFunction() {
   const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
   posts.value = await getPosts(userData.value[0].id);
   sessionStorage.setItem("posts", JSON.stringify(posts.value));

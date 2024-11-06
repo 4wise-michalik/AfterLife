@@ -7,6 +7,7 @@ const props = defineProps({
   time: {},
 });
 const content = ref(props.content);
+const popupContent = ref(props.content);
 const isPopupOpen = ref(false);
 const newTime = ref(props.time);
 const timeToPost = ref("");
@@ -40,22 +41,27 @@ const delPost = async () => {
 };
 
 const openPopup = () => {
+  popupContent.value = content.value;
   isPopupOpen.value = true;
 };
 
 const closePopup = () => {
+  popupContent.value = content.value;
   isPopupOpen.value = false;
 };
 
 const saveData = async () => {
+  content.value = popupContent.value;
   await updatePost(props.id, content.value, newTime.value);
   formatPostingTime();
-  closePopup();
+  isPopupOpen.value = false;
 };
 </script>
 <template>
   <div class="p-4 bg-white rounded-lg shadow-md relative">
-    <p class="text-gray-800 break-words whitespace-normal">{{ content }}</p>
+    <p class="text-gray-800 break-words whitespace-normal">
+      {{ popupContent }}
+    </p>
     <div class="flex justify-between items-center mt-4">
       <div>
         <span class="text-gray-600">Posted after: </span>
@@ -92,7 +98,7 @@ const saveData = async () => {
         style="color: black"
       >
         <h3 class="text-lg font-semibold mb-4">Create post</h3>
-        <textarea v-model="content" style="color: black"></textarea>
+        <textarea v-model="popupContent" style="color: black"></textarea>
         <Calendar :dateIn="newTime" @date="(value) => (newTime = value)" />
         <div class="flex justify-end space-x-2">
           <button

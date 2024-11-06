@@ -19,6 +19,7 @@ date.value.setMonth(props.dateIn.months);
 date.value.setDate(props.dateIn.days);
 date.value.setHours(props.dateIn.hours);
 date.value.setMinutes(props.dateIn.minutes);
+date.value.setSeconds(0);
 
 const time = ref({ hours: props.dateIn.hours, minutes: props.dateIn.minutes });
 
@@ -76,7 +77,8 @@ function updateDate() {
   hours.value = date.value.getHours();
   minutes.value = date.value.getMinutes();
 
-  const dateToSend = { years: years.value, months: months.value - 1, days: days.value, hours: hours.value, minutes: minutes.value };
+  const dateToSend = { years: years.value, months: months.value, days: days.value, hours: hours.value, minutes: minutes.value };
+
   emit("date", dateToSend);
 }
 

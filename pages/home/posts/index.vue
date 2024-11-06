@@ -5,16 +5,16 @@ definePageMeta({
 const groupedPosts = ref([]);
 const posts = ref({});
 const platforms = ref({});
+
 onMounted(async () => {
+  const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
+
+  posts.value = await getPosts(userData.value[0].id);
+  platforms.value = (await getUserPlatforms(userData.value[0].id)).data;
+  sessionStorage.setItem("posts", JSON.stringify(posts.value));
+  sessionStorage.setItem("userPlatforms", JSON.stringify(platforms.value));
   platforms.value = JSON.parse(sessionStorage.getItem("userPlatforms"));
   posts.value = JSON.parse(sessionStorage.getItem("posts"));
-  const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
-  if (!platforms.value || !posts.value) {
-    posts.value = await getPosts(userData.value[0].id);
-    platforms.value = (await getUserPlatforms(userData.value[0].id)).data;
-    sessionStorage.setItem("posts", JSON.stringify(posts.value));
-    sessionStorage.setItem("userPlatforms", JSON.stringify(platforms.value));
-  }
 
   platforms.value.forEach((platform) => {
     groupedPosts.value[platform.platform_name] = [];

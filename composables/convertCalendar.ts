@@ -1,11 +1,16 @@
 export const convertCalendar = () => {
   const convertCalendarToDate = (dateObj: any) => {
-    var date = new Date(Date.UTC(1900, 0, 0, 0, 0, 0));
-    date.setUTCFullYear(1900 + dateObj.years);
-    date.setUTCMonth(0 + dateObj.months - 1);
-    date.setUTCDate(0 + dateObj.days);
-    date.setUTCHours(0 + dateObj.hours);
-    date.setUTCMinutes(0 + dateObj.minutes);
+    var year = (1900 + dateObj.years).toString();
+    var months = dateObj.months;
+    var days = dateObj.days;
+    if (days > 31) {
+      days = 1;
+      months++;
+    }
+    var hours = dateObj.hours;
+    var minutes = dateObj.minutes;
+
+    var date = year + "-" + months + "-" + days + " " + hours + ":" + minutes + ":00";
 
     return date;
   };
@@ -13,10 +18,10 @@ export const convertCalendar = () => {
   const convertCalendarToObj = (dateObj: any) => {
     var date = {
       years: parseInt(dateObj.substring(0, 4)) - 1900,
-      months: parseInt(dateObj.substring(6, 7)),
-      days: parseInt(dateObj.substring(9, 10)),
-      hours: parseInt(dateObj.substring(12, 13)),
-      minutes: parseInt(dateObj.substring(15, 16)),
+      months: parseInt(dateObj.substring(5, 7)),
+      days: parseInt(dateObj.substring(8, 10)),
+      hours: parseInt(dateObj.substring(11, 13)),
+      minutes: parseInt(dateObj.substring(14, 16)),
     };
 
     return date;

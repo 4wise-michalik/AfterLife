@@ -14,9 +14,8 @@ export default defineEventHandler(async (event) => {
   let connection;
   const { convertCalendarToDate } = convertCalendar();
 
-  const personId = body.whoToPassAccount.id;
-  const date = await convertCalendarToDate(body.whatHappensToAccountTime);
-  console.log(date.toISOString());
+  var personId = body.whoToPassAccount.id;
+  var date = await convertCalendarToDate(body.whatHappendsToAccountTime);
 
   try {
     connection = await mysql.createConnection(config);
@@ -27,14 +26,7 @@ export default defineEventHandler(async (event) => {
               what_happens_to_account_give_account_id = ?, 
               what_happens_to_account_give_account_message = ?
           WHERE user_id = ? AND platform_id = ?`,
-      [
-        body.whatHappendsToAccount,
-        date.toISOString(),
-        personId,
-        body.message,
-        body.userId,
-        body.platformId,
-      ]
+      [body.whatHappendsToAccount, date.toISOString(), personId, body.message, body.userId, body.platformId]
     );
 
     return {

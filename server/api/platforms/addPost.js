@@ -1,5 +1,5 @@
-import mysql from "mysql2/promise";
-
+import sql from "mysql2/promise";
+import { convertCalendar } from "@/composables/convertCalendar";
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -10,34 +10,18 @@ const config = {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  let connection;
+  console.log(body.time);
 
-  let year = "";
-  if (body.time.years < 9) {
-    year = "000" + (body.time.years + 1); // +1 because the year '0000' cannot be entered into the database
-  } else {
-    year = "00" + (body.time.years + 1); // +1 because the year '0000' cannot be entered into the database
-  }
+  const { convertCalendarToDate, convertCalendarToObj } = convertCalendar();
+  var date = await convertCalendarToDate(body.time);
 
-  let months = body.time.months + 1; // +1 because the year '0000' cannot be entered into the database
-  let days = body.time.days + 1; // +1 because the year '0000' cannot be entered into the database
-  if (days > 31) {
-    days = 1;
-    months++;
-  }
-
-  const hours = body.time.hours;
-  const minutes = body.time.minutes;
-
-  const date = `${year}-${months}-${days} ${hours}:${minutes}:00`;
+  console.log(date);
 
   try {
-    connection = await mysql.createConnection(config);
-    const [result] = await connection.query(
-      `INSERT INTO posts (platform_id, content, time, user_id) VALUES (?, ?, ?, ?)`,
-      [body.platformId, body.content, date, body.userId]
-    );
-
+    pool = await sql.connect(config);
+    const result = await pool
+      .request()
+      .query(`INSERT INTO posts (platform_id, content, time, user_id) VALUES (${body.platformId}, '${body.content}', '${date}', ${body.userId});`);
     return {
       success: true,
       data: result,

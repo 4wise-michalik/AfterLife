@@ -10,10 +10,14 @@ const usersPage = ref("");
 
 const showZoom = ref(false);
 const showEdit = ref(false);
-
+const qrSize = ref(null);
 onMounted(() => {
   getLinkFromDatabase();
   loadQrCode();
+  const remSize = parseFloat(
+    getComputedStyle(document.documentElement).fontSize
+  );
+  qrSize.value = 15 * remSize;
 });
 
 async function getLinkFromDatabase() {
@@ -74,23 +78,56 @@ const downloadQrCode = () => {
 </script>
 
 <template>
-  <container>
+  <div class="container">
     <div class="qr-code-div">
       <div v-if="usersPage !== ''" ref="capture">
-        <qrcode-vue :value="usersPage" size="15rem" level="H" render-as="svg" class="qr-code" />
+        <qrcode-vue
+          v-if="qrSize"
+          :value="usersPage"
+          :size="qrSize"
+          level="H"
+          render-as="svg"
+          class="qr-code"
+        />
       </div>
       <div v-if="usersPage === ''" ref="capture">
-        <qrcode-vue value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" size="15rem" level="H" render-as="svg" class="qr-code" />
+        <qrcode-vue
+          v-if="qrSize"
+          value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          :size="qrSize"
+          level="H"
+          render-as="svg"
+          class="qr-code"
+        />
       </div>
       <div class="qr-code-side-bar">
-        <Icon class="qr-code-side-element" name="tdesign:zoom-in" size="5rem" @click="zoomQrCode" />
-        <Icon class="qr-code-side-element" name="material-symbols:edit-square-outline" size="5rem" @click="editQrCode" />
-        <Icon class="qr-code-side-element" name="material-symbols:download-2-outline" size="5rem" @click="downloadQrCode" />
+        <Icon
+          class="qr-code-side-element"
+          name="tdesign:zoom-in"
+          size="5rem"
+          @click="zoomQrCode"
+        />
+        <Icon
+          class="qr-code-side-element"
+          name="material-symbols:edit-square-outline"
+          size="5rem"
+          @click="editQrCode"
+        />
+        <Icon
+          class="qr-code-side-element"
+          name="material-symbols:download-2-outline"
+          size="5rem"
+          @click="downloadQrCode"
+        />
       </div>
     </div>
-  </container>
+  </div>
 
-  <MainPageElementsQrCodeZoom v-show="showZoom" @close-modal="showZoom = false" :qrCode="imageDataVisualized" />
+  <MainPageElementsQrCodeZoom
+    v-show="showZoom"
+    @close-modal="showZoom = false"
+    :qrCode="imageDataVisualized"
+  />
   <MainPageElementsQrCodeEdit
     v-show="showEdit"
     @close-modal-save="handleEditClose"

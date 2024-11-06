@@ -586,11 +586,11 @@ function closeAllSubTubs(option: Number) {
           />
         </div>
         <div class="text-div">
-          <text
-            >Are you sure you want to remove your {{ name }} account from
-            Afterlife profile?</text
-          >
-          <text> All of your planned posts and messages will be gone.</text>
+          <p>
+            Are you sure you want to remove your {{ name }} account from
+            Afterlife profile?
+          </p>
+          <p>All of your planned posts and messages will be gone.</p>
         </div>
         <div class="button-div">
           <button
@@ -602,7 +602,7 @@ function closeAllSubTubs(option: Number) {
           </button>
         </div>
         <div class="button-div">
-          <text>{{ confirmTimerLabel }}</text>
+          <p>{{ confirmTimerLabel }}</p>
         </div>
       </div>
     </div>
@@ -619,7 +619,7 @@ function closeAllSubTubs(option: Number) {
         />
       </div>
       <div class="text-div">
-        <text>Update your {{ name }} account credentials</text>
+        <p>Update your {{ name }} account credentials</p>
       </div>
       <div>
         <div class="input-div">
@@ -638,7 +638,7 @@ function closeAllSubTubs(option: Number) {
           />
         </div>
         <div class="text-div">
-          <text class="error-text">{{ errorMessage }}</text>
+          <p class="error-text">{{ errorMessage }}</p>
         </div>
         <div class="buttons">
           <button class="default-button" @click="onEditConfirm()">Save</button>

@@ -4,7 +4,9 @@ const signIpText = ref("sign in");
 const isLogged = ref(false);
 onMounted(() => {
   if (sessionStorage.getItem("userData")) {
-    const userData = ref(JSON.parse(sessionStorage.getItem("userData") || "{}"));
+    const userData = ref(
+      JSON.parse(sessionStorage.getItem("userData") || "{}")
+    );
     if (userData.value[0].id) {
       navigateTo("/home");
     }
@@ -14,7 +16,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <text class="greating-text"> Witaj wędrowcze </text>
+    <p class="greating-text">Witaj wędrowcze</p>
 
     <button class="default-button" @click="navigateTo('/login')">
       {{ signIpText }}

@@ -45,9 +45,9 @@ async function getPlatforms() {
     <section
       class="bg-purple-800 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
     >
-      <Text class="text-xl font-semibold mb-4 hover:text-purple-300"
-        >Connected platforms</Text
-      >
+      <p class="text-xl font-semibold mb-4 hover:text-purple-300">
+        Connected platforms
+      </p>
       <div class="platforms-div">
         <MainPageElementsPlatformButton
           v-for="platform in connectedPlatforms"

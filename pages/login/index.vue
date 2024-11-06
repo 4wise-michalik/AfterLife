@@ -73,42 +73,40 @@ async function checkCredentials() {
 </script>
 
 <template>
-  <container>
-    <div class="content-signin">
-      <text class="greating-text">Sign in</text>
+  <div class="content-signin">
+    <p class="greating-text">Sign in</p>
 
-      <div>
-        <text class="label-input-box">{{ emailLabel }}:</text>
-        <text class="alert-box">* </text>
-        <input :class="emailInputBox" v-model="email" />
-        <text class="alert-box">{{ emailAlertMessage }}</text>
-      </div>
-
-      <div>
-        <text class="label-input-box">{{ passwordLabel }}:</text>
-        <text class="alert-box">* </text>
-        <input type="password" :class="passwordInputBox" v-model="password" />
-        <text class="alert-box">{{ passwordAlertMessage }}</text>
-      </div>
-
-      <text class="alert-box">{{ alertMessage }}</text>
-
-      <div>
-        <button class="default-button" @click="onSubmit">
-          {{ signInLabel }}
-        </button>
-        <button class="default-button" @click="navigateTo('/login/signUp')">
-          {{ signUpLabel }}
-        </button>
-        <button
-          class="default-button"
-          @click="navigateTo('/login/forgotPassword')"
-        >
-          {{ forgotPasswordLabel }}
-        </button>
-      </div>
+    <div>
+      <p class="label-input-box">{{ emailLabel }}:</p>
+      <p class="alert-box">*</p>
+      <input :class="emailInputBox" v-model="email" />
+      <p class="alert-box">{{ emailAlertMessage }}</p>
     </div>
-  </container>
+
+    <div>
+      <p class="label-input-box">{{ passwordLabel }}:</p>
+      <p class="alert-box">*</p>
+      <input type="password" :class="passwordInputBox" v-model="password" />
+      <p class="alert-box">{{ passwordAlertMessage }}</p>
+    </div>
+
+    <p class="alert-box">{{ alertMessage }}</p>
+
+    <div>
+      <button class="default-button" @click="onSubmit">
+        {{ signInLabel }}
+      </button>
+      <button class="default-button" @click="navigateTo('/login/signUp')">
+        {{ signUpLabel }}
+      </button>
+      <button
+        class="default-button"
+        @click="navigateTo('/login/forgotPassword')"
+      >
+        {{ forgotPasswordLabel }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <style>

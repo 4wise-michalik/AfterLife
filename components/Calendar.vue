@@ -91,19 +91,19 @@ watch(time, () => {
   <div class="timer-div">
     <div class="element" style="display: grid">
       <Button @click="addOneYear()">+</Button>
-      <Text>{{ years }} years</Text>
+      <p>{{ years }} years</p>
       <Button @click="subsOneYear()">-</Button>
     </div>
 
     <div class="element" style="display: grid">
       <Button @click="addOneMonth()">+</Button>
-      <Text>{{ months }} months</Text>
+      <p>{{ months }} months</p>
       <Button @click="subsOneMonth()">-</Button>
     </div>
 
     <div class="element" style="display: grid">
       <Button @click="addOneDay()">+</Button>
-      <Text>{{ days }} days</Text>
+      <p>{{ days }} days</p>
       <Button @click="subsOneDay()">-</Button>
     </div>
 

@@ -17,11 +17,7 @@ const closePopup = () => {
   isPopupOpen.value = false;
 };
 const removePost = (id) => {
-  console.log(postsArray.value);
-
   postsArray.value = postsArray.value.filter((post) => post.id !== id);
-
-  console.log(postsArray.value);
 };
 const saveData = async () => {
   const userId = JSON.parse(sessionStorage.getItem("userData"))[0].id;

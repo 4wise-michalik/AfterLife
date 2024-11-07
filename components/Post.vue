@@ -5,6 +5,10 @@ const props = defineProps({
   id: Number,
   content: String,
   time: {},
+  editable: {
+    type: Boolean,
+    default: true,
+  },
 });
 const content = ref(props.content);
 const popupContent = ref(props.content);
@@ -67,7 +71,7 @@ const saveData = async () => {
         <span class="text-gray-600">Posted after: </span>
         <span class="font-semibold text-blue-600">{{ timeToPost }}</span>
       </div>
-      <div class="flex space-x-2">
+      <div v-if="editable" class="flex space-x-2">
         <button @click="openPopup" class="flex items-center h-7">
           <Icon
             name="pepicons-pop:pen-circle-filled"

@@ -8,6 +8,7 @@ const postsCount = ref(null);
 const showAddPlatform = ref(false);
 const isAlive = ref(true);
 const userData = ref(null);
+const trustedOnes = ref(null);
 const posts = ref({});
 
 onMounted(() => {
@@ -16,29 +17,35 @@ onMounted(() => {
   checkIfIsDead();
   getPlatforms();
   getPostsCount();
+  getTrustedOnes();
 });
 
-async function checkIfIsDead() {
+const checkIfIsDead = async () => {
   userData.value = JSON.parse(sessionStorage.getItem("userData").toString())[0];
   if (userData.value.deceased) {
     isAlive.value = false;
   }
-}
+};
 
-async function getPostsCount() {
+const getPostsCount = async () => {
   postsCount.value = (await getPosts(userData.value.id)).data.value.length;
-}
+};
 
-async function getPlatforms() {
+const getPlatforms = async () => {
   connectedPlatforms.value = (await getUserPlatforms(userData.value.id)).data;
   const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
-}
+};
 
-async function getPostsFunction() {
+const getPostsFunction = async () => {
   const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
   posts.value = await getPosts(userData.value[0].id);
   sessionStorage.setItem("posts", JSON.stringify(posts.value));
-}
+};
+
+const getTrustedOnes = () => {
+  trustedOnes.value = JSON.parse(sessionStorage.getItem("trusted").toString());
+  // console.log(trustedOnes.value[0]);
+};
 </script>
 
 <template>
@@ -77,7 +84,11 @@ async function getPostsFunction() {
 
     <section class="bg-purple-400 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <NuxtLink to="/home" class="text-xl font-semibold mb-4 hover:text-purple-200">My trusted ones</NuxtLink>
-      <p class="text-sm">This is the content of Section 1.</p>
+      <div v-for="trustedOne in trustedOnes">
+        <div class="trusted-one-div" @click="navigateTo(`/home/trusted/${trustedOne.id}`)">
+          <p class="trusted-one-text">{{ trustedOne.first_name }} {{ trustedOne.last_name }}</p>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -107,10 +118,28 @@ async function getPostsFunction() {
 }
 .add-platform-div:hover {
   cursor: pointer;
-  filter: brightness(90%);
+  filter: brightness(80%);
 }
 
 .icon {
   float: left;
+}
+
+.trusted-one-div,
+.trusted-one-div:hover {
+  background-color: #7e22ce;
+  padding: 5px;
+  margin-top: 1vh;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+.trusted-one-div:hover {
+  background-color: #6b1daf;
+}
+
+.trusted-one-text {
+  font-size: 20px;
 }
 </style>

@@ -32,9 +32,7 @@ const getPostsCount = async () => {
 };
 
 const getPlatforms = async () => {
-  connectedPlatforms.value = (
-    await getUserPlatforms(userData.value[0].id)
-  ).data;
+  connectedPlatforms.value = (await getUserPlatforms(userData.value[0].id)).data;
 };
 
 const getPostsFunction = async () => {
@@ -53,113 +51,56 @@ const getTrustedOnes = async () => {
 </script>
 
 <template>
-  <div
-    v-if="isAlive"
-    class="container mx-auto px-4 py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-  >
-    <section
-      class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
+  <div v-if="isAlive" class="container mx-auto px-4 py-8 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <h3 class="text-xl font-semibold mb-4">My Afterlife data</h3>
-      <p class="text-sm">
-        Connected platforms: {{ connectedPlatforms.length }}
-      </p>
+      <p class="text-sm">Connected platforms: {{ connectedPlatforms.length }}</p>
       <p class="text-sm">Total followers: 54.3k</p>
-      <p v-if="postsCount" class="text-sm">
-        Scheduled after-posts: {{ postsCount }}
-      </p>
+      <p v-if="postsCount" class="text-sm">Scheduled after-posts: {{ postsCount }}</p>
       <p class="text-sm">Account removals: 1</p>
     </section>
 
-    <section
-      class="bg-purple-800 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
-      <p class="text-xl font-semibold mb-4 hover:text-purple-300">
-        Connected platforms
-      </p>
+    <section class="bg-purple-800 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
+      <p class="text-xl font-semibold mb-4 hover:text-purple-300">Connected platforms</p>
       <div class="platforms-div">
-        <MainPageElementsPlatformButton
-          v-for="platform in connectedPlatforms"
-          :id="platform.platform_id"
-          :name="platform.platform_name"
-        />
-        <div
-          class="add-platform-div"
-          @click="showAddPlatform = !showAddPlatform"
-        >
+        <MainPageElementsPlatformButton v-for="platform in connectedPlatforms" :id="platform.platform_id" :name="platform.platform_name" />
+        <div class="add-platform-div" @click="showAddPlatform = !showAddPlatform">
           <Icon class="icon" name="tabler:circle-plus" size="25px" />
         </div>
       </div>
     </section>
 
-    <section
-      class="bg-purple-700 text-gray-200 p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
+    <section class="bg-purple-700 text-gray-200 p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <MainPageElementsQrCode />
     </section>
 
-    <section
-      class="bg-purple-600 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
-      <NuxtLink
-        to="/home/posts"
-        class="text-xl font-semibold mb-4 hover:text-purple-200"
-        >My scheduled posts</NuxtLink
-      >
+    <section class="bg-purple-600 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
+      <NuxtLink to="/home/posts" class="text-xl font-semibold mb-4 hover:text-purple-200">My scheduled posts</NuxtLink>
       <p class="my-1">This is your latest created post:</p>
-      <Post
-        v-if="latestPost"
-        :id="latestPost.id"
-        :content="latestPost.content"
-        :time="latestPost.time"
-        :editable="false"
-      />
+      <Post v-if="latestPost" :id="latestPost.id" :content="latestPost.content" :time="latestPost.time" :editable="false" />
     </section>
 
-    <section
-      class="bg-purple-500 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
-      <NuxtLink
-        to="/home"
-        class="text-xl font-semibold mb-4 hover:text-purple-200"
-        >My scheduled messages</NuxtLink
-      >
+    <section class="bg-purple-500 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
+      <NuxtLink to="/home" class="text-xl font-semibold mb-4 hover:text-purple-200">My scheduled messages</NuxtLink>
       <p class="text-sm">This is the content of Section 1.</p>
     </section>
 
-    <section
-      class="bg-purple-400 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
-    >
-      <NuxtLink
-        to="/home"
-        class="text-xl font-semibold mb-4 hover:text-purple-200"
-        >My trusted ones</NuxtLink
-      >
+    <section class="bg-purple-400 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
+      <NuxtLink to="/home" class="text-xl font-semibold mb-4 hover:text-purple-200">My trusted ones</NuxtLink>
       <div v-for="trustedOne in trustedOnes">
-        <div
-          class="trusted-one-div"
-          @click="navigateTo(`/home/trusted/${trustedOne.id}`)"
-        >
-          <p class="trusted-one-text">
-            {{ trustedOne.first_name }} {{ trustedOne.last_name }}
-          </p>
+        <div class="trusted-one-div" @click="navigateTo(`/home/trusted`)">
+          <p class="trusted-one-text">{{ trustedOne.first_name }} {{ trustedOne.last_name }}</p>
         </div>
       </div>
     </section>
   </div>
 
-  <div
-    v-else
-    class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl"
-  >
+  <div v-else class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
     <p class="text-sm">Unfortunatly you're dead</p>
     <p class="text-sm">If you want to revive, please contact us</p>
   </div>
 
-  <MainPageElementsAddPlatform
-    v-show="showAddPlatform"
-    @close-modal="showAddPlatform = false"
-  />
+  <MainPageElementsAddPlatform v-show="showAddPlatform" @close-modal="showAddPlatform = false" />
 </template>
 
 <style scoped>

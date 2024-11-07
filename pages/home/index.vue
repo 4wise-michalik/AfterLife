@@ -32,7 +32,9 @@ const getPostsCount = async () => {
 };
 
 const getPlatforms = async () => {
-  connectedPlatforms.value = (await getUserPlatforms(userData.value.id)).data;
+  connectedPlatforms.value = (
+    await getUserPlatforms(userData.value[0].id)
+  ).data;
 };
 
 const getPostsFunction = async () => {

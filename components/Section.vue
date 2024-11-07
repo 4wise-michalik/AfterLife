@@ -27,15 +27,24 @@ const toggleOpen = () => {
 
 <template>
   <li>
-    <NuxtLink :to="link" class="menu-section" @click.stop.prevent="toggleOpen">
+    <NuxtLink :to="link" class="menu-section">
       <span>{{ title }}</span>
-      <!-- Tekst linku w osobnym elemencie -->
     </NuxtLink>
-    <button v-if="dropdown" @click.stop="toggleOpen" class="icon-button" aria-label="Toggle Menu">
+    <button
+      v-if="dropdown"
+      @click.stop="toggleOpen"
+      class="icon-button"
+      aria-label="Toggle Menu"
+    >
       <Icon :name="open ? 'memory:menu-down-fill' : 'memory:menu-right-fill'" />
     </button>
 
-    <ul v-if="open" class="subsections" :style="{ color: color }" style="margin-bottom: 20px">
+    <ul
+      v-if="open"
+      class="subsections"
+      :style="{ color: color }"
+      style="margin-bottom: 20px"
+    >
       <slot />
     </ul>
   </li>

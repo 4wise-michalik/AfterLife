@@ -13,8 +13,14 @@ onMounted(async () => {
   } else {
     const response_trusted = await getTrusted(userData.value[0].id);
     const response_trusting = await getTrusting(userData.value[0].id);
-    sessionStorage.setItem("trusted", JSON.stringify(response_trusted.data.value));
-    sessionStorage.setItem("trusting", JSON.stringify(response_trusting.data.value));
+    sessionStorage.setItem(
+      "trusted",
+      JSON.stringify(response_trusted.data.value)
+    );
+    sessionStorage.setItem(
+      "trusting",
+      JSON.stringify(response_trusting.data.value)
+    );
     usersResult.value.trusted = response_trusted.data.value;
     usersResult.value.trusting = response_trusting.data.value;
   }
@@ -27,13 +33,19 @@ onMounted(async () => {
       <Section title="My AfterLife" :dropdown="false" link="/home"> </Section>
       <Section title="My Trusted Ones" link="/home/trusted">
         <li v-for="item in usersResult.trusted" :key="item.id">
-          <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusted/${item.id}`" />
+          <Subsection
+            :title="item.first_name + ' ' + item.last_name"
+            :link="`/home/trusted/${item.id}`"
+          />
         </li>
       </Section>
 
       <Section title="Who Trust Me" link="/home/trusting">
         <li v-for="item in usersResult.trusting" :key="item.id">
-          <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusting/${item.id}`" />
+          <Subsection
+            :title="item.first_name + ' ' + item.last_name"
+            :link="`/home/trusting/${item.id}`"
+          />
         </li>
       </Section>
     </SideBar>

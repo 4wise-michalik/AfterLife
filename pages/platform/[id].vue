@@ -44,6 +44,7 @@ const message = ref("");
 const platformPosts = ref(null);
 const content = ref("");
 const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+
 onMounted(async () => {
   trustedPersons.value = JSON.parse(sessionStorage.getItem("trusted").toString());
   selectedTrustedPerson.value = trustedPersons.value[0];
@@ -239,8 +240,6 @@ function closeAllSubTubs(option: Number) {
     showAdvanced4.value = false;
   }
 }
-
-// dodać wczytywanie danych z bazy
 </script>
 
 <template>

@@ -10,8 +10,7 @@ onMounted(() => {
 });
 
 async function getAvaliablePlatforms() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .id;
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
   avaliablePlatforms.value = (await getUserAvaliablePlatforms(userId)).data;
 }
 
@@ -26,8 +25,7 @@ function onSave() {
 }
 
 async function saveNewPlatformInDataBase() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .id;
+  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
   const platformId = selectedPlatform.value.id;
 
   await addUserPlatform(userId, platformId, login.value, password.value);
@@ -41,42 +39,22 @@ async function saveNewPlatformInDataBase() {
   <div class="modal-overlay" @click="$emit('close-modal')">
     <div class="modal" @click.stop>
       <div class="close-div">
-        <img
-          class="close"
-          src="~/assets/icons/close.svg"
-          alt=""
-          @click="$emit('close-modal')"
-        />
+        <img class="close" src="~/assets/icons/close.svg" alt="" @click="$emit('close-modal')" />
       </div>
 
       <div>
         <div class="input-div">
           Choose platform:
           <select class="platforms-drop-down" v-model="selectedPlatform">
-            <option
-              v-for="platform in avaliablePlatforms"
-              :key="platform"
-              :value="platform"
-            >
+            <option v-for="platform in avaliablePlatforms" :key="platform" :value="platform">
               {{ platform.name }}
             </option>
           </select>
         </div>
         <div class="input-div">
           Credentials:
-          <input
-            class="input"
-            id="platform_login"
-            v-model="login"
-            placeholder=" login"
-          />
-          <input
-            id="platform_password"
-            class="input"
-            type="password"
-            v-model="password"
-            placeholder=" password"
-          />
+          <input class="input" id="platform_login" v-model="login" placeholder=" login" />
+          <input id="platform_password" class="input" type="password" v-model="password" placeholder=" password" />
         </div>
         <div class="text-div">
           <p class="error-text">{{ errorMessage }}</p>

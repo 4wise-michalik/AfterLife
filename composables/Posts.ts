@@ -6,7 +6,7 @@ import axios from "axios";
  * @param {number} userId - User's ID, to determine the 'owner' of the post.
  * @param {number} platformId - Platform's ID, used to specify on which platform the post should be shared.
  * @param {string} content - Content of the post.
- * @param {object} time - An object containing values representing years, months, days, hours.
+ * @param {object} time - An object containing values representing years, months, days, hours and minutes.
  *
  * @returns {{ success: boolean }} - An object indicating whether the deletion was successful.
  */
@@ -37,7 +37,7 @@ export const addPost = async (
  *
  * @param {number} postId - The ID of the post to be updated.
  * @param {string} content - The content of the post to be updated.
- * @param {object} time - An object containing values representing years, months, days, hours.
+ * @param {object} time - An object containing values representing years, months, days, hours and minutes.
  *
  * @returns {{ success: boolean }} - An object indicating whether the deletion was successful.
  */

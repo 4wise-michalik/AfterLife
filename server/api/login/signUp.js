@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-
+import { getUsersCodes } from "~/composables/Users";
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -11,6 +11,17 @@ const config = {
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   let connection;
+  let code = "";
+  let friend_codes = await getUsersCodes();
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  do {
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      code += characters[randomIndex];
+    }
+  } while (friend_codes.includes(code));
 
   try {
     connection = await mysql.createConnection(config);
@@ -21,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
     if (users.length === 0) {
       await connection.query(
-        `INSERT INTO users (first_name, last_name, email, password, verified_email, verifing_method) VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO users (first_name, last_name, email, password, verified_email, verifing_method, friend_code) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           body.name,
           body.surname,
@@ -29,6 +40,7 @@ export default defineEventHandler(async (event) => {
           body.password,
           0,
           body.verifingMethod,
+          code,
         ]
       );
       return { success: true, message: "User registered successfully." };

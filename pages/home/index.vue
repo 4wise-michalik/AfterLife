@@ -14,6 +14,7 @@ const latestPost = ref(null);
 
 onMounted(async () => {
   userData.value = JSON.parse(sessionStorage.getItem("userData"));
+  await getUsersCodes();
 
   await getPostsFunction();
   await checkIfIsDead();

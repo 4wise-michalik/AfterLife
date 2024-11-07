@@ -1,20 +1,20 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'withsidebar',
+  layout: "withsidebar",
   validate: async (route) => {
-    return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
-    }
-})
+    return typeof route.params.id === "string" && /^\d+$/.test(route.params.id);
+  },
+});
 </script>
 
-<!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
-  
+  <div>
+    <p>trusted</p>
+  </div>
 </template>
 
-
 <style scoped>
-.text{
-    color: aqua;
+.text {
+  color: aqua;
 }
 </style>

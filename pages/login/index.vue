@@ -76,14 +76,14 @@ async function checkCredentials() {
   <div class="content-signin">
     <p class="greating-text">Sign in</p>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ emailLabel }}:</p>
       <p class="alert-box">*</p>
       <input :class="emailInputBox" v-model="email" />
       <p class="alert-box">{{ emailAlertMessage }}</p>
     </div>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ passwordLabel }}:</p>
       <p class="alert-box">*</p>
       <input type="password" :class="passwordInputBox" v-model="password" />
@@ -99,10 +99,7 @@ async function checkCredentials() {
       <button class="default-button" @click="navigateTo('/login/signUp')">
         {{ signUpLabel }}
       </button>
-      <button
-        class="default-button"
-        @click="navigateTo('/login/forgotPassword')"
-      >
+      <button class="default-button" @click="navigateTo('/login/forgotPassword')">
         {{ forgotPasswordLabel }}
       </button>
     </div>
@@ -119,6 +116,13 @@ async function checkCredentials() {
   display: grid;
 }
 
+.div-input-box {
+  display: flex;
+  margin-top: 1.68rem;
+  margin-bottom: 2rem;
+  margin-right: 2rem;
+}
+
 .label-input-box {
   color: white;
   font-size: 15px;
@@ -130,20 +134,15 @@ async function checkCredentials() {
   background-color: white;
   color: black;
   width: 15rem;
-  margin-top: 1.68rem;
-  margin-bottom: 2rem;
-  margin-right: 2rem;
   border-radius: 3px;
 }
 .input-box-alerted {
-  margin-top: 1.5rem;
   border-width: 2px;
   border-color: red;
 }
 
 .alert-box {
   color: red;
-  margin-top: 1.5rem;
   font-size: 15px;
 }
 </style>

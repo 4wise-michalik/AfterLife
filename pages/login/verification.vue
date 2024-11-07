@@ -9,9 +9,7 @@ const sendNewCodeWaitingTime = ref(60);
 
 const generatedCode = ref("");
 
-const verificationTextLabel = ref(
-  "We have just sent you an email with verification code. Please enter it below."
-);
+const verificationTextLabel = ref("We have just sent you an email with verification code. Please enter it below.");
 const newCodeTextLabel = ref("Didn't get it?");
 const sendAgainTextLabel = ref("send again");
 const sendAgainTimerLabel = ref("");
@@ -23,9 +21,7 @@ const verificationCodeAlertMessage = ref("");
 const verificationCodeBox = ref("input-box");
 
 onMounted(async () => {
-  email.value = JSON.parse(
-    sessionStorage.getItem("userData").toString()
-  )[0].email;
+  email.value = JSON.parse(sessionStorage.getItem("userData").toString())[0].email;
 
   generatedCode.value = await generateVerificationCode();
   sendVerificationCode(email.value, generatedCode.value);
@@ -51,10 +47,7 @@ async function enteredVerificationCode() {
     verificationCodeBox.value = "input-box";
   }
 
-  if (
-    verificationCodeAlertMessage.value === "" &&
-    (await chceckVerificationCode())
-  ) {
+  if (verificationCodeAlertMessage.value === "" && (await chceckVerificationCode())) {
     navigateTo("/home");
   }
 }
@@ -82,14 +75,8 @@ function countDownSendNewCode() {
   setInterval(function () {
     if (sendNewCodeWaitingTime.value >= 0) {
       if (sendNewCodeWaitingTime.value >= 10) {
-        var minutes = parseInt(
-          (sendNewCodeWaitingTime.value / 60).toString(),
-          10
-        ).toString();
-        var seconds = parseInt(
-          (sendNewCodeWaitingTime.value % 60).toString(),
-          10
-        ).toString();
+        var minutes = parseInt((sendNewCodeWaitingTime.value / 60).toString(), 10).toString();
+        var seconds = parseInt((sendNewCodeWaitingTime.value % 60).toString(), 10).toString();
 
         if (parseInt(minutes) < 10) {
           minutes = "0" + minutes;
@@ -117,7 +104,7 @@ function countDownSendNewCode() {
     <p class="verification-text">
       {{ verificationTextLabel }}
     </p>
-    <div>
+    <div class="div-input-box">
       <p class="send-new-code">{{ newCodeTextLabel }}</p>
       <button
         :disabled="!sendNewCode_isActive"
@@ -133,7 +120,7 @@ function countDownSendNewCode() {
       <p class="send-new-code">{{ sendAgainTimerLabel }}</p>
     </div>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ verificationCodeLabel }}:</p>
       <input :class="verificationCodeBox" v-model="verificationCode" />
       <p class="alert-box">{{ verificationCodeAlertMessage }}</p>
@@ -155,6 +142,13 @@ function countDownSendNewCode() {
 
 .content-verification {
   display: grid;
+}
+
+.div-input-box {
+  display: flex;
+  margin-top: 1.68rem;
+  margin-bottom: 2rem;
+  margin-right: 2rem;
 }
 
 .send-new-code,

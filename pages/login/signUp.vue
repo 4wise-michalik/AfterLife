@@ -92,12 +92,7 @@ function onSubmit() {
     passwordRepeatInputBox.value = "input-box";
   }
 
-  if (
-    nameAlertMessage.value == "" &&
-    surnameAlertMessage.value == "" &&
-    emailAlertMessage.value == "" &&
-    passwordAlertMessage.value == ""
-  ) {
+  if (nameAlertMessage.value == "" && surnameAlertMessage.value == "" && emailAlertMessage.value == "" && passwordAlertMessage.value == "") {
     checkCredentialsAvability();
   }
 }
@@ -140,39 +135,35 @@ async function checkCredentialsAvability() {
   <div class="content-signin">
     <p class="greating-text">Sign up</p>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ nameLabel }}:</p>
       <p class="alert-box">*</p>
       <input :class="nameInputBox" v-model="name" />
       <p class="alert-box">{{ nameAlertMessage }}</p>
     </div>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ surnameLabel }}:</p>
       <p class="alert-box">*</p>
       <input :class="surnameInputBox" v-model="surname" />
       <p class="alert-box">{{ surnameAlertMessage }}</p>
     </div>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ emailLabel }}:</p>
       <p class="alert-box">*</p>
       <input type="email" :class="emailInputBox" v-model="email" />
       <p class="alert-box">{{ emailAlertMessage }}</p>
     </div>
 
-    <div>
+    <div class="div-input-box">
       <p class="label-input-box">{{ passwordLabel }}:</p>
       <p class="alert-box">*</p>
       <input type="password" :class="passwordInputBox" v-model="password" />
 
       <p class="label-input-box">{{ passwordRepeatLabel }}:</p>
       <p class="alert-box">*</p>
-      <input
-        type="password"
-        :class="passwordRepeatInputBox"
-        v-model="passwordRepeat"
-      />
+      <input type="password" :class="passwordRepeatInputBox" v-model="passwordRepeat" />
       <p class="alert-box">{{ passwordAlertMessage }}</p>
     </div>
 
@@ -196,6 +187,13 @@ async function checkCredentialsAvability() {
   display: grid;
 }
 
+.div-input-box {
+  display: flex;
+  margin-top: 1.68rem;
+  margin-bottom: 2rem;
+  margin-right: 2rem;
+}
+
 .label-input-box {
   color: white;
   font-size: 15px;
@@ -207,19 +205,15 @@ async function checkCredentialsAvability() {
   background-color: white;
   color: black;
   width: 15rem;
-  margin-top: 1.68rem;
-  margin-right: 2rem;
   border-radius: 3px;
 }
 .input-box-alerted {
-  margin-top: 1.5rem;
   border-width: 2px;
   border-color: red;
 }
 
 .alert-box {
   color: red;
-  margin-top: 1.5rem;
   font-size: 15px;
 }
 </style>

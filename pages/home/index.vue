@@ -6,12 +6,15 @@ definePageMeta({
 const connectedPlatforms = ref([]);
 const postsCount = ref(null);
 const showAddPlatform = ref(false);
-const trustedOnes = ref(null);
+const trustedOnes = ref({});
 const isAlive = ref(true);
 const userData = ref({});
 const posts = ref([]);
 const latestPost = ref(null);
+
 onMounted(async () => {
+  userData.value = JSON.parse(sessionStorage.getItem("userData"));
+
   await getPostsFunction();
   await checkIfIsDead();
   await getPlatforms();
@@ -19,7 +22,6 @@ onMounted(async () => {
   await getTrustedOnes();
 });
 const checkIfIsDead = async () => {
-  userData.value = JSON.parse(sessionStorage.getItem("userData").toString())[0];
   if (userData.value.deceased) {
     isAlive.value = false;
   }
@@ -33,8 +35,7 @@ const getPlatforms = async () => {
   connectedPlatforms.value = (await getUserPlatforms(userData.value.id)).data;
 };
 
-async function getPostsFunction() {
-  userData.value = JSON.parse(sessionStorage.getItem("userData"));
+const getPostsFunction = async () => {
   posts.value = await getPosts(userData.value[0].id);
   sessionStorage.setItem("posts", JSON.stringify(posts.value));
   if (posts.value.data.length > 0) {
@@ -42,11 +43,10 @@ async function getPostsFunction() {
       return prev && prev.id > current.id ? prev : current;
     });
   }
-}
+};
 
-const getTrustedOnes = () => {
-  trustedOnes.value = JSON.parse(sessionStorage.getItem("trusted").toString());
-  // console.log(trustedOnes.value[0]);
+const getTrustedOnes = async () => {
+  trustedOnes.value = (await getTrusted(userData.value[0].id)).data.value;
 };
 </script>
 

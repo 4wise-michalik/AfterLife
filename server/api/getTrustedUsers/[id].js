@@ -15,7 +15,10 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
     const [rows] = await connection.query(
-      `SELECT id, first_name, last_name, email, verified_email, verifing_method FROM users WHERE id IN (SELECT trusted_id FROM trusted WHERE user_id=?)`,
+      `SELECT u.id, u.first_name, u.last_name, u.email, u.verified_email, u.verifing_method, t.bff, t.reported 
+        FROM trusted t
+        inner join users u on t.trusted_id=u.id 
+        where t.user_id=?`,
       [userId]
     );
 

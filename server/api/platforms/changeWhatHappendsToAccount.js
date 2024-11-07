@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-import { convertCalendar } from "@/composables/convertCalendar";
 
 const config = {
   host: process.env.MARIA_DB_HOST,
@@ -12,7 +11,6 @@ const config = {
 export default defineEventHandler(async (event) => {
   const body = await readBody(event); // Read the request body
   let connection;
-  const { convertCalendarToDate } = convertCalendar();
 
   var personId = body.whoToPassAccount.id;
   var date = await convertCalendarToDate(body.whatHappendsToAccountTime);
@@ -26,7 +24,14 @@ export default defineEventHandler(async (event) => {
               what_happens_to_account_give_account_id = ?, 
               what_happens_to_account_give_account_message = ?
           WHERE user_id = ? AND platform_id = ?`,
-      [body.whatHappendsToAccount, date.toISOString(), personId, body.message, body.userId, body.platformId]
+      [
+        body.whatHappendsToAccount,
+        date.toISOString(),
+        personId,
+        body.message,
+        body.userId,
+        body.platformId,
+      ]
     );
 
     return {

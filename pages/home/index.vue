@@ -18,7 +18,6 @@ onMounted(async () => {
   await getPostsCount();
   await getTrustedOnes();
 });
-
 const checkIfIsDead = async () => {
   userData.value = JSON.parse(sessionStorage.getItem("userData").toString())[0];
   if (userData.value.deceased) {
@@ -32,8 +31,6 @@ const getPostsCount = async () => {
 
 const getPlatforms = async () => {
   connectedPlatforms.value = (await getUserPlatforms(userData.value.id)).data;
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .id;
 };
 
 async function getPostsFunction() {

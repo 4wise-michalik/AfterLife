@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-import { convertCalendar } from "@/composables/convertCalendar";
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -12,7 +11,6 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   let connection;
 
-  const { convertCalendarToDate, convertCalendarToObj } = convertCalendar();
   var date = await convertCalendarToDate(body.time);
 
   try {

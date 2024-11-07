@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-import { convertCalendar } from "@/composables/convertCalendar";
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -12,23 +11,27 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   let connection;
 
-  const { convertCalendarToDate, convertCalendarToObj } = convertCalendar();
   const date = await convertCalendarToDate(body.time);
 
   try {
     connection = await mysql.createConnection(config);
 
-    const [rows] = await connection.query(
+    const [result] = await connection.query(
       `UPDATE posts SET content = ?, time = ? WHERE id = ?`,
       [body.content, date, body.postId]
     );
-
+    if (result.affectedRows === 0) {
+      return {
+        success: false,
+        error: "No post found with the given ID.",
+      };
+    }
     return {
       success: true,
-      data: rows,
+      data: { affectedRows: result.affectedRows },
     };
   } catch (error) {
-    console.error("Database error:", error); // Zaloguj dokładny błąd
+    console.error("Database error:", error);
     return {
       success: false,
       error: "Database connection failed or query execution error.",

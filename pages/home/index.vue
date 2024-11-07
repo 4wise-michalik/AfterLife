@@ -47,9 +47,7 @@ const getPostsFunction = async () => {
 };
 
 const getTrustedOnes = async () => {
-  console.log(userData.value[0].id);
   trustedOnes.value = (await getTrusted(userData.value[0].id)).data.value;
-  console.log(trustedOnes.value);
 };
 </script>
 

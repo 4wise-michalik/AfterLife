@@ -2,7 +2,7 @@
 // home main screen, includes: account statistics, connected platfroms, QR code, scheduled posts, scheduled messages, trusted persons
 
 definePageMeta({
-  layout: "withsidebar", // Przypisuje layout tylko do tej strony
+  layout: "withsidebar",
 });
 
 const connectedPlatforms = ref([]);
@@ -10,13 +10,10 @@ const postsCount = ref(null);
 const showAddPlatform = ref(false);
 const trustedOnes = ref({});
 const isAlive = ref(true);
-const userData = ref({});
 const posts = ref([]);
 const latestPost = ref(null);
 
 onMounted(async () => {
-  userData.value = sessionGetUserData();
-
   await getPostsFunction();
   await checkIfIsDead();
   await getPlatforms();
@@ -26,7 +23,7 @@ onMounted(async () => {
 
 // checks if users is considered dead  ?  shows screen with death information and options to cancel death  :  shows normal main page
 const checkIfIsDead = async () => {
-  if (userData.value.deceased) {
+  if (sessionGetUserData().deceased) {
     isAlive.value = false;
   }
 };
@@ -38,13 +35,12 @@ const getPostsCount = async () => {
 
 // gets platforms that user have connected to his account
 const getPlatforms = async () => {
-  connectedPlatforms.value = (await getUserPlatforms(userData.value.id)).data;
+  connectedPlatforms.value = (await getUserPlatforms(sessionGetUserData().id)).data;
 };
 
 // gets all user's posts
 const getPostsFunction = async () => {
-  posts.value = await getPosts(userData.value.id);
-  sessionStorage.setItem("posts", JSON.stringify(posts.value));
+  posts.value = await getPosts(sessionGetUserData().id);
   if (posts.value.data.length > 0) {
     latestPost.value = posts.value.data.reduce(function (prev, current) {
       return prev && prev.id > current.id ? prev : current;
@@ -54,7 +50,7 @@ const getPostsFunction = async () => {
 
 // get user's trusted persons
 const getTrustedOnes = async () => {
-  trustedOnes.value = (await getTrusted(userData.value.id)).data.value;
+  trustedOnes.value = (await getTrusted(sessionGetUserData().id)).data.value;
 };
 </script>
 

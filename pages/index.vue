@@ -8,7 +8,7 @@ const isLogged = ref(false);
 onMounted(() => {
   if (sessionGetUserData()) {
     const userData = ref(sessionGetUserData());
-    if (userData.value.id) {
+    if (sessionGetUserData().id) {
       navigateTo("/home");
     }
   }

@@ -2,7 +2,7 @@
 // shows instructions of how to use the application
 
 definePageMeta({
-  layout: "withsidebar", // Przypisuje layout tylko do tej strony
+  layout: "withsidebar",
 });
 </script>
 

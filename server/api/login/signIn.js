@@ -15,10 +15,7 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
 
-    const [rows] = await connection.query(
-      "SELECT * FROM users WHERE email = ? AND password = ?",
-      [body.email, body.password]
-    );
+    const [rows] = await connection.query("SELECT * FROM users WHERE email = ? AND password = ?", [body.email, body.password]);
 
     if (rows.length > 0) {
       return { success: true };

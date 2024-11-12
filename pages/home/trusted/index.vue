@@ -2,11 +2,11 @@
 // page with user's trusted persons management
 
 definePageMeta({
-  layout: "withsidebar", // Przypisuje layout tylko do tej strony
+  layout: "withsidebar",
 });
 
-const trustedData = ref({});
 const userData = ref({});
+const trustedData = ref({});
 const showAddTrusted = ref(false);
 const showDeleteTrusted = ref(false);
 const friendCode = ref("");
@@ -19,27 +19,24 @@ const confirmTimerLabel = ref("00:10");
 const deleteConfirmActive = ref(false);
 
 onMounted(() => {
-  userData.value = sessionGetUserData();
   updateTrusted();
   countDownConfirm();
 });
 
 // updates user's trusted persons - gets values from database
 async function updateTrusted() {
-  const response_trusted = await getTrusted(userData.value.id);
-  sessionStorage.setItem("trusted", JSON.stringify(response_trusted.data.value));
-  trustedData.value = JSON.parse(sessionStorage.getItem("trusted").toString());
+  trustedData.value = (await getTrusted(sessionGetUserData().id)).data.value;
 }
 
 // changes trusted person's status from standard friend to bff
 const promoteToBFF = async (trusted) => {
-  await managementChangeBFF(userData.value.id, trusted.id, true);
+  await managementChangeBFF(sessionGetUserData().id, trusted.id, true);
   await updateTrusted();
 };
 
 // changes trusted person's status from bff to standard friend
 const demoteFromBFF = async (trusted) => {
-  await managementChangeBFF(userData.value.id, trusted.id, false);
+  await managementChangeBFF(sessionGetUserData().id, trusted.id, false);
   await updateTrusted();
 };
 
@@ -54,7 +51,7 @@ const deleteFromTrusted = async (trusted: number) => {
 
 // deletes trusted person from user's account
 const confirmedDeleteFromTrusted = async () => {
-  await managementDeleteFromTrusted(userData.value.id, trustedToDelete.value.id);
+  await managementDeleteFromTrusted(sessionGetUserData().id, trustedToDelete.value.id);
   await updateTrusted();
   showDeleteTrusted.value = false;
 };
@@ -63,7 +60,7 @@ const confirmedDeleteFromTrusted = async () => {
 const addToTrusted = async () => {
   const result = await checkFriendCode();
   if (result.success) {
-    await managementAddToTrusted(userData.value.id, newTrustedId.value);
+    await managementAddToTrusted(sessionGetUserData().id, newTrustedId.value);
     await updateTrusted();
     showAddTrusted.value = false;
     friendCode.value = "";
@@ -75,7 +72,7 @@ const checkFriendCode = async () => {
   if (friendCode.value.length != 6) {
     errorMessage.value = "friend code should have 6 characters";
     return { success: false };
-  } else if (friendCode.value == userData.value.friend_code) {
+  } else if (friendCode.value == sessionGetUserData().friend_code) {
     errorMessage.value = "you cannot add yourself";
     return { success: false };
   } else {

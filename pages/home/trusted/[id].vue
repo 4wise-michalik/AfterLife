@@ -13,8 +13,9 @@ onMounted(() => {
   getTrustedOnes();
 });
 
-const getTrustedOnes = () => {
-  const trustedOnes = JSON.parse(sessionStorage.getItem("trusted").toString());
+const getTrustedOnes = async () => {
+  const response_trusted = await getTrusted(sessionGetUserData().id);
+  const trustedOnes = response_trusted.data.value;
   trustedOne.value = trustedOnes.filter((trusted) => trusted.id == id)[0];
 };
 </script>

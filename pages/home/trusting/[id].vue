@@ -9,6 +9,7 @@ definePageMeta({
     return typeof route.params.id === "string" && /^\d+$/.test(route.params.id);
   },
 });
+
 const userData = ref(null);
 const name = ref("");
 const reportDataTotal = ref(0);
@@ -38,9 +39,7 @@ const confirm_isActive = ref(false);
 // Wywołanie API na onMounted
 onMounted(async () => {
   try {
-    sessionGetUserData();
-    userData.value = sessionGetUserData();
-    const reportResult = await checkReport(id, userData.value.id);
+    const reportResult = await checkReport(id, sessionGetUserData().id);
 
     reportDataReported.value = reportResult.data.reported;
     reportDataTotal.value = reportResult.data.total;
@@ -54,7 +53,7 @@ onMounted(async () => {
   } finally {
     reportLoading.value = false;
   }
-  const trustingTable = (await getTrusting(userData.value.id)).data.value;
+  const trustingTable = (await getTrusting(sessionGetUserData().id)).data.value;
   for (const trusting in trustingTable) {
     if (trustingTable[trusting].id == id) {
       const firstName = trustingTable[trusting].first_name;
@@ -69,8 +68,8 @@ onMounted(async () => {
   }
 
   // when pearson that trust the user is dead and the user is supposed to get access to the account
-  if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == userData.value.id) {
-    const deceasedResult = await getDeceasedInfo(id, userData.value.id);
+  if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == sessionGetUserData().id) {
+    const deceasedResult = await getDeceasedInfo(id, sessionGetUserData().id);
     whatHappendsToAccountGiveAccountMessage.value = deceasedResult.data.value.what_happens_to_account_give_account_message;
     whatHappendsToAccountGiveAccountEmail.value = deceasedResult.data.value.email;
     whatHappendsToAccountGiveAccountPassword.value = deceasedResult.data.value.password;

@@ -36,10 +36,6 @@ const toggleAccountInfo = () => {
 // logging out - deletes all info from session storage
 const logOut = () => {
   sessionStorage.removeItem("userData"); // usuwa informacje o userze
-  sessionStorage.removeItem("trusted"); // usuwa informacje o zaufanych
-  sessionStorage.removeItem("trusting"); // usuwa informacje o ufających
-  sessionStorage.removeItem("userPlatforms"); // usuwa informacje o połączonych platformach
-  sessionStorage.removeItem("posts"); // usuwa informacje o postach
   navigateTo("/");
 };
 </script>
@@ -47,7 +43,6 @@ const logOut = () => {
 <template>
   <div>
     <aside :class="{ open: sidebarOpen }" class="sidebar">
-      <nav class="mobile-margin" style="list-style-type: none" :style="{ color: props.color }">
       <nav class="mobile-margin" style="list-style-type: none" :style="{ color: props.color }">
         <slot />
       </nav>

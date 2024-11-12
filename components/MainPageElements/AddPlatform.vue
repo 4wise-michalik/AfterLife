@@ -1,6 +1,7 @@
 <script setup>
 // adds new platform to users account
 
+const userData = ref({});
 const avaliablePlatforms = ref([]);
 const selectedPlatform = ref();
 const login = ref("");

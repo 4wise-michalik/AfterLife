@@ -2,7 +2,7 @@
 // platform management page
 
 definePageMeta({
-  layout: "withsidebar", // Przypisuje layout tylko do tej strony
+  layout: "withsidebar",
 });
 
 const { id } = useRoute().params;
@@ -49,7 +49,9 @@ const content = ref("");
 const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 
 onMounted(async () => {
-  trustedPersons.value = JSON.parse(sessionStorage.getItem("trusted").toString());
+  const response_trusted = await getTrusted(sessionGetUserData().id);
+  trustedPersons.value = response_trusted.data.value;
+
   selectedTrustedPerson.value = trustedPersons.value[0];
   platformPosts.value = await getPlatformPosts();
 
@@ -100,7 +102,7 @@ const removePost = (id) => {
 };
 
 // gets platform information
-function getPlatformData() {
+async function getPlatformData() {
   var messageTemp = "";
   var selectedTemp = 0;
 
@@ -110,7 +112,7 @@ function getPlatformData() {
   selectedTrustedPerson.value = trustedPersons.value[0];
   messageTemp = "";
 
-  const platformData = sessionGetPlatforms();
+  const platformData = (await getUserPlatforms(sessionGetUserData().id)).data;
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       name.value = platformData[platform].platform_name;
@@ -153,7 +155,6 @@ function getPlatformData() {
 
 // changes what happends to the account after user's death
 async function onWhatHappendsToAccountChange(option: Number) {
-  // zapisanie w bazie
   const userId = sessionGetUserData().id;
   const platformId = parseInt(id);
   if (option === 1) {
@@ -175,7 +176,7 @@ async function onWhatHappendsToAccountChange(option: Number) {
   await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount, messagePassAccount);
 
   // save in sessionStorage
-  const platformData = sessionGetPlatforms();
+  const platformData = (await getUserPlatforms(sessionGetUserData().id)).data;
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       platformData[platform].what_happens_to_account = option;
@@ -185,7 +186,6 @@ async function onWhatHappendsToAccountChange(option: Number) {
       platformData[platform].what_happens_to_account_give_account_message = message.value;
     }
   }
-  sessionStorage.setItem("userPlatforms", JSON.stringify(platformData));
 
   // updates view
   getPlatformData();

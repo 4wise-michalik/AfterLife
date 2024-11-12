@@ -19,16 +19,9 @@ export const getUserPlatforms = async (userId: number) => {
     if (response.data.success) {
       response.data.data.forEach((element: any) => {
         if (element.what_happens_to_account_time != null) {
-          element.what_happens_to_account_time = convertCalendarToObj(
-            element.what_happens_to_account_time
-          );
+          element.what_happens_to_account_time = convertCalendarToObj(element.what_happens_to_account_time);
         }
       });
-
-      sessionStorage.setItem(
-        "userPlatforms",
-        JSON.stringify(response.data.data)
-      );
 
       return { success: true, data: response.data.data };
     }
@@ -51,12 +44,9 @@ export const getUserPlatforms = async (userId: number) => {
  */
 export const getUserAvaliablePlatforms = async (userId: number) => {
   try {
-    const response = await axios.post(
-      "/api/platforms/getUserAvaliablePlatforms",
-      {
-        userId: userId,
-      }
-    );
+    const response = await axios.post("/api/platforms/getUserAvaliablePlatforms", {
+      userId: userId,
+    });
 
     if (response.data.success) {
       return { success: true, data: response.data.data };
@@ -78,10 +68,7 @@ export const getUserAvaliablePlatforms = async (userId: number) => {
  *          A promise that resolves to an object containing:
  *          - `success`: A boolean indicating if the removal was successful.
  */
-export const removeUserPlatform = async (
-  userId: number,
-  platformId: number
-) => {
+export const removeUserPlatform = async (userId: number, platformId: number) => {
   try {
     const response = await axios.post("/api/platforms/removeUserPlatform", {
       userId: userId,
@@ -110,12 +97,7 @@ export const removeUserPlatform = async (
  *          A promise that resolves to an object containing:
  *          - `success`: A boolean indicating if the addition was successful.
  */
-export const addUserPlatform = async (
-  userId: number,
-  platformId: number,
-  login: string,
-  password: string
-) => {
+export const addUserPlatform = async (userId: number, platformId: number, login: string, password: string) => {
   try {
     const response = await axios.post("/api/platforms/addUserPlatform", {
       userId: userId,
@@ -166,22 +148,14 @@ export const getPlatforms = async () => {
  *          A promise that resolves to an object containing:
  *          - `success`: A boolean indicating whether the credential change was successful.
  */
-export const changeUserPlatformCredentials = async (
-  userId: number,
-  platformId: number,
-  login: string,
-  password: string
-) => {
+export const changeUserPlatformCredentials = async (userId: number, platformId: number, login: string, password: string) => {
   try {
-    const response = await axios.post(
-      "/api/platforms/changeUserPlatformCredentials",
-      {
-        userId: userId,
-        platformId: platformId,
-        login: login,
-        password: password,
-      }
-    );
+    const response = await axios.post("/api/platforms/changeUserPlatformCredentials", {
+      userId: userId,
+      platformId: platformId,
+      login: login,
+      password: password,
+    });
     if (response.data.success) {
       return { success: true };
     }

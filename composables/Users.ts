@@ -1,4 +1,46 @@
 import { ref } from "vue";
+import axios from "axios";
+
+/**
+ * Checks if given email and password are correct
+ *
+ * @returns { loggedIn: object, error: string } - An object indicating with query params.
+ */
+export const userLogIn = async (email: string, password: string) => {
+  const error = ref(null);
+  try {
+    const responseUserData = await axios.post("/api/login/signIn", {
+      email: email,
+      password: password,
+    });
+
+    const loggedIn = responseUserData.data;
+    return loggedIn;
+  } catch (err) {
+    error.value = err.message;
+  }
+  return { loggedIn: null, error };
+};
+
+/**
+ * Get user's infosssssssssssssssssssssssssssssssssssssssssssssss
+ *
+ * @returns { userInfo: object, error: string } - An object indicating with query params.
+ */
+export const getUsersInfo = async (email: string) => {
+  const error = ref(null);
+  try {
+    const responseUserData = await axios.post("/api/login/getUserInfo", {
+      email: email,
+    });
+
+    const userInfo = responseUserData.data;
+    return userInfo;
+  } catch (err) {
+    error.value = err.message;
+  }
+  return { userInfo, error };
+};
 
 /**
  * Gets all user's friend codes.

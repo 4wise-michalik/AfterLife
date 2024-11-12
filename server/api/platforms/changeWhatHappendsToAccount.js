@@ -24,14 +24,7 @@ export default defineEventHandler(async (event) => {
               what_happens_to_account_give_account_id = ?, 
               what_happens_to_account_give_account_message = ?
           WHERE user_id = ? AND platform_id = ?`,
-      [
-        body.whatHappendsToAccount,
-        date.toISOString(),
-        personId,
-        body.message,
-        body.userId,
-        body.platformId,
-      ]
+      [body.whatHappendsToAccount, date.toString(), personId, body.message, body.userId, body.platformId]
     );
 
     return {

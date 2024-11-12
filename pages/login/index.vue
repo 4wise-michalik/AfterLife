@@ -1,8 +1,6 @@
 <script setup lang="ts">
 // sign in page
 
-import axios from "axios";
-
 const signInLabel = ref("sign in");
 const signUpLabel = ref("sign up");
 const forgotPasswordLabel = ref("forgot password");
@@ -18,6 +16,8 @@ const passwordAlertMessage = ref("");
 const passwordInputBox = ref("input-box");
 
 const alertMessage = ref("");
+
+const userData = ref({});
 const verifiedMethod = ref(false);
 
 // checks if entered credentials are valid
@@ -46,29 +46,20 @@ function onSubmit() {
 // checks if entered credentials are in database
 async function checkCredentials() {
   try {
-    const response = await axios.post("/api/login/signIn", {
-      email: email.value,
-      password: password.value,
-    });
+    const response = await userLogIn(email.value, password.value);
 
-    if (response.data.success === true) {
-      try {
-        const responseUserData = await axios.post("/api/login/getUserInfo", {
-          email: email.value,
-        });
-        const data = responseUserData.data.data;
-        verifiedMethod.value = data[0].verified_email;
-        sessionStorage.setItem("userData", JSON.stringify(data));
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    if (response.success === true) {
+      userData.value = (await getUsersInfo(email.value)).data[0];
+      sessionStorage.setItem("userData", JSON.stringify(userData.value));
+
+      verifiedMethod.value = userData.value.verified_email;
 
       alertMessage.value = "";
 
       if (verifiedMethod.value) {
-        navigateTo({ path: "home" });
+        navigateTo("/home");
       } else {
-        navigateTo({ path: "login/verification" });
+        navigateTo("/login/verification");
       }
     } else {
       alertMessage.value = "incorrect email or password";

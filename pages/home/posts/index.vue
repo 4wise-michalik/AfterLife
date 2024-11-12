@@ -9,11 +9,8 @@ const posts = ref({});
 const platforms = ref({});
 
 onMounted(async () => {
-  const userData = ref(sessionGetUserData());
-
-  posts.value = await sessionGetPosts();
-
-  platforms.value = await sessionGetPlatforms();
+  posts.value = await getPosts(sessionGetUserData().id);
+  platforms.value = (await getUserPlatforms(sessionGetUserData().id)).data;
 
   platforms.value.forEach((platform) => {
     groupedPosts.value[platform.platform_name] = [];

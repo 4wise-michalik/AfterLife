@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
     const [rows] = await connection.query(
-      `SELECT id, first_name, last_name, email, verified_email, verifing_method, deceased FROM users WHERE email=?`,
+      `SELECT id, first_name, last_name, email, verified_email, verifing_method, deceased, friend_code FROM users WHERE email=?`,
       [body.email]
     );
     return {

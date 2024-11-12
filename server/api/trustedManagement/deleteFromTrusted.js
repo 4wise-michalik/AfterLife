@@ -16,9 +16,12 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
     const [result] = await connection.query(`DELETE FROM trusted WHERE user_id=${body.userId} and trusted_id=${body.trustedId};`);
+    const [result2] = await connection.query(
+      `UPDATE connected_platforms SET what_happens_to_account=0, what_happens_to_account_give_account_id=0 WHERE user_id=${body.userId} AND what_happens_to_account_give_account_id=${body.trustedId};`
+    );
     return {
       success: true,
-      data: result,
+      data: { result, result2 },
     };
   } catch (error) {
     console.error("Database error:", error);

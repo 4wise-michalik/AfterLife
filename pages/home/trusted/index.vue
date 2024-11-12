@@ -38,7 +38,6 @@ const demoteFromBFF = async (trusted) => {
   await updateTrusted();
 };
 
-// usuwać powiązane działania (przekazanie konta tej osobie)
 const deleteFromTrusted = async (trusted: number) => {
   confirmWaitingTime.value = 10;
   confirmTimerLabel.value = "00:10";
@@ -53,20 +52,22 @@ const confirmedDeleteFromTrusted = async () => {
   showDeleteTrusted.value = false;
 };
 
-// sprawdzać czy już nie jest trusted
-// sprawdzać czy nie jest sobą
 const addToTrusted = async () => {
   const result = await checkFriendCode();
   if (result.success) {
     await managementAddToTrusted(userData.value.id, newTrustedId.value);
     await updateTrusted();
     showAddTrusted.value = false;
+    friendCode.value = "";
   }
 };
 
 const checkFriendCode = async () => {
   if (friendCode.value.length != 6) {
     errorMessage.value = "friend code should have 6 characters";
+    return { success: false };
+  } else if (friendCode.value == userData.value.friend_code) {
+    errorMessage.value = "you cannot add yourself";
     return { success: false };
   } else {
     errorMessage.value = "";
@@ -121,9 +122,29 @@ const countDownConfirm = () => {
       </section>
       <section v-else class="bg-purple-900 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
         <p class="name-label">{{ person.first_name }} {{ person.last_name }}</p>
-        <Icon v-if="!person.bff" @click="promoteToBFF(person)" v-tooltip="'promote to BFF'" name="fluent:chevron-double-up-16-filled" size="40px" />
-        <Icon v-else v-tooltip="'demote from BFF'" @click="demoteFromBFF(person)" name="fluent:chevron-double-down-16-filled" size="40px" />
-        <Icon v-tooltip="'delete trusted person'" @click="deleteFromTrusted(person)" name="material-symbols:delete-outline" size="40px" />
+        <Icon
+          v-if="!person.bff"
+          @click="promoteToBFF(person)"
+          v-tooltip="'promote to BFF'"
+          name="fluent:chevron-double-up-16-filled"
+          size="40px"
+          class="icon"
+        />
+        <Icon
+          v-else
+          v-tooltip="'demote from BFF'"
+          @click="demoteFromBFF(person)"
+          name="fluent:chevron-double-down-16-filled"
+          size="40px"
+          class="icon"
+        />
+        <Icon
+          v-tooltip="'delete trusted person'"
+          @click="deleteFromTrusted(person)"
+          name="material-symbols:delete-outline"
+          size="40px"
+          class="icon"
+        />
       </section>
     </div>
     <section
@@ -187,6 +208,9 @@ const countDownConfirm = () => {
   font-size: 35px;
 }
 
+.icon {
+  cursor: pointer;
+}
 .add-icon-div {
   display: flex;
   justify-content: center;

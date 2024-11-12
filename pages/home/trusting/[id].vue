@@ -55,7 +55,7 @@ onMounted(async () => {
   } finally {
     reportLoading.value = false;
   }
-  const trustingTable = (await getTrusting(userData.value[0])).data.value;
+  const trustingTable = (await getTrusting(userData.value[0].id)).data.value;
   for (const trusting in trustingTable) {
     if (trustingTable[trusting].id == id) {
       const firstName = trustingTable[trusting].first_name;

@@ -14,7 +14,7 @@ const showZoom = ref(false);
 const showEdit = ref(false);
 const qrSize = ref(null);
 
-onMounted(() => {
+onMounted(async () => {
   getLinkFromDatabase();
   loadQrCode();
   const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -29,6 +29,7 @@ async function getLinkFromDatabase() {
     });
     if (response.data.success) {
       usersPage.value = response.data.data[0].link;
+      // console.log(usersPage.value);
     }
   } catch (error) {
     console.error("Error:", error);
@@ -51,15 +52,16 @@ async function loadQrCode() {
 }
 
 // closes popup with editing QR code
-const handleEditClose = (newValue) => {
+const handleEditClose = async (newValue) => {
   usersPage.value = newValue;
   showEdit.value = false;
-  getLinkFromDatabase();
-  loadQrCode();
+  await getLinkFromDatabase();
+  await loadQrCode();
 };
 
 // opens popup with zoomed QR code
-function zoomQrCode() {
+async function zoomQrCode() {
+  await loadQrCode();
   imageDataVisualized.value = imageData.value;
   showZoom.value = !showZoom.value;
 }

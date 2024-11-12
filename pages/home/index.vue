@@ -1,6 +1,10 @@
 <script setup lang="ts">
 // home main screen, includes: account statistics, connected platfroms, QR code, scheduled posts, scheduled messages, trusted persons
 
+import QrcodeVue from "qrcode.vue";
+import { toPng } from "html-to-image";
+import axios from "axios";
+
 definePageMeta({
   layout: "withsidebar",
 });
@@ -13,12 +17,26 @@ const isAlive = ref(true);
 const posts = ref([]);
 const latestPost = ref(null);
 
+const capture = ref(null);
+const imageData = ref(null);
+const imageDataVisualized = ref(null);
+const usersPage = ref("");
+
+const showZoom = ref(false);
+const showEdit = ref(false);
+const qrSize = ref(null);
+
 onMounted(async () => {
   await getPostsFunction();
   await checkIfIsDead();
   await getPlatforms();
   await getPostsCount();
   await getTrustedOnes();
+
+  getLinkFromDatabase();
+  loadQrCode();
+  const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  qrSize.value = 15 * remSize;
 });
 
 // checks if users is considered dead  ?  shows screen with death information and options to cancel death  :  shows normal main page
@@ -52,6 +70,70 @@ const getPostsFunction = async () => {
 const getTrustedOnes = async () => {
   trustedOnes.value = (await getTrusted(sessionGetUserData().id)).data.value;
 };
+
+// gets link (to generate QR code) from database
+async function getLinkFromDatabase() {
+  try {
+    const response = await axios.post("/api/qrCode/getQrCode", {
+      id: sessionGetUserData().id,
+    });
+    if (response.data.success) {
+      usersPage.value = response.data.data[0].link;
+      // console.log(usersPage.value);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+// reloads QR code
+async function loadQrCode() {
+  try {
+    await toPng(capture.value)
+      .then((dataUrl) => {
+        imageData.value = dataUrl;
+      })
+      .catch((err) => {
+        console.error("Error capturing div:", err);
+      });
+  } catch (error) {
+    console.error("An unexpected error occurred:", error);
+  }
+}
+
+// closes popup with editing QR code
+const handleEditClose = async (newValue) => {
+  usersPage.value = newValue;
+  showEdit.value = false;
+  await getLinkFromDatabase();
+  await loadQrCode();
+};
+
+// opens popup with zoomed QR code
+async function zoomQrCode() {
+  await loadQrCode();
+  imageDataVisualized.value = imageData.value;
+  showZoom.value = !showZoom.value;
+}
+
+// opens popup with edit QR code
+function editQrCode() {
+  showEdit.value = !showEdit.value;
+}
+
+// downloads .png file with QR code
+const downloadQrCode = () => {
+  try {
+    const link = document.createElement("a");
+    link.href = imageData.value;
+    link.download = "your-website.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 </script>
 
 <template>
@@ -75,7 +157,19 @@ const getTrustedOnes = async () => {
     </section>
 
     <section class="bg-purple-700 text-gray-200 p-8 rounded-lg shadow-lg hover:shadow-2xl">
-      <MainPageElementsQrCode />
+      <div class="qr-code-div">
+        <div v-if="usersPage !== ''" ref="capture">
+          <qrcode-vue v-if="qrSize" :value="usersPage" :size="qrSize" level="H" render-as="svg" class="qr-code" />
+        </div>
+        <div v-if="usersPage === ''" ref="capture">
+          <qrcode-vue v-if="qrSize" value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" :size="qrSize" level="H" render-as="svg" class="qr-code" />
+        </div>
+        <div class="qr-code-side-bar">
+          <Icon class="qr-code-side-element" name="tdesign:zoom-in" size="5rem" @click="zoomQrCode" />
+          <Icon class="qr-code-side-element" name="material-symbols:edit-square-outline" size="5rem" @click="editQrCode" />
+          <Icon class="qr-code-side-element" name="material-symbols:download-2-outline" size="5rem" @click="downloadQrCode" />
+        </div>
+      </div>
     </section>
 
     <section class="bg-purple-600 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
@@ -105,6 +199,17 @@ const getTrustedOnes = async () => {
   </div>
 
   <MainPageElementsAddPlatform v-show="showAddPlatform" @close-modal="showAddPlatform = false" />
+  <MainPageElementsQrCodeZoom v-show="showZoom" @close-modal="showZoom = false" :qrCode="imageDataVisualized" />
+  <MainPageElementsQrCodeEdit
+    v-show="showEdit"
+    @close-modal-save="handleEditClose"
+    @close-modal="
+      {
+        showEdit = false;
+        getLinkFromDatabase();
+      }
+    "
+  />
 </template>
 
 <style scoped>
@@ -148,5 +253,30 @@ const getTrustedOnes = async () => {
 
 .trusted-one-text {
   font-size: 20px;
+}
+
+.qr-code-div {
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
+.qr-code {
+  margin: 1rem;
+}
+
+.qr-code-side-bar {
+  display: grid;
+  padding: 1rem;
+}
+
+.qr-code-side-element,
+.qr-code-side-element:hover {
+  color: black;
+}
+.qr-code-side-element:hover {
+  background-color: #538a8c;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>

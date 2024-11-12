@@ -3,11 +3,9 @@ const route = useRoute();
 const signIpText = ref("sign in");
 const isLogged = ref(false);
 onMounted(() => {
-  if (sessionStorage.getItem("userData")) {
-    const userData = ref(
-      JSON.parse(sessionStorage.getItem("userData") || "{}")
-    );
-    if (userData.value[0].id) {
+  if (sessionGetUserData()) {
+    const userData = ref(sessionGetUserData());
+    if (userData.value.id) {
       navigateTo("/home");
     }
   }

@@ -21,7 +21,7 @@ const verificationCodeAlertMessage = ref("");
 const verificationCodeBox = ref("input-box");
 
 onMounted(async () => {
-  email.value = JSON.parse(sessionStorage.getItem("userData").toString())[0].email;
+  email.value = sessionGetUserData().email;
 
   generatedCode.value = await generateVerificationCode();
   sendVerificationCode(email.value, generatedCode.value);

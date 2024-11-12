@@ -56,7 +56,7 @@ onMounted(async () => {
 });
 
 async function getPlatformPosts() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = sessionGetUserData().id;
   const posts = (await getPosts(userId)).data.value;
   const filteredPosts = posts.filter((item) => item.platform_id === Number(id));
 
@@ -69,7 +69,7 @@ const closePopup = () => {
   isPopupOpen.value = false;
 };
 const saveData = async () => {
-  const userId = JSON.parse(sessionStorage.getItem("userData"))[0].id;
+  const userId = sessionGetUserData().id;
   await addPost(userId, id, content.value, time.value);
   const lastPost = (await getPosts(userId)).data.value.slice(-1);
 
@@ -98,7 +98,7 @@ function getPlatformData() {
   selectedTrustedPerson.value = trustedPersons.value[0];
   messageTemp = "";
 
-  const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
+  const platformData = sessionGetPlatforms();
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       name.value = platformData[platform].platform_name;
@@ -141,7 +141,7 @@ function getPlatformData() {
 
 async function onWhatHappendsToAccountChange(option: Number) {
   // zapisanie w bazie
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = sessionGetUserData().id;
   const platformId = parseInt(id);
   if (option === 1) {
     date.value = date1.value;
@@ -162,7 +162,7 @@ async function onWhatHappendsToAccountChange(option: Number) {
   await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount, messagePassAccount);
 
   // nadpisanie w sesji
-  const platformData = JSON.parse(sessionStorage.getItem("userPlatforms").toString());
+  const platformData = sessionGetPlatforms();
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
       platformData[platform].what_happens_to_account = option;
@@ -206,14 +206,14 @@ const countDownConfirm = () => {
 };
 
 async function onRemoveConfirm() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = sessionGetUserData().id;
   const platformId = parseInt(id);
   await removeUserPlatform(userId, platformId);
   navigateTo("/home");
 }
 
 function onEditConfirm() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = sessionGetUserData().id;
   const platformId = parseInt(id);
   if (login.value != "" && password.value != "") {
     changeUserPlatformCredentials(userId, platformId, login.value, password.value);

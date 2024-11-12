@@ -10,7 +10,7 @@ onMounted(() => {
 });
 
 async function getAvaliablePlatforms() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = sessionGetUserData().id;
   avaliablePlatforms.value = (await getUserAvaliablePlatforms(userId)).data;
 }
 
@@ -25,7 +25,7 @@ function onSave() {
 }
 
 async function saveNewPlatformInDataBase() {
-  const userId = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+  const userId = sessionGetUserData().id;
   const platformId = selectedPlatform.value.id;
 
   await addUserPlatform(userId, platformId, login.value, password.value);

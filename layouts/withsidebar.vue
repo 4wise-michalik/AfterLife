@@ -4,17 +4,17 @@ const trustingOnes = ref({});
 const userData = ref({});
 
 onMounted(async () => {
-  userData.value = JSON.parse(sessionStorage.getItem("userData"));
+  userData.value = sessionGetUserData();
 
   await getTrustedOnes();
   await getTrustingOnes();
 });
 
 const getTrustedOnes = async () => {
-  trustedOnes.value = (await getTrusted(userData.value[0].id)).data.value;
+  trustedOnes.value = (await getTrusted(userData.value.id)).data.value;
 };
 const getTrustingOnes = async () => {
-  trustingOnes.value = (await getTrusting(userData.value[0].id)).data.value;
+  trustingOnes.value = (await getTrusting(userData.value.id)).data.value;
 };
 </script>
 

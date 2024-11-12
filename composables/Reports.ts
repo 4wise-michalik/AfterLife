@@ -8,8 +8,7 @@ import axios from "axios";
  * @returns {Promise<void>} A promise that resolves when the reporting process is complete.
  */
 export const report = async (trustingId: number) => {
-  const trustedId = JSON.parse(sessionStorage.getItem("userData").toString())[0]
-    .id;
+  const trustedId = JSON.parse(sessionGetUserData().id);
   try {
     const response = await $fetch("/api/report", {
       method: "POST",
@@ -30,10 +29,7 @@ export const report = async (trustingId: number) => {
 
   // Make sure to pass trustedId instead of userId to checkReport
   const reportResult = await checkReport(trustedId, trustedId);
-  if (
-    reportResult.data.value.total / reportResult.data.value.trusted_number >=
-    0.75
-  ) {
+  if (reportResult.data.value.total / reportResult.data.value.trusted_number >= 0.75) {
     await makeDeceased(trustedId); // Assuming makeDeceased uses trustedId
   }
 };

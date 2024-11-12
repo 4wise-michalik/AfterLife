@@ -9,7 +9,7 @@ onMounted(() => {
 async function getLinkFromDatabase() {
   try {
     const response = await axios.post("/api/qrCode/getQrCode", {
-      id: JSON.parse(sessionStorage.getItem("userData").toString())[0].id,
+      id: sessionGetUserData().id,
     });
     if (response.data.success) {
       linkValue.value = response.data.data[0].link;
@@ -22,7 +22,7 @@ async function getLinkFromDatabase() {
 async function saveLinkInDataBase() {
   try {
     await axios.post("/api/qrCode/changeQrCode", {
-      id: JSON.parse(sessionStorage.getItem("userData").toString())[0].id,
+      id: sessionGetUserData().id,
       link: linkValue.value,
     });
   } catch (error) {

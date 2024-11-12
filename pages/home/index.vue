@@ -13,7 +13,7 @@ const posts = ref([]);
 const latestPost = ref(null);
 
 onMounted(async () => {
-  userData.value = JSON.parse(sessionStorage.getItem("userData"));
+  userData.value = sessionGetUserData();
 
   await getPostsFunction();
   await checkIfIsDead();
@@ -33,11 +33,11 @@ const getPostsCount = async () => {
 };
 
 const getPlatforms = async () => {
-  connectedPlatforms.value = (await getUserPlatforms(userData.value[0].id)).data;
+  connectedPlatforms.value = (await getUserPlatforms(userData.value.id)).data;
 };
 
 const getPostsFunction = async () => {
-  posts.value = await getPosts(userData.value[0].id);
+  posts.value = await getPosts(userData.value.id);
   sessionStorage.setItem("posts", JSON.stringify(posts.value));
   if (posts.value.data.length > 0) {
     latestPost.value = posts.value.data.reduce(function (prev, current) {
@@ -47,7 +47,7 @@ const getPostsFunction = async () => {
 };
 
 const getTrustedOnes = async () => {
-  trustedOnes.value = (await getTrusted(userData.value[0].id)).data.value;
+  trustedOnes.value = (await getTrusted(userData.value.id)).data.value;
 };
 </script>
 

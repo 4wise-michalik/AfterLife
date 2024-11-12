@@ -11,7 +11,6 @@ definePageMeta({
 });
 const userData = ref(null);
 const name = ref("");
-const userId = ref(0);
 const reportDataTotal = ref(0);
 const reportDataTrustedNumber = ref(0);
 const reportDataDeceased = ref(false);
@@ -39,9 +38,9 @@ const confirm_isActive = ref(false);
 // Wywołanie API na onMounted
 onMounted(async () => {
   try {
-    userId.value = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
-    userData.value = JSON.parse(sessionStorage.getItem("userData"));
-    const reportResult = await checkReport(id, userId.value);
+    sessionGetUserData();
+    userData.value = sessionGetUserData();
+    const reportResult = await checkReport(id, userData.value.id);
 
     reportDataReported.value = reportResult.data.reported;
     reportDataTotal.value = reportResult.data.total;
@@ -55,7 +54,7 @@ onMounted(async () => {
   } finally {
     reportLoading.value = false;
   }
-  const trustingTable = (await getTrusting(userData.value[0].id)).data.value;
+  const trustingTable = (await getTrusting(userData.value.id)).data.value;
   for (const trusting in trustingTable) {
     if (trustingTable[trusting].id == id) {
       const firstName = trustingTable[trusting].first_name;
@@ -70,8 +69,8 @@ onMounted(async () => {
   }
 
   // when pearson that trust the user is dead and the user is supposed to get access to the account
-  if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == userId.value) {
-    const deceasedResult = await getDeceasedInfo(id, userId.value);
+  if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == userData.value.id) {
+    const deceasedResult = await getDeceasedInfo(id, userData.value.id);
     whatHappendsToAccountGiveAccountMessage.value = deceasedResult.data.value.what_happens_to_account_give_account_message;
     whatHappendsToAccountGiveAccountEmail.value = deceasedResult.data.value.email;
     whatHappendsToAccountGiveAccountPassword.value = deceasedResult.data.value.password;
@@ -243,7 +242,7 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
     </div>
   </div>
 
-  <div v-if="reportDataDeceased == true && whatHappendsToAccountGiveAccountId == userId && didGivenTimePassed == true" class="popup-container">
+  <div v-if="reportDataDeceased == true && whatHappendsToAccountGiveAccountId == userData.id && didGivenTimePassed == true" class="popup-container">
     <div class="container-content-deceased">
       <p class="description">
         But he left his

@@ -17,7 +17,7 @@ const confirmTimerLabel = ref("00:10");
 const deleteConfirmActive = ref(false);
 
 onMounted(() => {
-  userData.value = JSON.parse(sessionStorage.getItem("userData").toString())[0];
+  userData.value = sessionGetUserData();
   updateTrusted();
   countDownConfirm();
 });

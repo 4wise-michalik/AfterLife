@@ -18,6 +18,7 @@ const passwordAlertMessage = ref("");
 const passwordInputBox = ref("input-box");
 
 const alertMessage = ref("");
+const verifiedMethod = ref(false);
 
 // checks if entered credentials are valid
 function onSubmit() {
@@ -52,10 +53,11 @@ async function checkCredentials() {
 
     if (response.data.success === true) {
       try {
-        const response_userData = await axios.post("/api/login/getUserInfo", {
+        const responseUserData = await axios.post("/api/login/getUserInfo", {
           email: email.value,
         });
-        const data = response_userData.data.data;
+        const data = responseUserData.data.data;
+        verifiedMethod.value = data[0].verified_email;
         sessionStorage.setItem("userData", JSON.stringify(data));
       } catch (error) {
         console.error("Error:", error);
@@ -63,9 +65,11 @@ async function checkCredentials() {
 
       alertMessage.value = "";
 
-      // TODO  checks if user is verified  ?  navigates to 'home'  :  navigates to 'verification'
-
-      navigateTo({ path: "home" });
+      if (verifiedMethod.value) {
+        navigateTo({ path: "home" });
+      } else {
+        navigateTo({ path: "login/verification" });
+      }
     } else {
       alertMessage.value = "incorrect email or password";
     }

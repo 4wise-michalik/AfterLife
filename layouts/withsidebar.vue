@@ -15,7 +15,6 @@ const getTrustedOnes = async () => {
 };
 const getTrustingOnes = async () => {
   trustingOnes.value = (await getTrusting(userData.value[0].id)).data.value;
-  console.log(trustingOnes.value);
 };
 </script>
 
@@ -25,19 +24,13 @@ const getTrustingOnes = async () => {
       <Section title="My AfterLife" :dropdown="false" link="/home"> </Section>
       <Section title="My Trusted Ones" link="/home/trusted">
         <li v-for="item in trustedOnes">
-          <Subsection
-            :title="item.first_name + ' ' + item.last_name"
-            :link="`/home/trusted/${item.id}`"
-          />
+          <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusted/${item.id}`" />
         </li>
       </Section>
 
       <Section title="Who Trust Me" link="/home/trusting">
         <li v-for="item in trustingOnes">
-          <Subsection
-            :title="item.first_name + ' ' + item.last_name"
-            :link="`/home/trusting/${item.id}`"
-          />
+          <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusting/${item.id}`" />
         </li>
       </Section>
     </SideBar>

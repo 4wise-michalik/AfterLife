@@ -9,7 +9,7 @@ definePageMeta({
     return typeof route.params.id === "string" && /^\d+$/.test(route.params.id);
   },
 });
-
+const userData = ref(null);
 const name = ref("");
 const userId = ref(0);
 const reportDataTotal = ref(0);
@@ -40,13 +40,14 @@ const confirm_isActive = ref(false);
 onMounted(async () => {
   try {
     userId.value = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
+    userData.value = JSON.parse(sessionStorage.getItem("userData"));
     const reportResult = await checkReport(id, userId.value);
 
-    reportDataReported.value = reportResult.data.value.reported;
-    reportDataTotal.value = reportResult.data.value.total;
-    reportDataTrustedNumber.value = reportResult.data.value.trusted_number;
-    reportDataDeceased.value = reportResult.data.value.is_deceased;
-    whatHappendsToAccountGiveAccountId.value = reportResult.data.value.what_happens_to_account_give_account_id;
+    reportDataReported.value = reportResult.data.reported;
+    reportDataTotal.value = reportResult.data.total;
+    reportDataTrustedNumber.value = reportResult.data.trusted_number;
+    reportDataDeceased.value = reportResult.data.is_deceased;
+    whatHappendsToAccountGiveAccountId.value = reportResult.data.what_happens_to_account_give_account_id;
 
     reportError.value = reportResult.error;
   } catch (err) {
@@ -54,7 +55,7 @@ onMounted(async () => {
   } finally {
     reportLoading.value = false;
   }
-  const trustingTable = JSON.parse(sessionStorage.getItem("trusting").toString());
+  const trustingTable = (await getTrusting(userData.value[0])).data.value;
   for (const trusting in trustingTable) {
     if (trustingTable[trusting].id == id) {
       const firstName = trustingTable[trusting].first_name;

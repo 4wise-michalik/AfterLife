@@ -24,15 +24,7 @@ export default defineEventHandler(async (event) => {
           (SELECT what_happens_to_account_give_account_id FROM connected_platforms WHERE user_id = ? AND what_happens_to_account_give_account_id = ?) AS what_happens_to_account_give_account_id
         FROM trusted 
         WHERE trusted_id = ? AND user_id = ?`,
-      [
-        body.userId,
-        body.userId,
-        body.userId,
-        body.userId,
-        body.trustedId,
-        body.trustedId,
-        body.userId,
-      ]
+      [body.userId, body.userId, body.userId, body.userId, body.trustedId, body.trustedId, body.userId]
     );
 
     return {

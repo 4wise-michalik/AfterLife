@@ -1,10 +1,6 @@
-<template>
-  <li>
-    <NuxtLink :to="link">{{ title }}</NuxtLink>
-  </li>
-</template>
-
 <script setup>
+// subsection of elements in the sidebar
+
 const props = defineProps({
   title: {
     type: String,
@@ -16,5 +12,11 @@ const props = defineProps({
   },
 });
 </script>
+
+<template>
+  <li>
+    <NuxtLink :to="link">{{ title }}</NuxtLink>
+  </li>
+</template>
 
 <style scoped></style>

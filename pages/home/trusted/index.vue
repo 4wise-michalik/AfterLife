@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// page with user's trusted persons management
+
 definePageMeta({
   layout: "withsidebar", // Przypisuje layout tylko do tej strony
 });
@@ -22,22 +24,26 @@ onMounted(() => {
   countDownConfirm();
 });
 
+// updates user's trusted persons - gets values from database
 async function updateTrusted() {
   const response_trusted = await getTrusted(userData.value.id);
   sessionStorage.setItem("trusted", JSON.stringify(response_trusted.data.value));
   trustedData.value = JSON.parse(sessionStorage.getItem("trusted").toString());
 }
 
+// changes trusted person's status from standard friend to bff
 const promoteToBFF = async (trusted) => {
   await managementChangeBFF(userData.value.id, trusted.id, true);
   await updateTrusted();
 };
 
+// changes trusted person's status from bff to standard friend
 const demoteFromBFF = async (trusted) => {
   await managementChangeBFF(userData.value.id, trusted.id, false);
   await updateTrusted();
 };
 
+// opens popup with confirmation to delete trusted person
 const deleteFromTrusted = async (trusted: number) => {
   confirmWaitingTime.value = 10;
   confirmTimerLabel.value = "00:10";
@@ -46,12 +52,14 @@ const deleteFromTrusted = async (trusted: number) => {
   showDeleteTrusted.value = !showDeleteTrusted.value;
 };
 
+// deletes trusted person from user's account
 const confirmedDeleteFromTrusted = async () => {
   await managementDeleteFromTrusted(userData.value.id, trustedToDelete.value.id);
   await updateTrusted();
   showDeleteTrusted.value = false;
 };
 
+// adds new trusted person by given friend code
 const addToTrusted = async () => {
   const result = await checkFriendCode();
   if (result.success) {
@@ -62,6 +70,7 @@ const addToTrusted = async () => {
   }
 };
 
+// checks if given friend code is valid
 const checkFriendCode = async () => {
   if (friendCode.value.length != 6) {
     errorMessage.value = "friend code should have 6 characters";
@@ -83,6 +92,7 @@ const checkFriendCode = async () => {
   }
 };
 
+// counts down 10 seconds to confirm trusted person removal
 const countDownConfirm = () => {
   setInterval(function () {
     if (confirmWaitingTime.value >= 0) {

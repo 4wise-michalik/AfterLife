@@ -1,4 +1,6 @@
 <script setup>
+// creates nice button with styling depending on platform style
+
 const props = defineProps({
   id: Number,
   name: String,
@@ -13,6 +15,7 @@ onMounted(() => {
   getProperties();
 });
 
+// sets styling depending on platform
 function getProperties() {
   if (props.name === "Instagram") {
     divStyle.value = `background-image: url(${instagramBackground})`;
@@ -28,11 +31,7 @@ function getProperties() {
 </script>
 
 <template>
-  <div
-    class="platform-div"
-    :style="`${divStyle}`"
-    @click="navigateTo(`/platform/${props.id}`)"
-  >
+  <div class="platform-div" :style="`${divStyle}`" @click="navigateTo(`/platform/${props.id}`)">
     <Icon class="icon" :name="iconPath" size="25px" />
     <p style="float: left">{{ props.name }}</p>
   </div>

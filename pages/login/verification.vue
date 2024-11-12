@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const route = useRoute();
+// account verification code
+
 import axios from "axios";
 
 const email = ref("");
@@ -30,6 +31,7 @@ onMounted(async () => {
   countDownSendNewCode();
 });
 
+// checks if entered verification code is valid
 async function enteredVerificationCode() {
   if (verificationCode.value.length <= 0) {
     verificationCodeAlertMessage.value = "enter verification code";
@@ -52,6 +54,7 @@ async function enteredVerificationCode() {
   }
 }
 
+// checks if entered verification code is the same as the generated one
 async function chceckVerificationCode() {
   if (generatedCode.value !== verificationCode.value) {
     verificationCodeAlertMessage.value = "wrong verification code";
@@ -71,6 +74,7 @@ async function chceckVerificationCode() {
   return false;
 }
 
+// count down to send the code again
 function countDownSendNewCode() {
   setInterval(function () {
     if (sendNewCodeWaitingTime.value >= 0) {

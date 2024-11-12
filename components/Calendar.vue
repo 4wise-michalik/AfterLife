@@ -1,4 +1,6 @@
 <script setup>
+// simple date and time picker component
+
 const props = defineProps({
   dateIn: {},
 });
@@ -66,6 +68,7 @@ const subsOneDay = () => {
   }
 };
 
+// updates all values after changing one of params
 function updateDate() {
   date.value.setFullYear(years.value, months.value, days.value);
   years.value = date.value.getFullYear();

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// section of user's post on given platform
+
 const props = defineProps({
   posts: Array,
   platform: String,
@@ -9,16 +11,23 @@ const isPopupOpen = ref(false);
 const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 const content = ref("");
 const postsArray = ref(props.posts);
+
+// opens popup in which user can create a new post
 const openPopup = () => {
   isPopupOpen.value = true;
 };
 
+// closes popup in which user can create a new post
 const closePopup = () => {
   isPopupOpen.value = false;
 };
+
+// removes post from users view
 const removePost = (id) => {
   postsArray.value = postsArray.value.filter((post) => post.id !== id);
 };
+
+// saves created post
 const saveData = async () => {
   const userId = sessionGetUserData().id;
   await addPost(userId, props.platform_id, content.value, time.value);

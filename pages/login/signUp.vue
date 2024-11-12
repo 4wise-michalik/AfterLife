@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const route = useRoute();
+// sign up page
+
 import axios from "axios";
 
 const signUpLabel = ref("sign up");
@@ -29,6 +30,7 @@ const passwordRepeatInputBox = ref("input-box");
 
 const alertMessage = ref("");
 
+// checks if entered values are valid
 function onSubmit() {
   if (name.value.length <= 0) {
     nameAlertMessage.value = "enter your name";
@@ -97,6 +99,7 @@ function onSubmit() {
   }
 }
 
+// checks if entered email is avaliable
 async function checkCredentialsAvability() {
   try {
     const responseSignUp = await axios.post("/api/login/signUp", {

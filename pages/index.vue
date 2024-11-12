@@ -1,7 +1,10 @@
 <script setup lang="ts">
+// greeting page
+
 const route = useRoute();
 const signIpText = ref("sign in");
 const isLogged = ref(false);
+
 onMounted(() => {
   if (sessionGetUserData()) {
     const userData = ref(sessionGetUserData());
@@ -14,7 +17,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <p class="greating-text">Witaj wędrowcze</p>
+    <p class="greeting-text">Witaj wędrowcze</p>
 
     <button class="default-button" @click="navigateTo('/login')">
       {{ signIpText }}
@@ -23,7 +26,7 @@ onMounted(() => {
 </template>
 
 <style>
-.greating-text {
+.greeting-text {
   font-size: 50px;
 }
 </style>

@@ -1,4 +1,6 @@
 <script setup>
+// component with QR code and options
+
 import QrcodeVue from "qrcode.vue";
 import { toPng } from "html-to-image";
 import axios from "axios";
@@ -11,6 +13,7 @@ const usersPage = ref("");
 const showZoom = ref(false);
 const showEdit = ref(false);
 const qrSize = ref(null);
+
 onMounted(() => {
   getLinkFromDatabase();
   loadQrCode();
@@ -18,6 +21,7 @@ onMounted(() => {
   qrSize.value = 15 * remSize;
 });
 
+// gets link (to generate QR code) from database
 async function getLinkFromDatabase() {
   try {
     const response = await axios.post("/api/qrCode/getQrCode", {
@@ -31,6 +35,7 @@ async function getLinkFromDatabase() {
   }
 }
 
+// reloads QR code
 async function loadQrCode() {
   try {
     await toPng(capture.value)
@@ -45,6 +50,7 @@ async function loadQrCode() {
   }
 }
 
+// closes popup with editing QR code
 const handleEditClose = (newValue) => {
   usersPage.value = newValue;
   showEdit.value = false;
@@ -52,15 +58,18 @@ const handleEditClose = (newValue) => {
   loadQrCode();
 };
 
+// opens popup with zoomed QR code
 function zoomQrCode() {
   imageDataVisualized.value = imageData.value;
   showZoom.value = !showZoom.value;
 }
 
+// opens popup with edit QR code
 function editQrCode() {
   showEdit.value = !showEdit.value;
 }
 
+// downloads .png file with QR code
 const downloadQrCode = () => {
   try {
     const link = document.createElement("a");

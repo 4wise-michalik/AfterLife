@@ -1,7 +1,7 @@
 import axios from "axios";
 
 /**
- * Changes date from string to datetime object.
+ * Changes what happends to the account after user's death.
  *
  * @param {Number} userId - User's ID, to determine what user changed the settings.
  * @param {Number} platformId - Platform's ID, to determine in which of his platforms he wants to change settings.

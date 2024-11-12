@@ -1,4 +1,6 @@
 <script setup>
+// popup with edit QR code
+
 import axios from "axios";
 const linkValue = ref("");
 
@@ -6,6 +8,7 @@ onMounted(() => {
   getLinkFromDatabase();
 });
 
+// gets link (to generate QR code) from database
 async function getLinkFromDatabase() {
   try {
     const response = await axios.post("/api/qrCode/getQrCode", {
@@ -19,6 +22,7 @@ async function getLinkFromDatabase() {
   }
 }
 
+// saves edited link in database
 async function saveLinkInDataBase() {
   try {
     await axios.post("/api/qrCode/changeQrCode", {

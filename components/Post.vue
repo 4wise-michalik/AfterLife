@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Component visualizing post. Includes text and time (after death) of posting
 import { ref } from "vue";
 
 const props = defineProps({
@@ -20,6 +21,7 @@ onMounted(() => {
   formatPostingTime();
 });
 
+// reformats posting time from '{years: 1, months: 3...}' to '1 year 3 months...'
 const formatPostingTime = () => {
   timeToPost.value = "";
   if (newTime.value.years > 0) {
@@ -38,22 +40,27 @@ const formatPostingTime = () => {
     timeToPost.value += newTime.value.minutes + (newTime.value.minutes > 1 ? " minutes " : " minute ");
   }
 };
+
+// delets post
 const emit = defineEmits(["removePost"]);
 const delPost = async () => {
   emit("removePost", props.id);
   await deletePost(props.id);
 };
 
+// opens popup in which user can edit his post
 const openPopup = () => {
   popupContent.value = content.value;
   isPopupOpen.value = true;
 };
 
+// closes popup
 const closePopup = () => {
   popupContent.value = content.value;
   isPopupOpen.value = false;
 };
 
+// updates post data
 const saveData = async () => {
   content.value = popupContent.value;
   await updatePost(props.id, content.value, newTime.value);

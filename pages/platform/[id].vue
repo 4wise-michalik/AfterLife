@@ -1,7 +1,10 @@
 <script setup lang="ts">
+// platform management page
+
 definePageMeta({
   layout: "withsidebar", // Przypisuje layout tylko do tej strony
 });
+
 const { id } = useRoute().params;
 const showConfirm = ref(false);
 const showEdit = ref(false);
@@ -55,6 +58,7 @@ onMounted(async () => {
   countDownConfirm();
 });
 
+// gets posts scheduled for given platform
 async function getPlatformPosts() {
   const userId = sessionGetUserData().id;
   const posts = (await getPosts(userId)).data.value;
@@ -62,12 +66,18 @@ async function getPlatformPosts() {
 
   return filteredPosts;
 }
+
+// opens post creation popup
 const openPopup = () => {
   isPopupOpen.value = true;
 };
+
+// closes post creation popup
 const closePopup = () => {
   isPopupOpen.value = false;
 };
+
+// saves created post
 const saveData = async () => {
   const userId = sessionGetUserData().id;
   await addPost(userId, id, content.value, time.value);
@@ -84,10 +94,12 @@ const saveData = async () => {
   closePopup();
 };
 
+// removes choosen post
 const removePost = (id) => {
   platformPosts.value = platformPosts.value.filter((post) => post.id !== id);
 };
 
+// gets platform information
 function getPlatformData() {
   var messageTemp = "";
   var selectedTemp = 0;
@@ -139,6 +151,7 @@ function getPlatformData() {
   }
 }
 
+// changes what happends to the account after user's death
 async function onWhatHappendsToAccountChange(option: Number) {
   // zapisanie w bazie
   const userId = sessionGetUserData().id;
@@ -158,10 +171,10 @@ async function onWhatHappendsToAccountChange(option: Number) {
   var whoToPassAccount = selectedTrustedPerson.value;
   var messagePassAccount = message.value;
 
-  // convert to time
+  // saves in database
   await changeWhatHappendsToAccount(userId, platformId, option, date.value, whoToPassAccount, messagePassAccount);
 
-  // nadpisanie w sesji
+  // save in sessionStorage
   const platformData = sessionGetPlatforms();
   for (const platform in platformData) {
     if (platformData[platform].platform_id == parseInt(id)) {
@@ -174,10 +187,11 @@ async function onWhatHappendsToAccountChange(option: Number) {
   }
   sessionStorage.setItem("userPlatforms", JSON.stringify(platformData));
 
-  // aktualizuje widok
+  // updates view
   getPlatformData();
 }
 
+// opens popup with confirmation if user wants to delete given platform
 const countDownConfirm = () => {
   setInterval(function () {
     if (confirmWaitingTime.value >= 0) {
@@ -205,6 +219,7 @@ const countDownConfirm = () => {
   }, 1000);
 };
 
+// removes platfrom from user's account
 async function onRemoveConfirm() {
   const userId = sessionGetUserData().id;
   const platformId = parseInt(id);
@@ -212,6 +227,7 @@ async function onRemoveConfirm() {
   navigateTo("/home");
 }
 
+// edits platform's credentials
 function onEditConfirm() {
   const userId = sessionGetUserData().id;
   const platformId = parseInt(id);
@@ -223,6 +239,7 @@ function onEditConfirm() {
   }
 }
 
+// closes subsections with options what happends to the account
 function closeAllSubTubs(option: Number) {
   if (option != 0) {
     showAdvanced0.value = false;

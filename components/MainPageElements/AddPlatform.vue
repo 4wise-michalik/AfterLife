@@ -1,4 +1,6 @@
 <script setup>
+// adds new platform to users account
+
 const avaliablePlatforms = ref([]);
 const selectedPlatform = ref();
 const login = ref("");
@@ -9,11 +11,13 @@ onMounted(() => {
   getAvaliablePlatforms();
 });
 
+// checks what platforms user didn't connect yet
 async function getAvaliablePlatforms() {
   const userId = sessionGetUserData().id;
   avaliablePlatforms.value = (await getUserAvaliablePlatforms(userId)).data;
 }
 
+// checks if platform credentials are properly set
 function onSave() {
   if (login.value == "" || password.value == "") {
     errorMessage.value = "enter your credentials";
@@ -24,6 +28,7 @@ function onSave() {
   }
 }
 
+// saves new platform info in database
 async function saveNewPlatformInDataBase() {
   const userId = sessionGetUserData().id;
   const platformId = selectedPlatform.value.id;

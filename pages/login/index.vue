@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const route = useRoute();
+// sign in page
+
 import axios from "axios";
 
 const signInLabel = ref("sign in");
@@ -17,31 +18,32 @@ const passwordAlertMessage = ref("");
 const passwordInputBox = ref("input-box");
 
 const alertMessage = ref("");
+const verifiedMethod = ref(false);
 
+// checks if entered credentials are valid
 function onSubmit() {
-  // if ( email.value.length <= 0 ) {
-  //   emailAlertMessage.value = "enter email"
-  //   emailInputBox.value = "input-box-alerted"
-  // }
-  // else {
-  //   emailAlertMessage.value = ""
-  //   emailInputBox.value = "input-box"
-  // }
+  if (email.value.length <= 0) {
+    emailAlertMessage.value = "enter email";
+    emailInputBox.value = "input-box-alerted";
+  } else {
+    emailAlertMessage.value = "";
+    emailInputBox.value = "input-box";
+  }
 
-  // if ( password.value.length <= 0 ) {
-  //   passwordAlertMessage.value = "enter password"
-  //   passwordInputBox.value = "input-box-alerted"
-  // }
-  // else {
-  //   passwordAlertMessage.value = ""
-  //   passwordInputBox.value = "input-box"
-  // }
+  if (password.value.length <= 0) {
+    passwordAlertMessage.value = "enter password";
+    passwordInputBox.value = "input-box-alerted";
+  } else {
+    passwordAlertMessage.value = "";
+    passwordInputBox.value = "input-box";
+  }
 
   if (emailAlertMessage.value === "" && passwordAlertMessage.value === "") {
     checkCredentials();
   }
 }
 
+// checks if entered credentials are in database
 async function checkCredentials() {
   try {
     const response = await axios.post("/api/login/signIn", {
@@ -51,18 +53,23 @@ async function checkCredentials() {
 
     if (response.data.success === true) {
       try {
-        const response_userData = await axios.post("/api/login/getUserInfo", {
+        const responseUserData = await axios.post("/api/login/getUserInfo", {
           email: email.value,
         });
-        const data = response_userData.data.data;
+        const data = responseUserData.data.data;
+        verifiedMethod.value = data[0].verified_email;
         sessionStorage.setItem("userData", JSON.stringify(data));
       } catch (error) {
         console.error("Error:", error);
       }
 
       alertMessage.value = "";
-      // sprawdza czy zweryfikowany: jeśli tak -home, jeśli nie -verification
-      navigateTo({ path: "home" });
+
+      if (verifiedMethod.value) {
+        navigateTo({ path: "home" });
+      } else {
+        navigateTo({ path: "login/verification" });
+      }
     } else {
       alertMessage.value = "incorrect email or password";
     }

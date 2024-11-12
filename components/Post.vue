@@ -23,19 +23,19 @@ onMounted(() => {
 const formatPostingTime = () => {
   timeToPost.value = "";
   if (newTime.value.years > 0) {
-    timeToPost.value += newTime.value.years + " years ";
+    timeToPost.value += newTime.value.years + (newTime.value.years > 1 ? " years " : " year ");
   }
   if (newTime.value.months > 0) {
-    timeToPost.value += newTime.value.months + " month ";
+    timeToPost.value += newTime.value.months + (newTime.value.months > 1 ? " months " : " month ");
   }
   if (newTime.value.days > 0) {
-    timeToPost.value += newTime.value.days + " day ";
+    timeToPost.value += newTime.value.days + (newTime.value.days > 1 ? " days " : " day ");
   }
   if (newTime.value.hours > 0) {
-    timeToPost.value += newTime.value.hours + " hour ";
+    timeToPost.value += newTime.value.hours + (newTime.value.hours > 1 ? " hour " : " hour ");
   }
   if (newTime.value.minutes > 0) {
-    timeToPost.value += newTime.value.minutes + " minutes ";
+    timeToPost.value += newTime.value.minutes + (newTime.value.minutes > 1 ? " minutes " : " minute ");
   }
 };
 const emit = defineEmits(["removePost"]);
@@ -73,50 +73,24 @@ const saveData = async () => {
       </div>
       <div v-if="editable" class="flex space-x-2">
         <button @click="openPopup" class="flex items-center h-7">
-          <Icon
-            name="pepicons-pop:pen-circle-filled"
-            style="color: yellowgreen"
-            size="1.5em"
-          />
+          <Icon name="pepicons-pop:pen-circle-filled" style="color: yellowgreen" size="1.5em" />
         </button>
         <button @click="delPost" class="flex items-center h-7">
-          <Icon
-            name="pepicons-pop:trash-circle-filled"
-            style="color: red"
-            size="1.5em"
-          />
+          <Icon name="pepicons-pop:trash-circle-filled" style="color: red" size="1.5em" />
         </button>
       </div>
     </div>
   </div>
 
-  <div
-    v-if="isPopupOpen"
-    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10"
-    @click="closePopup"
-  >
+  <div v-if="isPopupOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10" @click="closePopup">
     <div>
-      <div
-        @click.stop
-        class="bg-gray-400 p-6 rounded-lg w-96"
-        style="color: black"
-      >
+      <div @click.stop class="bg-gray-400 p-6 rounded-lg w-96" style="color: black">
         <h3 class="text-lg font-semibold mb-4">Create post</h3>
         <textarea v-model="popupContent" style="color: black"></textarea>
         <Calendar :dateIn="newTime" @date="(value) => (newTime = value)" />
         <div class="flex justify-end space-x-2">
-          <button
-            @click="closePopup"
-            class="px-4 py-2 bg-gray-400 text-white rounded"
-          >
-            Cancel
-          </button>
-          <button
-            @click="saveData"
-            class="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Save
-          </button>
+          <button @click="closePopup" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
+          <button @click="saveData" class="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
         </div>
       </div>
     </div>

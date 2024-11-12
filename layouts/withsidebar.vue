@@ -1,24 +1,22 @@
 <script setup>
-const usersResult = ref({ trusted: null, trusting: null });
+const trustedOnes = ref({});
+const trustingOnes = ref({});
+const userData = ref({});
 
 onMounted(async () => {
-  const userData = ref(JSON.parse(sessionStorage.getItem("userData")));
+  userData.value = JSON.parse(sessionStorage.getItem("userData"));
 
-  const storedTrustedResults = sessionStorage.getItem("trusted_results");
-  const storedTrustingResults = sessionStorage.getItem("trusting_results");
-
-  if (storedTrustedResults && storedTrustingResults) {
-    usersResult.value.trusted = JSON.parse(storedTrustedResults);
-    usersResult.value.trusting = JSON.parse(storedTrustingResults);
-  } else {
-    const response_trusted = await getTrusted(userData.value[0].id);
-    const response_trusting = await getTrusting(userData.value[0].id);
-    sessionStorage.setItem("trusted", JSON.stringify(response_trusted.data.value));
-    sessionStorage.setItem("trusting", JSON.stringify(response_trusting.data.value));
-    usersResult.value.trusted = response_trusted.data.value;
-    usersResult.value.trusting = response_trusting.data.value;
-  }
+  await getTrustedOnes();
+  await getTrustingOnes();
 });
+
+const getTrustedOnes = async () => {
+  trustedOnes.value = (await getTrusted(userData.value[0].id)).data.value;
+};
+const getTrustingOnes = async () => {
+  trustingOnes.value = (await getTrusting(userData.value[0].id)).data.value;
+  console.log(trustingOnes.value);
+};
 </script>
 
 <template>
@@ -26,14 +24,20 @@ onMounted(async () => {
     <SideBar color="#7B4390">
       <Section title="My AfterLife" :dropdown="false" link="/home"> </Section>
       <Section title="My Trusted Ones" link="/home/trusted">
-        <li v-for="item in usersResult.trusted" :key="item.id">
-          <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusted/${item.id}`" />
+        <li v-for="item in trustedOnes">
+          <Subsection
+            :title="item.first_name + ' ' + item.last_name"
+            :link="`/home/trusted/${item.id}`"
+          />
         </li>
       </Section>
 
       <Section title="Who Trust Me" link="/home/trusting">
-        <li v-for="item in usersResult.trusting" :key="item.id">
-          <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusting/${item.id}`" />
+        <li v-for="item in trustingOnes">
+          <Subsection
+            :title="item.first_name + ' ' + item.last_name"
+            :link="`/home/trusting/${item.id}`"
+          />
         </li>
       </Section>
     </SideBar>

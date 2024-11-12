@@ -1,19 +1,13 @@
 <script setup lang="ts">
+// page with user's accoutn settings
+
 definePageMeta({
-  layout: 'withsidebar' // Przypisuje layout tylko do tej strony
-})
+  layout: "withsidebar", // Przypisuje layout tylko do tej strony
+});
 </script>
 
-<!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
 <template>
-    <div>
-      SETTINGS PAGE
-    </div>
-    
-  
+  <div>SETTINGS PAGE</div>
 </template>
 
-
-<style scoped>
-
-</style>
+<style scoped></style>

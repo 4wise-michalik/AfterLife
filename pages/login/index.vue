@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const route = useRoute();
+// sign in page
+
 import axios from "axios";
 
 const signInLabel = ref("sign in");
@@ -18,30 +19,30 @@ const passwordInputBox = ref("input-box");
 
 const alertMessage = ref("");
 
+// checks if entered credentials are valid
 function onSubmit() {
-  // if ( email.value.length <= 0 ) {
-  //   emailAlertMessage.value = "enter email"
-  //   emailInputBox.value = "input-box-alerted"
-  // }
-  // else {
-  //   emailAlertMessage.value = ""
-  //   emailInputBox.value = "input-box"
-  // }
+  if (email.value.length <= 0) {
+    emailAlertMessage.value = "enter email";
+    emailInputBox.value = "input-box-alerted";
+  } else {
+    emailAlertMessage.value = "";
+    emailInputBox.value = "input-box";
+  }
 
-  // if ( password.value.length <= 0 ) {
-  //   passwordAlertMessage.value = "enter password"
-  //   passwordInputBox.value = "input-box-alerted"
-  // }
-  // else {
-  //   passwordAlertMessage.value = ""
-  //   passwordInputBox.value = "input-box"
-  // }
+  if (password.value.length <= 0) {
+    passwordAlertMessage.value = "enter password";
+    passwordInputBox.value = "input-box-alerted";
+  } else {
+    passwordAlertMessage.value = "";
+    passwordInputBox.value = "input-box";
+  }
 
   if (emailAlertMessage.value === "" && passwordAlertMessage.value === "") {
     checkCredentials();
   }
 }
 
+// checks if entered credentials are in database
 async function checkCredentials() {
   try {
     const response = await axios.post("/api/login/signIn", {
@@ -61,7 +62,9 @@ async function checkCredentials() {
       }
 
       alertMessage.value = "";
-      // sprawdza czy zweryfikowany: jeśli tak -home, jeśli nie -verification
+
+      // TODO  checks if user is verified  ?  navigates to 'home'  :  navigates to 'verification'
+
       navigateTo({ path: "home" });
     } else {
       alertMessage.value = "incorrect email or password";

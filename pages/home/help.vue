@@ -1,19 +1,15 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'withsidebar' // Przypisuje layout tylko do tej strony
-})
+// shows instructions of how to use the application
 
+definePageMeta({
+  layout: "withsidebar", // Przypisuje layout tylko do tej strony
+});
 </script>
 
-<!-- powitajka, opis strony co to za usługa, przejście do logowania rejestracji -->
-<template>
-  
-  
-</template>
-
+<template></template>
 
 <style scoped>
-.text{
+.text {
   color: aqua;
 }
 </style>

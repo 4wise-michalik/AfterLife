@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// page with user's all platforms with their posts
+
 definePageMeta({
   layout: "withsidebar",
 });

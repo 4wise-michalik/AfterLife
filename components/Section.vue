@@ -1,4 +1,6 @@
 <script setup>
+// section of items in the sidebar
+
 const props = defineProps({
   title: {
     type: String,
@@ -20,6 +22,7 @@ const props = defineProps({
 
 const open = ref(false);
 
+// opens or closes section in the sidebar
 const toggleOpen = () => {
   open.value = !open.value;
 };
@@ -30,21 +33,11 @@ const toggleOpen = () => {
     <NuxtLink :to="link" class="menu-section">
       <span>{{ title }}</span>
     </NuxtLink>
-    <button
-      v-if="dropdown"
-      @click.stop="toggleOpen"
-      class="icon-button"
-      aria-label="Toggle Menu"
-    >
+    <button v-if="dropdown" @click.stop="toggleOpen" class="icon-button" aria-label="Toggle Menu">
       <Icon :name="open ? 'memory:menu-down-fill' : 'memory:menu-right-fill'" />
     </button>
 
-    <ul
-      v-if="open"
-      class="subsections"
-      :style="{ color: color }"
-      style="margin-bottom: 20px"
-    >
+    <ul v-if="open" class="subsections" :style="{ color: color }" style="margin-bottom: 20px">
       <slot />
     </ul>
   </li>

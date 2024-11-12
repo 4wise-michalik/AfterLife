@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// home main screen, includes: account statistics, connected platfroms, QR code, scheduled posts, scheduled messages, trusted persons
+
 definePageMeta({
   layout: "withsidebar", // Przypisuje layout tylko do tej strony
 });
@@ -22,20 +24,24 @@ onMounted(async () => {
   await getTrustedOnes();
 });
 
+// checks if users is considered dead  ?  shows screen with death information and options to cancel death  :  shows normal main page
 const checkIfIsDead = async () => {
   if (userData.value.deceased) {
     isAlive.value = false;
   }
 };
 
+// gets number of user's posts
 const getPostsCount = async () => {
   postsCount.value = posts.value.data.length;
 };
 
+// gets platforms that user have connected to his account
 const getPlatforms = async () => {
   connectedPlatforms.value = (await getUserPlatforms(userData.value[0].id)).data;
 };
 
+// gets all user's posts
 const getPostsFunction = async () => {
   posts.value = await getPosts(userData.value[0].id);
   sessionStorage.setItem("posts", JSON.stringify(posts.value));
@@ -46,6 +52,7 @@ const getPostsFunction = async () => {
   }
 };
 
+// get user's trusted persons
 const getTrustedOnes = async () => {
   trustedOnes.value = (await getTrusted(userData.value[0].id)).data.value;
 };

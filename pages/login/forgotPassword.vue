@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// reset password page
+
 const route = useRoute();
 import axios from "axios";
 
@@ -15,9 +17,7 @@ const sendNewCodeWaitingTime = ref(60);
 
 const generatedCode = ref("");
 
-const enterEmailLabel = ref(
-  "Please enter your email address and we will send you a verification code"
-);
+const enterEmailLabel = ref("Please enter your email address and we will send you a verification code");
 const enterCodeLabel = ref("When you get the code, please enter it below");
 const newCodeTextLabel = ref("Didn't get it?");
 const sendAgainTextLabel = ref("send again");
@@ -46,6 +46,7 @@ const passwordAlertMessage = ref("");
 const passwordInputBox = ref("input-box");
 const passwordRepeatInputBox = ref("input-box");
 
+// checks if entered email is valid
 async function enteredEmail() {
   if (email.value.length <= 0) {
     emailAlertMessage.value = "enter your email address";
@@ -58,8 +59,7 @@ async function enteredEmail() {
     emailInputBox.value = "input-box";
   }
 
-  // weryfikuje czy email jest w bazie
-
+  // verifies if email is in database
   if (emailAlertMessage.value === "") {
     try {
       const response = await axios.post("/api/login/emailExists", {
@@ -67,8 +67,7 @@ async function enteredEmail() {
       });
 
       if (response.data.success === false) {
-        emailAlertMessage.value =
-          "account connected with this email doesn't exist";
+        emailAlertMessage.value = "account connected with this email doesn't exist";
       } else {
         emailAlertMessage.value = "";
 
@@ -87,6 +86,7 @@ async function enteredEmail() {
   }
 }
 
+// checks if entered verification code is valid
 async function enteredVerificationCode() {
   if (verificationCode.value.length <= 0) {
     verificationCodeAlertMessage.value = "enter verification code";
@@ -104,10 +104,7 @@ async function enteredVerificationCode() {
     verificationCodeBox.value = "input-box";
   }
 
-  if (
-    verificationCodeAlertMessage.value === "" &&
-    (await chceckVerificationCode())
-  ) {
+  if (verificationCodeAlertMessage.value === "" && (await chceckVerificationCode())) {
     enterNewPasswordVisible.value = "show-element";
     sendNewCode_isActive.value = false;
     verify_isActive.value = false;
@@ -115,6 +112,7 @@ async function enteredVerificationCode() {
   }
 }
 
+// checks if entered verification code is the same as the generated one
 async function chceckVerificationCode() {
   if (generatedCode.value !== verificationCode.value) {
     verificationCodeAlertMessage.value = "wrong verification code";
@@ -134,18 +132,13 @@ async function chceckVerificationCode() {
   return false;
 }
 
+// count down to send the code again
 function countDownSendNewCode() {
   timeCountDown.value = setInterval(function () {
     if (sendNewCodeWaitingTime.value >= 0) {
       if (sendNewCodeWaitingTime.value >= 10) {
-        var minutes = parseInt(
-          (sendNewCodeWaitingTime.value / 60).toString(),
-          10
-        ).toString();
-        var seconds = parseInt(
-          (sendNewCodeWaitingTime.value % 60).toString(),
-          10
-        ).toString();
+        var minutes = parseInt((sendNewCodeWaitingTime.value / 60).toString(), 10).toString();
+        var seconds = parseInt((sendNewCodeWaitingTime.value % 60).toString(), 10).toString();
 
         if (parseInt(minutes) < 10) {
           minutes = "0" + minutes;
@@ -167,6 +160,7 @@ function countDownSendNewCode() {
   }, 1000);
 }
 
+// resets the password
 async function resetPassword() {
   if (password.value.length <= 0) {
     passwordAlertMessage.value = "enter your password";
@@ -210,19 +204,11 @@ async function resetPassword() {
     </p>
     <div>
       <p class="label-input-box">{{ emailLabel }}:</p>
-      <input
-        :class="emailInputBox"
-        :disabled="!sendCode_isActive"
-        v-model="email"
-      />
+      <input :class="emailInputBox" :disabled="!sendCode_isActive" v-model="email" />
       <p class="alert-box">{{ emailAlertMessage }}</p>
     </div>
     <div>
-      <button
-        class="default-button"
-        :disabled="!sendCode_isActive"
-        @click="enteredEmail"
-      >
+      <button class="default-button" :disabled="!sendCode_isActive" @click="enteredEmail">
         {{ sendVerificationCodeLabel }}
       </button>
     </div>
@@ -250,19 +236,11 @@ async function resetPassword() {
 
     <div :class="enterCodeVisible">
       <p class="label-input-box">{{ verificationCodeLabel }}:</p>
-      <input
-        :class="verificationCodeBox"
-        :disabled="!verify_isActive"
-        v-model="verificationCode"
-      />
+      <input :class="verificationCodeBox" :disabled="!verify_isActive" v-model="verificationCode" />
       <p class="alert-box">{{ verificationCodeAlertMessage }}</p>
     </div>
     <div :class="enterCodeVisible">
-      <button
-        class="default-button"
-        :disabled="!verify_isActive"
-        @click="enteredVerificationCode"
-      >
+      <button class="default-button" :disabled="!verify_isActive" @click="enteredVerificationCode">
         {{ verificationButtonLabel }}
       </button>
     </div>
@@ -279,11 +257,7 @@ async function resetPassword() {
 
       <p class="label-input-box">{{ passwordRepeatLabel }}:</p>
       <p class="alert-box">*</p>
-      <input
-        type="password"
-        :class="passwordRepeatInputBox"
-        v-model="passwordRepeat"
-      />
+      <input type="password" :class="passwordRepeatInputBox" v-model="passwordRepeat" />
       <p class="alert-box">{{ passwordAlertMessage }}</p>
     </div>
     <div :class="enterNewPasswordVisible">

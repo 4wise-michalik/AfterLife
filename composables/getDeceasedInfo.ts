@@ -1,5 +1,13 @@
 import axios from "axios";
 
+/**
+ * Gets info about deceased person.
+ *
+ * @param {number} userId - User's ID, to determine the deceased person.
+ * @param {number} trustedId - Trusted's ID, because.
+ *
+ * @returns {{ data: object, error: String, loading: boolean }} - An object indicating with query params.
+ */
 export const getDeceasedInfo = async (userId, trustedId) => {
   const data = ref(null);
   const error = ref(null);

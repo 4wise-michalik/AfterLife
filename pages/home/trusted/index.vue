@@ -29,12 +29,12 @@ async function updateTrusted() {
 }
 
 const promoteToBFF = async (trusted) => {
-  await managementPromoteToBFF(userData.value.id, trusted.id, true);
+  await managementChangeBFF(userData.value.id, trusted.id, true);
   await updateTrusted();
 };
 
 const demoteFromBFF = async (trusted) => {
-  await managementPromoteToBFF(userData.value.id, trusted.id, false);
+  await managementChangeBFF(userData.value.id, trusted.id, false);
   await updateTrusted();
 };
 

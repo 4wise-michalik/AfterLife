@@ -1,3 +1,8 @@
+/**
+ * Changes users status if his death was confirmed
+ *
+ * @param {number} userId - User's ID, to determine the deceased person.
+ */
 export const makeDeceased = async (userId) => {
   const deceasedTime = new Date();
   try {

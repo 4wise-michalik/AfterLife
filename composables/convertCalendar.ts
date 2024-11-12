@@ -1,3 +1,10 @@
+/**
+ * Changes date from datetime object to string.
+ *
+ * @param {object} dateObj - Datetime object to convert.
+ *
+ * @returns { date: String } - A string of date, ready to use in database query.
+ */
 export const convertCalendarToDate = (dateObj: any) => {
   var year = (1900 + dateObj.years).toString();
   var months = dateObj.months + 1;
@@ -9,12 +16,18 @@ export const convertCalendarToDate = (dateObj: any) => {
   var hours = dateObj.hours;
   var minutes = dateObj.minutes;
 
-  var date =
-    year + "-" + months + "-" + days + " " + hours + ":" + minutes + ":00";
+  var date = year + "-" + months + "-" + days + " " + hours + ":" + minutes + ":00";
 
   return date;
 };
 
+/**
+ * Changes date from string to datetime object.
+ *
+ * @param {String} dateObj - String to convert.
+ *
+ * @returns { date: object } - A datetime object, ready to use in application.
+ */
 export const convertCalendarToObj = (dateObj: any) => {
   var date = {
     years: parseInt(dateObj.substring(0, 4)) - 1900,

@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   let connection;
   try {
     connection = await mysql.createConnection(config);
-    const [rows] = await connection.query("SELECT * FROM users");
+    const [rows] = await connection.query("SELECT friend_code FROM users");
 
     return {
       success: true,

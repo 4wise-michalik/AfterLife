@@ -22,9 +22,7 @@ const whatHappendsToAccountPlatform = ref("");
 const whatHappendsToAccountTime = ref(new Date(2100, 1, 1));
 const email = ref("");
 const whatHappendsToAccountGiveAccountEmail = ref("");
-const whatHappendsToAccountGiveAccountEmailCensored = ref(
-  "********************"
-);
+const whatHappendsToAccountGiveAccountEmailCensored = ref("********************");
 const password = ref("");
 const whatHappendsToAccountGiveAccountPassword = ref("");
 const whatHappendsToAccountGiveAccountPasswordCensored = ref("**************");
@@ -41,17 +39,14 @@ const confirm_isActive = ref(false);
 // Wywołanie API na onMounted
 onMounted(async () => {
   try {
-    userId.value = JSON.parse(
-      sessionStorage.getItem("userData").toString()
-    )[0].id;
+    userId.value = JSON.parse(sessionStorage.getItem("userData").toString())[0].id;
     const reportResult = await checkReport(id, userId.value);
 
     reportDataReported.value = reportResult.data.value.reported;
     reportDataTotal.value = reportResult.data.value.total;
     reportDataTrustedNumber.value = reportResult.data.value.trusted_number;
     reportDataDeceased.value = reportResult.data.value.is_deceased;
-    whatHappendsToAccountGiveAccountId.value =
-      reportResult.data.value.what_happens_to_account_give_account_id;
+    whatHappendsToAccountGiveAccountId.value = reportResult.data.value.what_happens_to_account_give_account_id;
 
     reportError.value = reportResult.error;
   } catch (err) {
@@ -59,9 +54,7 @@ onMounted(async () => {
   } finally {
     reportLoading.value = false;
   }
-  const trustingTable = JSON.parse(
-    sessionStorage.getItem("trusting").toString()
-  );
+  const trustingTable = JSON.parse(sessionStorage.getItem("trusting").toString());
   for (const trusting in trustingTable) {
     if (trustingTable[trusting].id == id) {
       const firstName = trustingTable[trusting].first_name;
@@ -76,37 +69,22 @@ onMounted(async () => {
   }
 
   // when pearson that trust the user is dead and the user is supposed to get access to the account
-  if (
-    reportDataDeceased.value == true &&
-    whatHappendsToAccountGiveAccountId.value == userId.value
-  ) {
+  if (reportDataDeceased.value == true && whatHappendsToAccountGiveAccountId.value == userId.value) {
     const deceasedResult = await getDeceasedInfo(id, userId.value);
-    whatHappendsToAccountGiveAccountMessage.value =
-      deceasedResult.data.value.what_happens_to_account_give_account_message;
-    whatHappendsToAccountGiveAccountEmail.value =
-      deceasedResult.data.value.email;
-    whatHappendsToAccountGiveAccountPassword.value =
-      deceasedResult.data.value.password;
+    whatHappendsToAccountGiveAccountMessage.value = deceasedResult.data.value.what_happens_to_account_give_account_message;
+    whatHappendsToAccountGiveAccountEmail.value = deceasedResult.data.value.email;
+    whatHappendsToAccountGiveAccountPassword.value = deceasedResult.data.value.password;
     whatHappendsToAccountPlatform.value = deceasedResult.data.value.platform;
-    whatHappendsToAccountTime.value = new Date(
-      deceasedResult.data.value.what_happens_to_account_time
-    );
+    whatHappendsToAccountTime.value = new Date(deceasedResult.data.value.what_happens_to_account_time);
 
     var deathTime = new Date(deceasedResult.data.value.death_time);
-    const givenTime = adjustDeathTime(
-      whatHappendsToAccountTime.value,
-      deathTime
-    );
+    const givenTime = adjustDeathTime(whatHappendsToAccountTime.value, deathTime);
     // givenTime jest o godzine 24 minuty do przodu ba tak
 
     if (givenTime <= new Date()) {
       didGivenTimePassed.value = true;
-      whatHappendsToAccountGiveAccountEmailCensored.value = censoreString(
-        whatHappendsToAccountGiveAccountEmail.value
-      );
-      whatHappendsToAccountGiveAccountPasswordCensored.value = censoreString(
-        whatHappendsToAccountGiveAccountPassword.value
-      );
+      whatHappendsToAccountGiveAccountEmailCensored.value = censoreString(whatHappendsToAccountGiveAccountEmail.value);
+      whatHappendsToAccountGiveAccountPasswordCensored.value = censoreString(whatHappendsToAccountGiveAccountPassword.value);
 
       email.value = whatHappendsToAccountGiveAccountEmailCensored.value;
       password.value = whatHappendsToAccountGiveAccountPasswordCensored.value;
@@ -121,14 +99,8 @@ const countDownConfirm = () => {
   setInterval(function () {
     if (confirmWaitingTime.value >= 0) {
       if (confirmWaitingTime.value >= 10) {
-        var minutes = parseInt(
-          (confirmWaitingTime.value / 60).toString(),
-          10
-        ).toString();
-        var seconds = parseInt(
-          (confirmWaitingTime.value % 60).toString(),
-          10
-        ).toString();
+        var minutes = parseInt((confirmWaitingTime.value / 60).toString(), 10).toString();
+        var seconds = parseInt((confirmWaitingTime.value % 60).toString(), 10).toString();
 
         if (parseInt(minutes) < 10) {
           minutes = "0" + minutes;
@@ -180,15 +152,11 @@ function censoreString(text: String) {
 // do poprawy - wczytuje złą godzine (dokładnie o 1h 24min za dużo)
 function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
   var newDate = new Date();
-  newDate.setFullYear(
-    whatHappendsToAccountTime.getFullYear() + deathTime.getFullYear() - 1900
-  );
+  newDate.setFullYear(whatHappendsToAccountTime.getFullYear() + deathTime.getFullYear() - 1900);
   newDate.setMonth(whatHappendsToAccountTime.getMonth() + deathTime.getMonth());
   newDate.setDate(whatHappendsToAccountTime.getDate() + deathTime.getDate());
   newDate.setHours(whatHappendsToAccountTime.getHours() + deathTime.getHours());
-  newDate.setMinutes(
-    whatHappendsToAccountTime.getMinutes() + deathTime.getMinutes()
-  );
+  newDate.setMinutes(whatHappendsToAccountTime.getMinutes() + deathTime.getMinutes());
 
   return newDate;
 }
@@ -196,9 +164,7 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
 
 <template>
   <div v-if="reportLoading">Loading...</div>
-  <div v-else-if="reportError && reportError.length > 0">
-    Błąd: {{ reportError }}
-  </div>
+  <div v-else-if="reportError && reportError.length > 0">Błąd: {{ reportError }}</div>
   <div v-else-if="reportDataDeceased" class="popup-container">
     <div class="container-content">
       <p class="description">
@@ -206,10 +172,7 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
       </p>
     </div>
   </div>
-  <div
-    v-else-if="reportDataTotal > 0 && reportDataReported == false"
-    class="popup-container"
-  >
+  <div v-else-if="reportDataTotal > 0 && reportDataReported == false" class="popup-container">
     <div class="container-content">
       <p class="description">
         There's been a report about
@@ -279,38 +242,22 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
     </div>
   </div>
 
-  <div
-    v-if="
-      reportDataDeceased == true &&
-      whatHappendsToAccountGiveAccountId == userId &&
-      didGivenTimePassed == true
-    "
-    class="popup-container"
-  >
+  <div v-if="reportDataDeceased == true && whatHappendsToAccountGiveAccountId == userId && didGivenTimePassed == true" class="popup-container">
     <div class="container-content-deceased">
       <p class="description">
         But he left his
-        <span style="font-weight: 700">{{
-          whatHappendsToAccountPlatform
-        }}</span>
+        <span style="font-weight: 700">{{ whatHappendsToAccountPlatform }}</span>
         account for you
       </p>
       <p class="description">
         message:
-        <span style="font-weight: 700">{{
-          whatHappendsToAccountGiveAccountMessage
-        }}</span>
+        <span style="font-weight: 700">{{ whatHappendsToAccountGiveAccountMessage }}</span>
       </p>
       <p class="description">credentials:</p>
       <p class="description">
         email: <span style="font-weight: 700">{{ email }}</span> password:
         <span style="font-weight: 700">{{ password }}</span>
-        <Icon
-          :name="showCensoredIcon"
-          size="20px"
-          @click="switchShowCredentials"
-          style="margin-left: 10px"
-        />
+        <Icon :name="showCensoredIcon" size="20px" @click="switchShowCredentials" style="margin-left: 10px" />
       </p>
     </div>
   </div>
@@ -319,12 +266,7 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
     <div v-show="showConfirm" class="modal-overlay">
       <div class="modal" @click.stop>
         <div class="close-div">
-          <img
-            class="close"
-            src="~/assets/icons/close.svg"
-            alt=""
-            @click="showConfirm = false"
-          />
+          <img class="close" src="~/assets/icons/close.svg" alt="" @click="showConfirm = false" />
         </div>
         <div class="text-div">
           <p>
@@ -334,13 +276,7 @@ function adjustDeathTime(whatHappendsToAccountTime: Date, deathTime: Date) {
           </p>
         </div>
         <div class="button-div">
-          <button
-            :disabled="!confirm_isActive"
-            class="red-button"
-            @click="onDeathConfirm()"
-          >
-            Confirm
-          </button>
+          <button :disabled="!confirm_isActive" class="red-button" @click="onDeathConfirm()">Confirm</button>
         </div>
         <div class="button-div">
           <p>{{ confirmTimerLabel }}</p>

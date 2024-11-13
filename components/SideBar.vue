@@ -41,12 +41,12 @@ const logOut = () => {
 </script>
 
 <template>
-  <div>
+  <div @click="showAccountInfo = false">
     <aside :class="{ open: sidebarOpen }" class="sidebar">
       <nav class="mobile-margin" style="list-style-type: none" :style="{ color: props.color }">
         <slot />
       </nav>
-      <div class="account-section">
+      <div class="account-section" @click.stop>
         <div v-if="showAccountInfo" class="account-info">
           <NuxtLink to="/home/settings" class="account-info-buttons">Settings</NuxtLink>
           <NuxtLink to="/home/help" class="account-info-buttons">Help</NuxtLink>

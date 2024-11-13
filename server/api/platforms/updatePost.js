@@ -17,10 +17,7 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
 
-    const [result] = await connection.query(
-      `UPDATE posts SET content = ?, time = ? WHERE id = ?`,
-      [body.content, date, body.postId]
-    );
+    const [result] = await connection.query(`UPDATE posts SET content = ?, time = ? WHERE id = ?`, [body.content, date, body.postId]);
     if (result.affectedRows === 0) {
       return {
         success: false,

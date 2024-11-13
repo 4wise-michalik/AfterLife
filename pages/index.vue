@@ -25,8 +25,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
-.greeting-text {
-  font-size: 50px;
-}
-</style>
+<style scoped></style>

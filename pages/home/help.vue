@@ -6,7 +6,9 @@ definePageMeta({
 });
 </script>
 
-<template></template>
+<template>
+  <p class="text">HELP PAGE</p>
+</template>
 
 <style scoped>
 .text {

@@ -44,9 +44,11 @@ const selectedTrustedPerson = ref(0);
 const isPopupOpen = ref(false);
 
 const message = ref("");
-const platformPosts = ref(null);
-const content = ref("");
 const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+
+const platformPosts = ref(null);
+const platformMessages = ref(null);
+const content = ref("");
 
 onMounted(async () => {
   const response_trusted = await getTrusted(sessionGetUserData().id);
@@ -54,6 +56,7 @@ onMounted(async () => {
 
   selectedTrustedPerson.value = trustedPersons.value[0];
   platformPosts.value = await getPlatformPosts();
+  platformMessages.value = await getPlatformMessages();
 
   getPlatformData();
   confirmWaitingTime.value = 10;
@@ -67,6 +70,15 @@ async function getPlatformPosts() {
   const filteredPosts = posts.filter((item) => item.platform_id === Number(id));
 
   return filteredPosts;
+}
+
+// gets messages scheduled for given platform
+async function getPlatformMessages() {
+  const userId = sessionGetUserData().id;
+  const messages = (await getMessages(userId)).data.value;
+  const filteredMessages = messages.filter((item) => item.platform_id === Number(id));
+
+  return filteredMessages;
 }
 
 // opens post creation popup
@@ -99,6 +111,11 @@ const saveData = async () => {
 // removes choosen post
 const removePost = (id) => {
   platformPosts.value = platformPosts.value.filter((post) => post.id !== id);
+};
+
+// removes choosen post
+const removeMessage = (id) => {
+  platformMessages.value = platformMessages.value.filter((message) => message.id !== id);
 };
 
 // gets platform information
@@ -283,7 +300,21 @@ function closeAllSubTubs(option: Number) {
         </div>
       </div>
     </section>
-    <section class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl">MESSAGES</section>
+
+    <section class="bg-blue-900 text-white p-5 rounded-lg shadow-lg my-3">
+      <div class="flex items-center justify-between mb-4">
+        MESSAGES
+        <button @click="openPopup" :id="parseInt(id)" class="w-8 h-8 flex items-center justify-center">
+          <Icon name="bi:plus-circle-fill" size="2em" />
+        </button>
+      </div>
+
+      <div class="flex flex-wrap -mx-4">
+        <div v-for="(message, index) in platformMessages" :key="message.id" class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
+          <Message :content="message.content" :time="message.time" :id="message.id" @removeMessage="removeMessage" />
+        </div>
+      </div>
+    </section>
 
     <section class="bg-blue-900 text-white my-3 p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <div>

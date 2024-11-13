@@ -8,20 +8,25 @@ const config = {
 };
 
 export default defineEventHandler(async (event) => {
-  const postId = event.context.params.id;
+  const userId = event.context.params.id;
   let connection;
+
   try {
     connection = await mysql.createConnection(config);
-    const [result] = await connection.query(`DELETE FROM posts WHERE id = ?`, [postId]);
-    if (result.affectedRows === 0) {
-      return {
-        success: false,
-        error: "No post found with the given ID.",
-      };
-    }
+    const [result] = await connection.query(
+      `
+      SELECT m.id as id, m.platform_id, content, time, user_id, pt.name,
+        CAST(m.time AS CHAR) AS time
+        FROM messages m
+        LEFT JOIN platforms pt ON m.platform_id = pt.id
+        WHERE m.user_id = ?
+    `,
+      [userId]
+    );
+
     return {
       success: true,
-      data: { affectedRows: result.affectedRows },
+      data: result,
     };
   } catch (error) {
     console.error("Database error:", error);

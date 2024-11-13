@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// page with user's accoutn settings
+// page with user's account settings
 
 definePageMeta({
   layout: "withsidebar",
@@ -7,7 +7,11 @@ definePageMeta({
 </script>
 
 <template>
-  <div>SETTINGS PAGE</div>
+  <p class="text">SETTINGS PAGE</p>
 </template>
 
-<style scoped></style>
+<style scoped>
+.text {
+  color: aqua;
+}
+</style>

@@ -15,7 +15,9 @@ const showAddPlatform = ref(false);
 const trustedOnes = ref({});
 const isAlive = ref(true);
 const posts = ref([]);
+const messages = ref([]);
 const latestPost = ref(null);
+const latestMessage = ref(null);
 
 const capture = ref(null);
 const imageData = ref(null);
@@ -24,10 +26,11 @@ const usersPage = ref("");
 
 const showZoom = ref(false);
 const showEdit = ref(false);
-const qrSize = ref(null);
+const qrSize = ref(1);
 
 onMounted(async () => {
   await getPostsFunction();
+  await getMessagesFunction();
   await checkIfIsDead();
   await getPlatforms();
   await getPostsCount();
@@ -66,10 +69,22 @@ const getPostsFunction = async () => {
   }
 };
 
+// gets all user's messages
+const getMessagesFunction = async () => {
+  messages.value = await getMessages(sessionGetUserData().id);
+  if (messages.value.data.length > 0) {
+    latestMessage.value = messages.value.data.reduce(function (prev, current) {
+      return prev && prev.id > current.id ? prev : current;
+    });
+  }
+};
+
 // get user's trusted persons
 const getTrustedOnes = async () => {
   trustedOnes.value = (await getTrusted(sessionGetUserData().id)).data.value;
 };
+
+// QR CODE
 
 // gets link (to generate QR code) from database
 async function getLinkFromDatabase() {
@@ -179,8 +194,9 @@ const downloadQrCode = () => {
     </section>
 
     <section class="bg-purple-500 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
-      <NuxtLink to="/home" class="text-xl font-semibold mb-4 hover:text-purple-200">My scheduled messages</NuxtLink>
-      <p class="text-sm">This is the content of Section 1.</p>
+      <NuxtLink to="/home/messages" class="text-xl font-semibold mb-4 hover:text-purple-200">My scheduled messages</NuxtLink>
+      <p class="text-sm">This is your latest created messages.</p>
+      <Message v-if="latestMessage" :id="latestMessage.id" :content="latestMessage.content" :time="latestMessage.time" :editable="false" />
     </section>
 
     <section class="bg-purple-400 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">

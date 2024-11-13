@@ -8,15 +8,15 @@ const config = {
 };
 
 export default defineEventHandler(async (event) => {
-  const postId = event.context.params.id;
+  const messageId = event.context.params.id;
   let connection;
   try {
     connection = await mysql.createConnection(config);
-    const [result] = await connection.query(`DELETE FROM posts WHERE id = ?`, [postId]);
+    const [result] = await connection.query(`DELETE FROM messages WHERE id = ?`, [messageId]);
     if (result.affectedRows === 0) {
       return {
         success: false,
-        error: "No post found with the given ID.",
+        error: "No message found with the given ID.",
       };
     }
     return {

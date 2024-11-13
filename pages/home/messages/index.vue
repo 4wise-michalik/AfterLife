@@ -1,23 +1,23 @@
 <script setup lang="ts">
-// page with user's all platforms with their posts
+// page with user's all platforms with their messages
 
 definePageMeta({
   layout: "withsidebar",
 });
-const groupedPosts = ref([]);
-const posts = ref({});
+const groupedMessages = ref([]);
+const messages = ref({});
 const platforms = ref({});
 
 onMounted(async () => {
-  posts.value = await getPosts(sessionGetUserData().id);
+  messages.value = await getMessages(sessionGetUserData().id);
   platforms.value = (await getUserPlatforms(sessionGetUserData().id)).data;
 
   platforms.value.forEach((platform) => {
-    groupedPosts.value[platform.platform_name] = [];
+    groupedMessages.value[platform.platform_name] = [];
   });
 
-  posts.value.data.forEach((post) => {
-    groupedPosts.value[post.name].push({
+  messages.value.data.forEach((post) => {
+    groupedMessages.value[post.name].push({
       content: post.content,
       time: post.time,
       id: post.id,
@@ -28,9 +28,9 @@ onMounted(async () => {
 
 <template>
   <div v-if="platforms && platforms.length" class="container mx-auto px-4 py-8">
-    <SectionGroupPosts
+    <SectionGroupMessages
       v-for="platform in platforms"
-      :posts="groupedPosts[platform.platform_name]"
+      :messages="groupedMessages[platform.platform_name]"
       :platform="platform.platform_name"
       :platform_id="platform.platform_id"
     />

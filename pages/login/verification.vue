@@ -24,8 +24,7 @@ const verificationCodeBox = ref("input-box");
 onMounted(async () => {
   email.value = sessionGetUserData().email;
 
-  generatedCode.value = await generateVerificationCode();
-  sendVerificationCode(email.value, generatedCode.value);
+  sendVerificationCode(email.value);
   sendNewCode_isActive.value = false;
   sendNewCodeWaitingTime.value = 60;
   countDownSendNewCode();
@@ -56,7 +55,9 @@ async function enteredVerificationCode() {
 
 // checks if entered verification code is the same as the generated one
 async function chceckVerificationCode() {
-  if (generatedCode.value !== verificationCode.value) {
+  const responseVerifyCode = await verifyVerificationCode(email.value, Number(verificationCode.value));
+
+  if (!responseVerifyCode.success) {
     verificationCodeAlertMessage.value = "wrong verification code";
     verificationCodeBox.value = "input-box-alerted";
   } else {

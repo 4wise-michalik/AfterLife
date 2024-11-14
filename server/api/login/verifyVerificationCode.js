@@ -14,9 +14,11 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
 
-    const [rows] = await connection.query("SELECT * FROM users WHERE email = ? AND password = ?", [body.email, body.password]);
+    // gets verification code
+    const [rows] = await connection.query("SELECT code FROM verification_codes WHERE user_id = ? ", [body.userId]);
 
-    if (rows.length > 0) {
+    // checks if given verification code is same as in the database
+    if (rows[0].code == body.verificationCode) {
       return { success: true };
     } else {
       return { success: false };

@@ -1,33 +1,52 @@
 import axios from "axios";
 
 /**
- * Generates a 6-digit random verification code.
+ * Checs if verification code is valid.
  *
- * @returns {Promise<string>} A promise that resolves to a string representing a randomly generated 6-digit code.
+ * @param {string} email - The email address to which the verification code will be sent.
+ * @param {number} verificationCode - The verification code entered by user.
+ *
+ * @returns {{ success: boolean }} Statsu indicating whether code was valid or not.
  */
-export const generateVerificationCode = async () => {
-  const generatedCode = (
-    Math.floor(Math.random() * 899999) + 100000
-  ).toString();
-  return generatedCode;
+export const verifyVerificationCode = async (email: string, verificationCode: number) => {
+  try {
+    const response_userData = await axios.post("/api/login/getUserInfo", {
+      email: email,
+    });
+    const userId = response_userData.data.data[0].id;
+
+    const response = await axios.post("/api/login/verifyVerificationCode", {
+      userId: userId,
+      verificationCode: verificationCode,
+    });
+
+    if (response.data.success) {
+      return { success: true };
+    } else {
+      return { success: false };
+    }
+  } catch (error) {
+    console.error("Error in verification code:", error);
+  }
 };
 
 /**
  * Sends the generated verification code to the specified email address.
  *
  * @param {string} email - The email address to which the verification code will be sent.
- * @param {string} generatedCode - The verification code to be sent to the email address.
  *
  * @returns {Promise<void>} A promise that resolves once the email has been sent (or fails silently).
  */
-export const sendVerificationCode = async (
-  email: string,
-  generatedCode: string
-) => {
+export const sendVerificationCode = async (email: string) => {
   try {
+    const response_userData = await axios.post("/api/login/getUserInfo", {
+      email: email,
+    });
+    const userId = response_userData.data.data[0].id;
+
     const response = await axios.post("/api/login/sendMail", {
       email: email,
-      code: generatedCode,
+      userId: userId,
     });
   } catch (error) {
     console.error("Error sending email:", error);

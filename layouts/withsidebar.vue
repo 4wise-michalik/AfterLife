@@ -1,9 +1,13 @@
 <script setup>
+import { isAuthTokenValid } from "~/composables/Users";
 const trustedOnes = ref({});
 const trustingOnes = ref({});
-const userData = ref({});
 
 onMounted(async () => {
+  if (!isAuthTokenValid().valid) {
+    navigateTo("/login");
+  }
+
   await getTrustedOnes();
   await getTrustingOnes();
 });

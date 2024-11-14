@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 /**
  * Checks if given email and password are correct
@@ -12,13 +13,16 @@ import axios from "axios";
 export const userLogIn = async (email: string, password: string) => {
   const error = ref(null);
   try {
-    const responseUserData = await axios.post("/api/login/signIn", {
-      email: email,
-      password: password,
-    });
+    const responseUserData = (
+      await axios.post("/api/login/signIn", {
+        email: email,
+        password: password,
+      })
+    ).data;
 
-    const loggedIn = responseUserData.data;
-    return loggedIn;
+    sessionStorage.setItem("authToken", JSON.stringify(responseUserData.token));
+
+    return { success: responseUserData.success };
   } catch (err) {
     error.value = err.message;
   }
@@ -77,7 +81,7 @@ export const getUsersInfo = async (email: string) => {
 /**
  * Gets all user's friend codes.
  *
- * @returns { codes: object, error: string, loading: boolean } - An object indicating with query params.
+ * @returns { codes: object, error: string, loading: boolean } - An object with query params.
  */
 export const getUsersCodes = async () => {
   const data = ref(null);
@@ -103,4 +107,27 @@ export const getUsersCodes = async () => {
     loading.value = false;
   }
   return { codes, error, loading };
+};
+
+/**
+ * Checks if the auth token exists and if is still valid.
+ *
+ * @returns { valid: boolean } - An object indicating if the token is still valid.
+ */
+export const isAuthTokenValid = () => {
+  const authToken = sessionStorage.getItem("authToken");
+  try {
+    const decodedToken = jwtDecode(authToken);
+    const currentTime = Date.now() / 1000;
+
+    if (authToken && decodedToken.exp > currentTime && decodedToken.id == sessionGetUserData().id) {
+      return { valid: true };
+    } else {
+      localStorage.removeItem("authToken");
+      return { valid: false };
+    }
+  } catch (error) {
+    localStorage.removeItem("authToken");
+    return { valid: false };
+  }
 };

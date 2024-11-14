@@ -55,7 +55,11 @@ async function checkCredentials() {
       verifiedMethod.value = sessionGetUserData().verified_email;
       alertMessage.value = "";
 
-      navigateTo("/home");
+      if (verifiedMethod.value) {
+        navigateTo("/home");
+      } else {
+        navigateTo("/login/verification");
+      }
     } else {
       alertMessage.value = "incorrect email or password";
     }

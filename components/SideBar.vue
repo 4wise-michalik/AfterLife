@@ -36,6 +36,7 @@ const toggleAccountInfo = () => {
 // logging out - deletes all info from session storage
 const logOut = () => {
   sessionStorage.removeItem("userData"); // usuwa informacje o userze
+  sessionStorage.removeItem("authToken"); // usuwa informacje o userze
   navigateTo("/");
 };
 </script>

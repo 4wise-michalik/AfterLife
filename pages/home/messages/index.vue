@@ -16,11 +16,12 @@ onMounted(async () => {
     groupedMessages.value[platform.platform_name] = [];
   });
 
-  messages.value.data.forEach((post) => {
-    groupedMessages.value[post.name].push({
-      content: post.content,
-      time: post.time,
-      id: post.id,
+  messages.value.data.forEach((message) => {
+    groupedMessages.value[message.name].push({
+      content: message.content,
+      time: message.time,
+      id: message.id,
+      messageReceiver: message.messageReceiver,
     });
   });
 });

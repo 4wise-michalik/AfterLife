@@ -196,7 +196,14 @@ const downloadQrCode = () => {
     <section class="bg-purple-500 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">
       <NuxtLink to="/home/messages" class="text-xl font-semibold mb-4 hover:text-purple-200">My scheduled messages</NuxtLink>
       <p class="text-sm">This is your latest created messages.</p>
-      <Message v-if="latestMessage" :id="latestMessage.id" :content="latestMessage.content" :time="latestMessage.time" :editable="false" />
+      <Message
+        v-if="latestMessage"
+        :id="latestMessage.id"
+        :messageReceiver="latestMessage.messageReceiver"
+        :content="latestMessage.content"
+        :time="latestMessage.time"
+        :editable="false"
+      />
     </section>
 
     <section class="bg-purple-400 text-white p-8 rounded-lg shadow-lg hover:shadow-2xl">

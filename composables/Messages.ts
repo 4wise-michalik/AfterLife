@@ -10,11 +10,12 @@ import axios from "axios";
  *
  * @returns {{ success: boolean }} - An object indicating whether the deletion was successful.
  */
-export const addMessage = async (userId: number, platformId: number, content: string, time: object) => {
+export const addMessage = async (userId: number, platformId: number, messageReceiver: string, content: string, time: object) => {
   try {
     const response = await axios.post("/api/messages/addMessage", {
       userId: userId,
       platformId: platformId,
+      messageReceiver: messageReceiver,
       content: content,
       time: time,
     });
@@ -36,11 +37,12 @@ export const addMessage = async (userId: number, platformId: number, content: st
  *
  * @returns {{ success: boolean }} - An object indicating whether the deletion was successful.
  */
-export const updateMessage = async (messageId: number, content: string, time: object) => {
+export const updateMessage = async (messageId: number, messageReceiver: string, content: string, time: object) => {
   try {
     const response = await axios.post("/api/messages/updateMessage", {
       messageId: messageId,
       content: content,
+      messageReceiver: messageReceiver,
       time: time,
     });
     if (response.data.success) {

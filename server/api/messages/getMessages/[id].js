@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     connection = await mysql.createConnection(config);
     const [result] = await connection.query(
       `
-      SELECT m.id as id, m.platform_id, content, time, user_id, pt.name,
+      SELECT m.id as id, m.platform_id, content, time, user_id, message_receiver as messageReceiver, pt.name,
         CAST(m.time AS CHAR) AS time
         FROM messages m
         LEFT JOIN platforms pt ON m.platform_id = pt.id

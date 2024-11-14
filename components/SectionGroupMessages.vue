@@ -9,6 +9,7 @@ const props = defineProps({
 
 const isPopupOpen = ref(false);
 const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
+const messageReceiver = ref("");
 const content = ref("");
 const messagesArray = ref(props.messages);
 
@@ -30,11 +31,12 @@ const removeMessage = (id) => {
 // saves created message
 const saveData = async () => {
   const userId = sessionGetUserData().id;
-  await addMessage(userId, props.platform_id, content.value, time.value);
+  await addMessage(userId, props.platform_id, messageReceiver.value, content.value, time.value);
   const lastMessage = (await getMessages(userId)).data.value.slice(-1);
 
   messagesArray.value.push({
     content: content.value,
+    messageReceiver: messageReceiver.value,
     time: time.value,
     id: lastMessage[0].id,
   });
@@ -55,16 +57,28 @@ const saveData = async () => {
 
     <div class="flex flex-wrap -mx-4">
       <div v-for="(message, index) in messagesArray" :key="message.id" class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
-        <Message :content="message.content" :time="message.time" :id="message.id" @removeMessage="removeMessage" />
+        <Message
+          :messageReceiver="message.messageReceiver"
+          :content="message.content"
+          :time="message.time"
+          :id="message.id"
+          @removeMessage="removeMessage"
+        />
       </div>
     </div>
   </section>
 
+  <!-- new message popup -->
   <div v-if="isPopupOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10" @click="closePopup">
     <div>
       <div @click.stop class="bg-gray-400 p-6 rounded-lg w-96">
         <h3 class="text-lg font-semibold mb-4">Create message</h3>
-        <textarea v-model="content" placeholder="Text here"></textarea>
+        <div>
+          <textarea v-model="messageReceiver" placeholder="Reciever"></textarea>
+        </div>
+        <div>
+          <textarea v-model="content" placeholder="Message"></textarea>
+        </div>
         <Calendar :date-in="time" @date="(value) => (time = value)" />
         <div class="flex justify-end space-x-2">
           <button @click="closePopup" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>

@@ -41,13 +41,15 @@ const date4 = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 
 const trustedPersons = ref([]);
 const selectedTrustedPerson = ref(0);
-const isPopupOpen = ref(false);
 
 const message = ref("");
 const time = ref({ years: 0, months: 0, days: 1, hours: 0, minutes: 0 });
 
+const isPopupOpenPosts = ref(false);
+const isPopupOpenMessages = ref(false);
 const platformPosts = ref(null);
 const platformMessages = ref(null);
+const messageReceiver = ref("");
 const content = ref("");
 
 onMounted(async () => {
@@ -63,6 +65,8 @@ onMounted(async () => {
   countDownConfirm();
 });
 
+// POSTS
+
 // gets posts scheduled for given platform
 async function getPlatformPosts() {
   const userId = sessionGetUserData().id;
@@ -71,6 +75,40 @@ async function getPlatformPosts() {
 
   return filteredPosts;
 }
+
+// opens post creation popup
+const openPopupPosts = () => {
+  isPopupOpenPosts.value = true;
+};
+
+// closes post creation popup
+const closePopupPosts = () => {
+  isPopupOpenPosts.value = false;
+};
+
+// saves created post
+const saveDataPost = async () => {
+  const userId = sessionGetUserData().id;
+  await addPost(userId, id, content.value, time.value);
+  const lastPost = (await getPosts(userId)).data.value.slice(-1);
+
+  platformPosts.value.push({
+    content: content.value,
+    time: time.value,
+    id: lastPost[0].id,
+  });
+
+  time.value = { years: 0, months: 0, days: 1, hours: 0, minutes: 0 };
+  content.value = "";
+  closePopupPosts();
+};
+
+// removes choosen post
+const removePost = (id) => {
+  platformPosts.value = platformPosts.value.filter((post) => post.id !== id);
+};
+
+// MESSAGES
 
 // gets messages scheduled for given platform
 async function getPlatformMessages() {
@@ -82,41 +120,39 @@ async function getPlatformMessages() {
 }
 
 // opens post creation popup
-const openPopup = () => {
-  isPopupOpen.value = true;
+const openPopupMessages = () => {
+  isPopupOpenMessages.value = true;
 };
 
 // closes post creation popup
-const closePopup = () => {
-  isPopupOpen.value = false;
+const closePopupMessages = () => {
+  isPopupOpenMessages.value = false;
 };
 
-// saves created post
-const saveData = async () => {
+// saves created message
+const saveDataMessage = async () => {
   const userId = sessionGetUserData().id;
-  await addPost(userId, id, content.value, time.value);
-  const lastPost = (await getPosts(userId)).data.value.slice(-1);
+  await addMessage(userId, id, messageReceiver.value, content.value, time.value);
+  const lastMessage = (await getMessages(userId)).data.value.slice(-1);
 
-  platformPosts.value.push({
+  platformMessages.value.push({
     content: content.value,
+    messageReceiver: messageReceiver.value,
     time: time.value,
-    id: lastPost[0].id,
+    id: lastMessage[0].id,
   });
-  // window.location.reload();
   time.value = { years: 0, months: 0, days: 1, hours: 0, minutes: 0 };
+  messageReceiver.value = "";
   content.value = "";
-  closePopup();
-};
-
-// removes choosen post
-const removePost = (id) => {
-  platformPosts.value = platformPosts.value.filter((post) => post.id !== id);
+  closePopupMessages();
 };
 
 // removes choosen post
 const removeMessage = (id) => {
   platformMessages.value = platformMessages.value.filter((message) => message.id !== id);
 };
+
+// ACCOUNT SETTINGS
 
 // gets platform information
 async function getPlatformData() {
@@ -289,7 +325,7 @@ function closeAllSubTubs(option: Number) {
     <section class="bg-blue-900 text-white p-5 rounded-lg shadow-lg my-3">
       <div class="flex items-center justify-between mb-4">
         POSTS
-        <button @click="openPopup" :id="parseInt(id)" class="w-8 h-8 flex items-center justify-center">
+        <button @click="openPopupPosts" :id="parseInt(id)" class="w-8 h-8 flex items-center justify-center">
           <Icon name="bi:plus-circle-fill" size="2em" />
         </button>
       </div>
@@ -304,14 +340,20 @@ function closeAllSubTubs(option: Number) {
     <section class="bg-blue-900 text-white p-5 rounded-lg shadow-lg my-3">
       <div class="flex items-center justify-between mb-4">
         MESSAGES
-        <button @click="openPopup" :id="parseInt(id)" class="w-8 h-8 flex items-center justify-center">
+        <button @click="openPopupMessages" :id="parseInt(id)" class="w-8 h-8 flex items-center justify-center">
           <Icon name="bi:plus-circle-fill" size="2em" />
         </button>
       </div>
 
       <div class="flex flex-wrap -mx-4">
         <div v-for="(message, index) in platformMessages" :key="message.id" class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
-          <Message :content="message.content" :time="message.time" :id="message.id" @removeMessage="removeMessage" />
+          <Message
+            :messageReceiver="message.messageReceiver"
+            :content="message.content"
+            :time="message.time"
+            :id="message.id"
+            @removeMessage="removeMessage"
+          />
         </div>
       </div>
     </section>
@@ -567,15 +609,35 @@ function closeAllSubTubs(option: Number) {
     </div>
   </div>
 
-  <div v-if="isPopupOpen" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10" @click="closePopup">
+  <div v-if="isPopupOpenPosts" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10" @click="closePopupPosts">
     <div>
       <div @click.stop class="bg-gray-400 p-6 rounded-lg w-96">
         <h3 class="text-lg font-semibold mb-4">Create post</h3>
-        <textarea v-model="content" placeholder="Text here"></textarea>
+        <textarea v-model="content" placeholder="Message"></textarea>
         <Calendar :date-in="time" @date="(value) => (time = value)" />
         <div class="flex justify-end space-x-2">
-          <button @click="closePopup" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
-          <button v-if="content.length > 0" @click="saveData" class="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
+          <button @click="closePopupPosts" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
+          <button v-if="content.length > 0" @click="saveDataPost" class="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
+          <button v-else disabled class="px-4 py-2 bg-gray-300 text-red-400 rounded">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="isPopupOpenMessages" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-10" @click="closePopupMessages">
+    <div>
+      <div @click.stop class="bg-gray-400 p-6 rounded-lg w-96">
+        <h3 class="text-lg font-semibold mb-4">Create post</h3>
+        <div>
+          <textarea v-model="messageReceiver" placeholder="Reciever"></textarea>
+        </div>
+        <div>
+          <textarea v-model="content" placeholder="Message"></textarea>
+        </div>
+        <Calendar :date-in="time" @date="(value) => (time = value)" />
+        <div class="flex justify-end space-x-2">
+          <button @click="closePopupMessages" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
+          <button v-if="content.length > 0" @click="saveDataMessage" class="px-4 py-2 bg-blue-500 text-white rounded">Save</button>
           <button v-else disabled class="px-4 py-2 bg-gray-300 text-red-400 rounded">Save</button>
         </div>
       </div>

@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
     const [rows] = await connection.query(
-      `INSERT INTO messages (platform_id, content, time, user_id) VALUES (${body.platformId}, '${body.content}', '${date}', ${body.userId});`
+      `INSERT INTO messages (platform_id, message_receiver, content, time, user_id) VALUES (${body.platformId}, '${body.messageReceiver}', '${body.content}', '${date}', ${body.userId});`
     );
     return {
       success: true,

@@ -17,7 +17,12 @@ export default defineEventHandler(async (event) => {
   try {
     connection = await mysql.createConnection(config);
 
-    const [result] = await connection.query(`UPDATE messages SET content = ?, time = ? WHERE id = ?`, [body.content, date, body.messageId]);
+    const [result] = await connection.query(`UPDATE messages SET message_receiver = ?, content = ?, time = ? WHERE id = ?`, [
+      body.messageReceiver,
+      body.content,
+      date,
+      body.messageId,
+    ]);
     if (result.affectedRows === 0) {
       return {
         success: false,

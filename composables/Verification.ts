@@ -42,6 +42,7 @@ export const sendVerificationCode = async (email: string) => {
     const response_userData = await axios.post("/api/login/getUserInfo", {
       email: email,
     });
+
     const userId = response_userData.data.data[0].id;
 
     const response = await axios.post("/api/login/sendMail", {

@@ -102,30 +102,15 @@ function onSubmit() {
 // checks if entered email is avaliable
 async function checkCredentialsAvability() {
   try {
-    const responseSignUp = await axios.post("/api/login/signUp", {
-      name: name.value,
-      surname: surname.value,
-      email: email.value,
-      password: password.value,
-      verifingMethod: 0,
-    });
+    const responseSignUp = await userSignUp(name.value, surname.value, email.value, password.value);
 
-    if (responseSignUp.data.success === true) {
+    if (responseSignUp.success === true) {
       alertMessage.value = "";
+      await sessionSetUserData(email.value);
 
-      try {
-        const response_userData = await axios.post("/api/login/getUserInfo", {
-          email: email.value,
-        });
-        const data = response_userData.data.data;
-        sessionStorage.setItem("userData", JSON.stringify(data));
-      } catch (error) {
-        console.error("Error:", error);
-      }
-
-      navigateTo({ path: "/login/verification" });
+      navigateTo("/login/verification");
     } else {
-      emailAlertMessage.value = responseSignUp.data.message;
+      emailAlertMessage.value = responseSignUp.message;
       emailInputBox.value = "input-box-alerted";
     }
   } catch (error) {

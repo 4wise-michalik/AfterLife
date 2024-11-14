@@ -1,5 +1,4 @@
 import mysql from "mysql2/promise";
-
 const config = {
   host: process.env.MARIA_DB_HOST,
   user: process.env.MARIA_DB_USER,
@@ -12,7 +11,7 @@ export default defineEventHandler(async (event) => {
   let connection;
   try {
     connection = await mysql.createConnection(config);
-    const [rows] = await connection.query("SELECT friend_code FROM users");
+    const [rows] = await connection.query("SELECT friend_code FROM users;");
 
     return {
       success: true,

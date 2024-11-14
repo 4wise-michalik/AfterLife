@@ -13,8 +13,8 @@ export default defineEventHandler(async (event) => {
   let connection;
   let code = "";
   let friend_codes = await getUsersCodes();
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   do {
     for (let i = 0; i < 6; i++) {
@@ -25,23 +25,12 @@ export default defineEventHandler(async (event) => {
 
   try {
     connection = await mysql.createConnection(config);
-    const [users] = await connection.query(
-      `SELECT * FROM users WHERE email = ?`,
-      [body.email]
-    );
+    const [users] = await connection.query(`SELECT * FROM users WHERE email = ?`, [body.email]);
 
     if (users.length === 0) {
       await connection.query(
         `INSERT INTO users (first_name, last_name, email, password, verified_email, verifing_method, friend_code) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-          body.name,
-          body.surname,
-          body.email,
-          body.password,
-          0,
-          body.verifingMethod,
-          code,
-        ]
+        [body.name, body.surname, body.email, body.password, 0, 0, code]
       );
       return { success: true, message: "User registered successfully." };
     } else {

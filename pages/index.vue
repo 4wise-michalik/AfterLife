@@ -1,18 +1,15 @@
 <script setup lang="ts">
 // greeting page
 
-const route = useRoute();
 const signIpText = ref("sign in");
-const isLogged = ref(false);
 
-onMounted(() => {
-  if (sessionGetUserData()) {
-    const userData = ref(sessionGetUserData());
-    if (sessionGetUserData().id) {
-      navigateTo("/home");
-    }
-  }
-});
+// onMounted(() => {
+//   if (sessionGetUserData()) {
+//     if (sessionGetUserData().id) {
+//       navigateTo("/home");
+//     }
+//   }
+// });
 </script>
 
 <template>

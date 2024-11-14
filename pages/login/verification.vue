@@ -8,8 +8,6 @@ const email = ref("");
 const sendNewCode_isActive = ref(false);
 const sendNewCodeWaitingTime = ref(60);
 
-const generatedCode = ref("");
-
 const verificationTextLabel = ref("We have just sent you an email with verification code. Please enter it below.");
 const newCodeTextLabel = ref("Didn't get it?");
 const sendAgainTextLabel = ref("send again");
@@ -49,7 +47,7 @@ async function enteredVerificationCode() {
   }
 
   if (verificationCodeAlertMessage.value === "" && (await chceckVerificationCode())) {
-    navigateTo("/home");
+    navigateTo("/");
   }
 }
 
@@ -115,7 +113,7 @@ function countDownSendNewCode() {
         :disabled="!sendNewCode_isActive"
         class="send-new-code-button"
         @click="
-          sendVerificationCode(email, generatedCode);
+          sendVerificationCode(email);
           sendNewCode_isActive = false;
           sendNewCodeWaitingTime = 60;
         "

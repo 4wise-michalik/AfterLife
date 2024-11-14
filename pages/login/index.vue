@@ -50,17 +50,12 @@ async function checkCredentials() {
 
     if (response.success === true) {
       userData.value = (await getUsersInfo(email.value)).data[0];
-      sessionStorage.setItem("userData", JSON.stringify(userData.value));
+      await sessionSetUserData(userData.value.email);
 
-      verifiedMethod.value = userData.value.verified_email;
-
+      verifiedMethod.value = sessionGetUserData().verified_email;
       alertMessage.value = "";
 
-      if (verifiedMethod.value) {
-        navigateTo("/home");
-      } else {
-        navigateTo("/login/verification");
-      }
+      navigateTo("/home");
     } else {
       alertMessage.value = "incorrect email or password";
     }

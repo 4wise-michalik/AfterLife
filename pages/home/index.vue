@@ -40,6 +40,10 @@ onMounted(async () => {
   loadQrCode();
   const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
   qrSize.value = 15 * remSize;
+
+  if ((await sessionGetUserData().verified_email) != 1) {
+    navigateTo("/login/verification");
+  }
 });
 
 // checks if users is considered dead  ?  shows screen with death information and options to cancel death  :  shows normal main page

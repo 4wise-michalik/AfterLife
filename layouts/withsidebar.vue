@@ -4,7 +4,7 @@ const trustedOnes = ref({});
 const trustingOnes = ref({});
 
 onMounted(async () => {
-  if (!isAuthTokenValid().valid) {
+  if (!(await isAuthTokenValid()).valid) {
     navigateTo("/login");
   }
 

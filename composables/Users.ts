@@ -22,6 +22,12 @@ export const userLogIn = async (email: string, password: string) => {
 
     sessionStorage.setItem("authToken", JSON.stringify(responseUserData.token));
 
+    const decodedToken = jwtDecode(responseUserData.token);
+    await axios.post("/api/login/saveToken", {
+      id: decodedToken.id,
+      token: responseUserData.token,
+    });
+
     return { success: responseUserData.success };
   } catch (err) {
     error.value = err.message;
@@ -114,14 +120,25 @@ export const getUsersCodes = async () => {
  *
  * @returns { valid: boolean } - An object indicating if the token is still valid.
  */
-export const isAuthTokenValid = () => {
-  const authToken = sessionStorage.getItem("authToken");
+export const isAuthTokenValid = async () => {
+  const authToken = JSON.parse(sessionStorage.getItem("authToken"));
   try {
     const decodedToken = jwtDecode(authToken);
     const currentTime = Date.now() / 1000;
 
-    if (authToken && decodedToken.exp > currentTime && decodedToken.id == sessionGetUserData().id) {
-      return { valid: true };
+    if (authToken && decodedToken.exp > currentTime) {
+      const responseValidateToken = (
+        await axios.post("/api/login/validateToken", {
+          id: decodedToken.id,
+          token: authToken,
+        })
+      ).data;
+
+      if (responseValidateToken) {
+        return { valid: true };
+      } else {
+        return { valid: false };
+      }
     } else {
       localStorage.removeItem("authToken");
       return { valid: false };

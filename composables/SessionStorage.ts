@@ -6,8 +6,3 @@ export const sessionGetUserData = () => {
 
   return decodedToken;
 };
-
-// export const sessionSetUserData = async (email: string) => {
-//   const userData = (await getUsersInfo(email)).data[0];
-//   sessionStorage.setItem("userData", JSON.stringify(userData));
-// };

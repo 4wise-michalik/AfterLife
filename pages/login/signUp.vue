@@ -106,7 +106,6 @@ async function checkCredentialsAvability() {
 
     if (responseSignUp.success === true) {
       alertMessage.value = "";
-      // await sessionSetUserData(email.value);
 
       navigateTo("/login/verification");
     } else {

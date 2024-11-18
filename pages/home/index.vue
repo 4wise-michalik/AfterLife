@@ -36,8 +36,8 @@ onMounted(async () => {
   await getPostsCount();
   await getTrustedOnes();
 
-  getLinkFromDatabase();
-  loadQrCode();
+  await getLinkFromDatabase();
+  await loadQrCode();
   const remSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
   qrSize.value = 15 * remSize;
 

@@ -50,7 +50,6 @@ async function checkCredentials() {
 
     if (response.success === true) {
       userData.value = (await getUsersInfo(email.value)).data[0];
-      // await sessionSetUserData(userData.value.email);
 
       verifiedMethod.value = sessionGetUserData().verified_email;
       alertMessage.value = "";

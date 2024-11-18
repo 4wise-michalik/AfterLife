@@ -71,10 +71,19 @@ export const userSignUp = async (name: string, surname: string, email: string, p
  */
 export const getUsersInfo = async (email: string) => {
   const error = ref(null);
+  const authToken = JSON.parse(sessionStorage.getItem("authToken"));
   try {
-    const responseUserData = await axios.post("/api/login/getUserInfo", {
-      email: email,
-    });
+    const responseUserData = await axios.post(
+      "/api/login/getUserInfo",
+      {
+        email: email,
+      },
+      {
+        headers: {
+          Authorization: authToken,
+        },
+      }
+    );
     const userInfo = responseUserData.data;
 
     return userInfo;
@@ -120,31 +129,32 @@ export const getUsersCodes = async () => {
  *
  * @returns { valid: boolean } - An object indicating if the token is still valid.
  */
-export const isAuthTokenValid = async () => {
-  const authToken = JSON.parse(sessionStorage.getItem("authToken"));
-  try {
-    const decodedToken = jwtDecode(authToken);
-    const currentTime = Date.now() / 1000;
+// export const isAuthTokenValid = async () => {
+//   const authToken = JSON.parse(sessionStorage.getItem("authToken"));
 
-    if (authToken && decodedToken.exp > currentTime) {
-      const responseValidateToken = (
-        await axios.post("/api/login/validateToken", {
-          id: decodedToken.id,
-          token: authToken,
-        })
-      ).data;
+//   try {
+//     const decodedToken = jwtDecode(authToken);
+//     const currentTime = Date.now() / 1000;
 
-      if (responseValidateToken) {
-        return { valid: true };
-      } else {
-        return { valid: false };
-      }
-    } else {
-      localStorage.removeItem("authToken");
-      return { valid: false };
-    }
-  } catch (error) {
-    localStorage.removeItem("authToken");
-    return { valid: false };
-  }
-};
+//     if (authToken && decodedToken.exp > currentTime) {
+//       const responseValidateToken = (
+//         await axios.post("/api/login/validateToken", {
+//           id: decodedToken.id,
+//           token: authToken,
+//         })
+//       ).data;
+
+//       if (responseValidateToken) {
+//         return { valid: false };
+//       } else {
+//         return { valid: true };
+//       }
+//     } else {
+//       localStorage.removeItem("authToken");
+//       return { valid: false };
+//     }
+//   } catch (error) {
+//     localStorage.removeItem("authToken");
+//     return { valid: false };
+//   }
+// };

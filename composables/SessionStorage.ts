@@ -1,8 +1,13 @@
 import { jwtDecode } from "jwt-decode";
 
 export const sessionGetUserData = () => {
-  const authToken = JSON.parse(sessionStorage.getItem("authToken"));
-  const decodedToken = jwtDecode(authToken);
+  try {
+    const authToken = JSON.parse(sessionStorage.getItem("authToken"));
+    const decodedToken = jwtDecode(authToken);
 
-  return decodedToken;
+    return decodedToken;
+  } catch (error) {
+    // sessionStorage.removeItem("authToken");
+    // return navigateTo("/login");
+  }
 };

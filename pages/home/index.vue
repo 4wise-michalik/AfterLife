@@ -11,6 +11,7 @@ definePageMeta({
 
 const connectedPlatforms = ref([]);
 const postsCount = ref(null);
+const messagesCount = ref(null);
 const showAddPlatform = ref(false);
 const trustedOnes = ref({});
 const isAlive = ref(true);
@@ -56,6 +57,7 @@ const checkIfIsDead = async () => {
 // gets number of user's posts
 const getPostsCount = async () => {
   postsCount.value = posts.value.data.length;
+  messagesCount.value = messages.value.data.length;
 };
 
 // gets platforms that user have connected to his account
@@ -162,6 +164,7 @@ const downloadQrCode = () => {
       <p class="text-sm">Connected platforms: {{ connectedPlatforms.length }}</p>
       <p class="text-sm">Total followers: 54.3k</p>
       <p v-if="postsCount" class="text-sm">Scheduled after-posts: {{ postsCount }}</p>
+      <p v-if="messagesCount" class="text-sm">Scheduled messages: {{ messagesCount }}</p>
       <p class="text-sm">Account removals: 1</p>
     </section>
 

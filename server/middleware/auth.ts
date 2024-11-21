@@ -1,10 +1,6 @@
-import { jwtDecode } from "jwt-decode";
-import axios from "axios";
-
 export default defineEventHandler(async (event) => {
   const authToken = getHeader(event, "authorization");
-  console.log(authToken);
-
+  // console.log("Auth middleware: " + authToken);
   // try {
   //   const decodedToken = jwtDecode(authToken);
   //   const currentTime = Date.now() / 1000;

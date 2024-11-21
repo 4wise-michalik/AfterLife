@@ -11,11 +11,11 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
         if (decodedToken.exp < currentTime) {
           sessionStorage.removeItem("authToken");
-          return navigateTo("/login");
+          return navigateTo("/");
         }
       } catch (error) {
         sessionStorage.removeItem("authToken");
-        return navigateTo("/login");
+        return navigateTo("/");
       }
     } else if (to.name !== "login") {
       return navigateTo("/login");

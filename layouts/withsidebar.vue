@@ -29,7 +29,7 @@ const getTrustingOnes = async () => {
         </li>
       </Section>
 
-      <Section title="Who Trust Me" link="/home/trusting">
+      <Section title="Who Trusts Me" link="/home/trusting">
         <li v-for="item in trustingOnes">
           <Subsection :title="item.first_name + ' ' + item.last_name" :link="`/home/trusting/${item.id}`" />
         </li>

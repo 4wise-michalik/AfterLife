@@ -12,13 +12,22 @@ import axios from "axios";
  */
 export const addMessage = async (userId: number, platformId: number, messageReceiver: string, content: string, time: object) => {
   try {
-    const response = await axios.post("/api/messages/addMessage", {
-      userId: userId,
-      platformId: platformId,
-      messageReceiver: messageReceiver,
-      content: content,
-      time: time,
-    });
+    const authToken = JSON.parse(sessionStorage.getItem("authToken"));
+    const response = await axios.post(
+      "/api/messages/addMessage",
+      {
+        userId: userId,
+        platformId: platformId,
+        messageReceiver: messageReceiver,
+        content: content,
+        time: time,
+      },
+      {
+        headers: {
+          Authorization: authToken,
+        },
+      }
+    );
     if (response.data.success) {
       return { success: true };
     }
@@ -39,12 +48,21 @@ export const addMessage = async (userId: number, platformId: number, messageRece
  */
 export const updateMessage = async (messageId: number, messageReceiver: string, content: string, time: object) => {
   try {
-    const response = await axios.post("/api/messages/updateMessage", {
-      messageId: messageId,
-      content: content,
-      messageReceiver: messageReceiver,
-      time: time,
-    });
+    const authToken = JSON.parse(sessionStorage.getItem("authToken"));
+    const response = await axios.post(
+      "/api/messages/updateMessage",
+      {
+        messageId: messageId,
+        content: content,
+        messageReceiver: messageReceiver,
+        time: time,
+      },
+      {
+        headers: {
+          Authorization: authToken,
+        },
+      }
+    );
     if (response.data.success) {
       return { success: true };
     }
